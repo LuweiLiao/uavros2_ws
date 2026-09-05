@@ -1,0 +1,109 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="usl_iwp_tiltrotor">
+      <link name="tiltrotor_tube">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.2</mass>
+        <inertia>
+          <ixx>0.01</ixx>
+          <iyy>0.01</iyy>
+          <izz>0.01</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="tiltrotor_tube_collision">
+        <pose>0 0 0 1.5707963267948966 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.3</length>
+            <radius>0.011</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <max_vel>100.0</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name="tiltrotor_tube_visual">
+        <geometry>
+          <mesh>
+            <uri>model://usl_iwp_tiltrotor/meshes/tiltrotor_tube.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Green</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <link name="tiltrotor_tilt">
+    <pose>0 -0.15925 0 0 0 0</pose>
+    <inertial>
+      <pose>0 0 0 0 0 0</pose>
+      <mass>0.2</mass>
+      <inertia>
+        <ixx>0.01</ixx>
+        <iyy>0.01</iyy>
+        <izz>0.01</izz>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyz>0</iyz>
+      </inertia>
+    </inertial>
+    <collision name="tiltrotor_collision">
+      <pose>0 0 0 0 -0 0</pose>
+      <geometry>
+        <box>
+          <size>0.068 0.042 0.08</size>
+        </box>
+      </geometry>
+      <surface>
+        <contact>
+          <ode>
+            <max_vel>100.0</max_vel>
+            <min_depth>0.001</min_depth>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
+    <visual name="tiltrotor_tilt_visual">
+      <geometry>
+        <mesh>
+          <uri>model://usl_iwp_tiltrotor/meshes/tiltrotor_tilt.STL</uri>
+        </mesh>
+      </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+          </script>
+        </material>
+    </visual>
+  </link>
+  <joint name='tiltrotor_tilt_joint' type='revolute'>
+    <child>tiltrotor_tilt</child>
+    <parent>tiltrotor_tube</parent>
+    <axis>
+      <xyz>0 -1 0</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.00001</damping>
+      </dynamics>
+      <use_parent_model_frame>1</use_parent_model_frame>
+    </axis>
+    
+  </joint>
+</model>
+</sdf>

@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="usl_quadruped_femur_l">
+      <link name="base">
+      <pose>0 0 0.0  0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.001</ixx>
+          <iyy>0.001</iyy>
+          <izz>0.001</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="base_collision">
+        <pose>0 0 0  0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.01 0.01 0.01</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu2>1</mu2>
+              <fdir1>1 0 0</fdir1>
+              <mu1>1.0</mu1>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1e+15</kp>
+              <kd>1e+13</kd>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name="base_visual">
+        <geometry>
+          <mesh>
+            <uri>model://usl_quadruped_femur_l/meshes/usl_quadruped_femur_l.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Yellow</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  
+  
+</model>
+</sdf>

@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+  <%
+
+%>
+  <sdf version="1.5">
+    <model name="grass_plane">
+      <%# ====================================================================================== %>
+      <static>true</static>
+      <link name='link'>
+      <collision name='collision'>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>1000 1000</size>
+          </plane>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>.5</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <%
+        for i in 0..20
+			%>
+      <%
+        for j in 0..20
+			%>
+      <visual name=<%= '"' + 'visual_' + i.to_s + '_' + j.to_s+ '"' %>>
+      <pose><%= (i-10)*50 %> <%= (j-10)*50 %> 0 0 0 0</pose>
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>50 50</size>
+          </plane>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grass_plane/materials/scripts</uri>
+            <uri>model://grass_plane/materials/textures</uri>
+            <name>vrc/grass</name>
+          </script>
+        </material>
+      </visual>
+    <% end %>
+  <% end %>
+  <%# ====================================================================================== %>
+</link>
+</model>
+</sdf>

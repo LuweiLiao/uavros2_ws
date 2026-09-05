@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+  <%
+  # ----------------------------------------------------------------
+  # Non-coplanar hexrotor (nonplant_hex) assembly
+  #
+  #   - 6 arms evenly distributed at 60-degree intervals
+  #   - each arm is mounted with a fixed tilt of +/-alpha
+  #     around its local Y axis (alternating sign), giving full 6-DOF wrench
+  #     authority (Voliro-style fully-actuated configuration)
+  #   - rotor spin direction alternates ccw / cw
+  #
+  # Geometry
+  arm_dist  = 0.25          # arm frame origin to body center distance (m)
+  prop_dz   = 0.0135        # prop vertical offset above arm frame origin (m)
+  alpha_deg = 20.0          # fixed tilt angle around arm axis (deg, intuitive)
+  alpha     = alpha_deg * Math::PI / 180.0
+  body_yaw_deg = 0.0       # align body-local X/Y with CAD coordinate frame
+  body_yaw = body_yaw_deg * Math::PI / 180.0
+
+  # Motor parameters
+  prop_timeConstantUp   = 0.0125
+  prop_timeConstantDown = 0.025
+  prop_maxRotVelocity   = 1000
+  prop_motorConstant    = 2.599e-5
+  prop_momentConstant   = 0.06
+
+  # Arm numbering starts at the upper-right arm and proceeds clockwise:
+  #   arm 1:  60 deg, arm 2:   0 deg, arm 3: -60 deg,
+  #   arm 4: -120 deg, arm 5: 180 deg, arm 6: 120 deg.
+  # Motor numbers remain zero-based for rotors_gazebo_motor_model.
+  arms = [
+    { :id => 1, :motor => 0, :yaw_deg =>  -30.0, :dir => "cw", :tilt_sign =>  1.0 },
+    { :id => 2, :motor => 1, :yaw_deg =>  -90.0, :dir => "ccw",  :tilt_sign => -1.0 },
+    { :id => 3, :motor => 2, :yaw_deg =>  -150.0, :dir => "cw", :tilt_sign =>  1.0 },
+    { :id => 4, :motor => 3, :yaw_deg =>  -210.0, :dir => "ccw",  :tilt_sign => -1.0 },
+    { :id => 5, :motor => 4, :yaw_deg =>  -270.0, :dir => "cw", :tilt_sign =>  1.0 },
+    { :id => 6, :motor => 5, :yaw_deg =>  -330.0, :dir => "ccw",  :tilt_sign => -1.0 },
+  ]
+%>
+  <sdf version="1.5">
+    <model name="nonplant_hex">
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://nonplant_hex_base</uri>
+        <name>nonplant_hex_base</name>
+        <pose>0 0 0.0 0 0 <%= body_yaw %></pose>
+      </include>
+
+      <%# ---------------- 6 arms ---------------- %>
+      <%
+        arms.each do |arm|
+          id  = arm[:id].to_s
+          radial_yaw = arm[:yaw_deg] * Math::PI / 180.0
+          # arm.STL local +Y points from the motor end toward the arm tube.
+          # Rotate +Y inward, toward the body center.
+          arm_yaw = radial_yaw + Math::PI / 2.0
+          tilt = alpha * arm[:tilt_sign]
+          ax  = arm_dist * Math.cos(radial_yaw)
+          ay  = arm_dist * Math.sin(radial_yaw)
+      %>
+      <include>
+        <uri>model://nonplant_hex_arm</uri>
+        <name><%= 'nonplant_hex_arm_' + id %></name>
+        <pose><%= ax %> <%= ay %> 0 0 <%= tilt %> <%= arm_yaw %></pose>
+      </include>
+      <joint name=<%= '"' + 'nonplant_hex_arm_' + id + '_joint"' %> type="fixed">
+        <parent>nonplant_hex_base::base</parent>
+        <child><%= 'nonplant_hex_arm_' + id + '::arm' %></child>
+      </joint>
+      <% end %>
+
+      <%# ---------------- 6 propellers mounted without extra tilt ---------------- %>
+      <%
+        arms.each do |arm|
+          id    = arm[:id].to_s
+          motor = arm[:motor].to_s
+          dir   = arm[:dir]
+          pz    = prop_dz
+      %>
+      <include>
+        <uri>model://nonplant_hex_prop</uri>
+        <name><%= 'nonplant_hex_prop_' + id %></name>
+        <pose relative_to=<%= '"' + 'nonplant_hex_arm_' + id + '::arm' + '"'%>>0 0 <%= pz %> 0 0 0</pose>
+      </include>
+      <joint name=<%= '"' + 'nonplant_hex_prop_' + id + '_joint"' %> type="revolute">
+        <parent><%= 'nonplant_hex_arm_' + id + '::arm' %></parent>
+        <child><%= 'nonplant_hex_prop_' + id + '::prop' %></child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.00001</damping>
+          </dynamics>
+          <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+      </joint>
+      <plugin name=<%= '"nonplant_hex_prop_' + id + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName><%= 'nonplant_hex_prop_' + id + '_joint' %></jointName>
+        <linkName><%= 'nonplant_hex_prop_' + id + '::prop' %></linkName>
+        <turningDirection><%= dir %></turningDirection>
+        <timeConstantUp><%= prop_timeConstantUp %></timeConstantUp>
+        <timeConstantDown><%= prop_timeConstantDown %></timeConstantDown>
+        <maxRotVelocity><%= prop_maxRotVelocity %></maxRotVelocity>
+        <motorConstant><%= prop_motorConstant %></motorConstant>
+        <momentConstant><%= prop_momentConstant %></momentConstant>
+        <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber><%= motor %></motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic><%= 'prop_speed/' + motor %></motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+      <% end %>
+
+      <%# ====================================================================================== %>
+      <plugin name="ArduRotorNormPlugin" filename="libArduRotorNormPlugin.so">
+        <fdm_addr>127.0.0.1</fdm_addr>
+        <fdm_port_in>9002</fdm_port_in>
+        <fdm_port_out>9003</fdm_port_out>
+        <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+        <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+        <motor_num>6</motor_num>
+        <servo_num>0</servo_num>
+        <motor_pub>/gazebo/command/prop_speed</motor_pub>
+        <imuName>nonplant_hex_base::imu_link::imu_sensor</imuName>
+        <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+      </plugin>
+
+      <plugin name="imu_plugin" filename="librotors_gazebo_imu_plugin.so">
+        <robotNamespace>nonplant_hex</robotNamespace>
+        <linkName>nonplant_hex_base::imu_link</linkName>
+        <imuTopic>imu</imuTopic>
+        <gyroscopeNoiseDensity>0.000349</gyroscopeNoiseDensity>
+        <gyroscopeBiasRandomWalk>0.000266</gyroscopeBiasRandomWalk>
+        <gyroscopeBiasCorrelationTime>600</gyroscopeBiasCorrelationTime>
+        <gyroscopeTurnOnBiasSigma>0.0004</gyroscopeTurnOnBiasSigma>
+        <accelerometerNoiseDensity>0.00324</accelerometerNoiseDensity>
+        <accelerometerRandomWalk>0.0056</accelerometerRandomWalk>
+        <accelerometerBiasCorrelationTime>600</accelerometerBiasCorrelationTime>
+        <accelerometerTurnOnBiasSigma>0.016</accelerometerTurnOnBiasSigma>
+      </plugin>
+    </model>
+</sdf>

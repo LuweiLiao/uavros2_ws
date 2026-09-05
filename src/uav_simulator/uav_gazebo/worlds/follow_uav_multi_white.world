@@ -1,0 +1,248 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <world name="default">
+      <physics type="ode">
+        <ode>
+          <solver>
+            <type>quick</type>
+            <iters>100</iters>
+            <sor>1.0</sor>
+          </solver>
+          <constraints>
+            <cfm>0.0</cfm>
+            <erp>0.2</erp>
+            <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
+            <contact_surface_layer>0.0</contact_surface_layer>
+          </constraints>
+        </ode>
+        <real_time_update_rate>-1</real_time_update_rate>
+        <!--<max_step_size>0.0020</max_step_size>-->
+      </physics>
+      <gravity>0 0 -9.8</gravity>
+
+    <include>
+      <uri>model://sun</uri>
+      <pose>-11.660200 -5.942800 100 0.000000 0.0 0.0</pose>
+    </include>
+
+
+    <model name="white_ground">
+      <static>true</static>
+
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>500 500</size>
+            </plane>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>500 500</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    
+    <model name="follow_uav_multi_1">
+      <pose>0 0 1 0 0 0 </pose>
+      <include>
+        <uri>model://follow_uav_multi</uri>
+        <pose> 0 0 0 0 0 0</pose>
+        <name>follow_uav_multi_1</name>
+      </include>
+      <plugin name="ArduRotorNormPlugin_1" filename='libArduRotorNormPlugin.so'>
+        <fdm_addr>127.0.0.1</fdm_addr>
+        <fdm_port_in>9002</fdm_port_in>
+        <fdm_port_out>9003</fdm_port_out>
+        <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+        <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+        <motor_num>4</motor_num>
+        <motor_pub>/follow_uav_multi_1/gazebo/command/prop_speed </motor_pub>
+        <imuName>follow_uav_multi_1::follow_uav_multi_base::imu_link::imu_sensor</imuName>
+        <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+      </plugin>
+      
+      <plugin name="follow_uav_multi_1_motor_0_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>follow_uav_multi_1::follow_uav_multi_prop_0_joint </jointName>
+        <linkName>follow_uav_multi_1::follow_uav_multi_prop_0::prop</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-05</motorConstant>
+        <momentConstant>0.25</momentConstant>
+        <commandSubTopic>/follow_uav_multi_1/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>0</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>/follow_uav_multi_1/prop_speed/0</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+      <plugin name="follow_uav_multi_1_motor_1_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>follow_uav_multi_1::follow_uav_multi_prop_1_joint </jointName>
+        <linkName>follow_uav_multi_1::follow_uav_multi_prop_1::prop</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-05</motorConstant>
+        <momentConstant>0.25</momentConstant>
+        <commandSubTopic>/follow_uav_multi_1/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>1</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>/follow_uav_multi_1/prop_speed/1</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+      <plugin name="follow_uav_multi_1_motor_2_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>follow_uav_multi_1::follow_uav_multi_prop_2_joint </jointName>
+        <linkName>follow_uav_multi_1::follow_uav_multi_prop_2::prop</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-05</motorConstant>
+        <momentConstant>0.25</momentConstant>
+        <commandSubTopic>/follow_uav_multi_1/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>2</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>/follow_uav_multi_1/prop_speed/2</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+      <plugin name="follow_uav_multi_1_motor_3_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>follow_uav_multi_1::follow_uav_multi_prop_3_joint </jointName>
+        <linkName>follow_uav_multi_1::follow_uav_multi_prop_3::prop</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-05</motorConstant>
+        <momentConstant>0.25</momentConstant>
+        <commandSubTopic>/follow_uav_multi_1/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>3</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>/follow_uav_multi_1/prop_speed/3</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+  </model>
+
+    <model name="follow_uav_multi_2">
+      <pose>-3 0 1 0 0 0 </pose>
+      <include>
+        <uri>model://follow_uav_multi</uri>
+        <pose> 0 0 0 0 0 0</pose>
+        <name>follow_uav_multi_2</name>
+      </include>
+      <plugin name="ArduRotorNormPlugin_2" filename='libArduRotorNormPlugin.so'>
+        <fdm_addr>127.0.0.1</fdm_addr>
+        <fdm_port_in>9012</fdm_port_in>
+        <fdm_port_out>9013</fdm_port_out>
+        <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+        <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+        <motor_num>4</motor_num>
+        <motor_pub>/follow_uav_multi_2/gazebo/command/prop_speed </motor_pub>
+        <imuName>follow_uav_multi_2::follow_uav_multi_base::imu_link::imu_sensor</imuName>
+        <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+      </plugin>
+      
+      <plugin name="follow_uav_multi_2_motor_0_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>follow_uav_multi_2::follow_uav_multi_prop_0_joint </jointName>
+        <linkName>follow_uav_multi_2::follow_uav_multi_prop_0::prop</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-05</motorConstant>
+        <momentConstant>0.25</momentConstant>
+        <commandSubTopic>/follow_uav_multi_2/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>0</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>/follow_uav_multi_2/prop_speed/0</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+      <plugin name="follow_uav_multi_2_motor_1_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>follow_uav_multi_2::follow_uav_multi_prop_1_joint </jointName>
+        <linkName>follow_uav_multi_2::follow_uav_multi_prop_1::prop</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-05</motorConstant>
+        <momentConstant>0.25</momentConstant>
+        <commandSubTopic>/follow_uav_multi_2/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>1</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>/follow_uav_multi_2/prop_speed/1</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+      <plugin name="follow_uav_multi_2_motor_2_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>follow_uav_multi_2::follow_uav_multi_prop_2_joint </jointName>
+        <linkName>follow_uav_multi_2::follow_uav_multi_prop_2::prop</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-05</motorConstant>
+        <momentConstant>0.25</momentConstant>
+        <commandSubTopic>/follow_uav_multi_2/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>2</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>/follow_uav_multi_2/prop_speed/2</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+      <plugin name="follow_uav_multi_2_motor_3_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>follow_uav_multi_2::follow_uav_multi_prop_3_joint </jointName>
+        <linkName>follow_uav_multi_2::follow_uav_multi_prop_3::prop</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-05</motorConstant>
+        <momentConstant>0.25</momentConstant>
+        <commandSubTopic>/follow_uav_multi_2/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>3</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>/follow_uav_multi_2/prop_speed/3</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+  </model>
+
+<plugin name="ros_interface_plugin" filename="librotors_gazebo_ros_interface_plugin.so" />
+</world>
+</sdf>

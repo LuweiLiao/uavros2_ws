@@ -1,0 +1,7 @@
+# Optional defaults (override via rosparam / launch args).
+vrpn_server: "192.168.3.37"
+vrpn_port: 3883
+tracker: "pend_h1"
+fcu_url: "udp://:14560@192.168.3.109:14550"
+frame_id: "map"
+scale: 1.0  # meters in / meters out; use 0.001 if VRPN sends mm

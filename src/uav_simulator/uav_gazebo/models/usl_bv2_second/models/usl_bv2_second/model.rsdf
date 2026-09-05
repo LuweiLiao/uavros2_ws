@@ -1,0 +1,235 @@
+<?xml version="1.0" ?>
+  <%
+tilt1_pos_dx = 0.0
+tilt1_pos_dy = 0.08965
+tilt1_pos_dz = 0.00506
+
+tilt1_pid_p = 3
+tilt1_pid_i = 1.2
+tilt1_pid_d = 0.8
+
+tilt1_motors={
+	"0" => {:tilt1_dx => tilt1_pos_dx, :tilt1_dy => -tilt1_pos_dy, :tilt1_dz => tilt1_pos_dz, :tilt1_rot => 0, :dir => -1},
+	"1" => {:tilt1_dx => tilt1_pos_dx, :tilt1_dy =>  tilt1_pos_dy, :tilt1_dz => tilt1_pos_dz, :tilt1_rot => Math::PI, :dir => 1},
+}
+
+tilt2_pos_dx = 0.0
+tilt2_pos_dy = 0.1808 
+tilt2_pos_dz = 0.12644
+
+tilt2_pid_p = 0.4
+tilt2_pid_i = 0.1
+tilt2_pid_d = 0.2
+
+tilt2_motors={
+	"0" => {:tilt2_dx => tilt2_pos_dx, :tilt2_dy => -tilt2_pos_dy, :tilt2_dz => tilt2_pos_dz, :tilt2_rot => 0, :dir => -1},
+	"1" => {:tilt2_dx => tilt2_pos_dx, :tilt2_dy =>  tilt2_pos_dy, :tilt2_dz => tilt2_pos_dz, :tilt2_rot => Math::PI, :dir => 1},
+}
+
+
+prop_pos_dx = 0.0
+prop_pos_dy = 0.1808
+prop_pos_dz = 0.16689
+
+prop_timeConstantUp = 0.0125
+prop_timeConstantDown = 0.025
+prop_maxRotVelocity = 1000
+prop_motorConstant = 1.599e-5
+prop_momentConstant = 4.599e-7
+
+prop_motors={
+	"0" => {:prop_dx => prop_pos_dx, :prop_dy => -prop_pos_dy, :prop_dz => prop_pos_dz, :dir => "cw"},
+	"1" => {:prop_dx => prop_pos_dx, :prop_dy =>  prop_pos_dy, :prop_dz => prop_pos_dz, :dir => "ccw"},
+}
+
+leg_pos_dx = 0.0
+leg_pos_dy = 0.0846
+leg_pos_dz = -0.0908
+
+%>
+  <sdf version="1.5">
+    <model name="usl_bv2_second">
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_bv2_second_base</uri>
+        <name>usl_bv2_second_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      <%# ====================================================================================== %>
+      <%
+			tilt1_motors.keys.each do |k|
+				tilt1_dx = tilt1_motors[k][:tilt1_dx]
+				tilt1_dy = tilt1_motors[k][:tilt1_dy]
+				tilt1_dz = tilt1_motors[k][:tilt1_dz]
+				tilt1_rot = tilt1_motors[k][:tilt1_rot]
+				dir = tilt1_motors[k][:dir]
+			%>
+      <include>
+        <uri>model://usl_bv2_second_tilt1</uri>
+        <name><%="usl_bv2_second_tilt1_" + k %></name>
+        <pose><%= tilt1_dx %> <%= tilt1_dy %> <%= tilt1_dz %> 0 0 <%= tilt1_rot %></pose>
+      </include>
+      <joint name = <%="usl_bv2_second_tilt1_" + k + '_joint' %> type="revolute">
+        <parent>usl_bv2_second_base::base</parent>
+        <child><%="usl_bv2_second_tilt1_" + k + '::tilt' %></child>
+        <axis>
+          <xyz>0 <%=dir%> 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.1</damping>
+            <spring_stiffness>0</spring_stiffness>
+            <spring_reference>0</spring_reference>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = <%= '"tilt1_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName><%="usl_bv2_second_tilt1_" + k + '_joint'%> </jointName>
+        <linkName><%="usl_bv2_second_tilt1_" + k + '::tilt' %></linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt1_pos</commandSubTopic>
+        <motorNumber><%= k %></motorNumber>
+        <motorSpeedPubTopic><%= 'tilt1_pos/' + k %></motorSpeedPubTopic>
+        <joint_control_pid>
+          <p><%= tilt1_pid_p %></p>
+          <i><%= tilt1_pid_i %></i>
+          <d><%= tilt1_pid_d %></d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    <% end %>
+    <%# ====================================================================================== %>
+    <%
+			tilt2_motors.keys.each do |k|
+				tilt2_dx = tilt2_motors[k][:tilt2_dx]
+				tilt2_dy = tilt2_motors[k][:tilt2_dy]
+				tilt2_dz = tilt2_motors[k][:tilt2_dz]
+				tilt2_rot = tilt2_motors[k][:tilt2_rot]
+				dir = tilt2_motors[k][:dir]
+			%>
+    <include>
+      <uri>model://usl_bv2_second_tilt2</uri>
+      <name><%="usl_bv2_second_tilt2_" + k %></name>
+      <pose><%= tilt2_dx %> <%= tilt2_dy %> <%= tilt2_dz %> 0 0 <%= tilt2_rot %></pose>
+    </include>
+    <joint name = <%="usl_bv2_second_tilt2_" + k + '_joint' %> type="revolute">
+      <parent><%="usl_bv2_second_tilt1_" + k + '::tilt'%></parent>
+      <child><%="usl_bv2_second_tilt2_" + k + '::tilt' %></child>
+      <axis>
+        <xyz>0 <%=dir%> 0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name = <%= '"tilt2_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName><%="usl_bv2_second_tilt2_" + k + '_joint'%> </jointName>
+      <linkName><%="usl_bv2_second_tilt2_" + k + '::tilt' %></linkName>
+      <turningDirection>cw</turningDirection>
+      <motorType>position</motorType>
+      <commandSubTopic>/gazebo/command/tilt2_pos</commandSubTopic>
+      <motorNumber><%= k %></motorNumber>
+      <motorSpeedPubTopic><%= 'tilt2_pos/' + k %></motorSpeedPubTopic>
+      <joint_control_pid>
+        <p><%= tilt2_pid_p %></p>
+        <i><%= tilt2_pid_i %></i>
+        <d><%= tilt2_pid_d %></d>
+        <iMax>2</iMax>
+        <iMin>-2</iMin>
+        <cmdMax>50</cmdMax>
+        <cmdMin>-50</cmdMin>
+      </joint_control_pid>
+    </plugin>
+  <% end %>
+  <%# ====================================================================================== %>
+  <%
+			prop_motors.keys.each do |k|
+				prop_dx = prop_motors[k][:prop_dx]
+				prop_dy = prop_motors[k][:prop_dy]
+				prop_dz = prop_motors[k][:prop_dz]
+				dir = prop_motors[k][:dir]
+			%>
+  <include>
+    <uri>model://usl_bv2_second_prop</uri>
+    <name><%="usl_bv2_second_prop_" + k %></name>
+    <pose><%= prop_dx %> <%= prop_dy %> <%= prop_dz %> 0 0 0</pose>
+  </include>
+  <joint name = <%="usl_bv2_second_prop_" + k + '_joint' %> type="revolute">
+    <parent><%="usl_bv2_second_tilt2_" + k + '::tilt' %></parent>
+    <child><%="usl_bv2_second_prop_" + k + '::prop' %></child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.004</damping>
+      </dynamics>
+      <use_parent_model_frame>1</use_parent_model_frame>
+    </axis>
+    <physics>
+      <ode>
+        <implicit_spring_damper>1</implicit_spring_damper>
+      </ode>
+    </physics>
+  </joint>
+  <plugin name = <%= '"prop_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName><%="usl_bv2_second_prop_" + k + '_joint'%> </jointName>
+    <linkName><%="usl_bv2_second_prop_" + k + '::prop' %></linkName>
+    <turningDirection><%= dir %></turningDirection>
+    <timeConstantUp><%= prop_timeConstantUp %></timeConstantUp>
+    <timeConstantDown><%= prop_timeConstantDown %></timeConstantDown>
+    <maxRotVelocity><%= prop_maxRotVelocity %></maxRotVelocity>
+    <motorConstant><%= prop_motorConstant %></motorConstant>
+    <momentConstant><%= prop_momentConstant %></momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber><%= k %></motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic><%= 'prop_speed/' + k %></motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+<% end %>
+<%# ====================================================================================== %>
+<plugin name="ArduRotorBV2" filename="libArduRotorBV2.so">
+  <fdm_addr>127.0.0.1</fdm_addr>
+  <fdm_port_in>9002</fdm_port_in>
+  <fdm_port_out>9003</fdm_port_out>
+  <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+  <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+  <motor_num>2</motor_num>
+  <servo_num>2</servo_num>
+  <motor_pub>/gazebo/command/prop_speed</motor_pub>
+  <servo1_pub>/gazebo/command/tilt1_pos</servo1_pub>
+  <servo2_pub>/gazebo/command/tilt2_pos</servo2_pub>
+  <imuName>usl_bv2_second_base::imu_link::imu_sensor</imuName>
+  <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+</plugin>
+</model>
+</sdf>

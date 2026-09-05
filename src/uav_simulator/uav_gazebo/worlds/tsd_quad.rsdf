@@ -1,0 +1,141 @@
+<?xml version="1.0" ?>
+  <%
+
+%>
+  <sdf version="1.5">
+    <world name="default">
+      <physics type="ode">
+        <ode>
+          <solver>
+            <type>quick</type>
+            <iters>100</iters>
+            <sor>1.0</sor>
+          </solver>
+          <constraints>
+            <cfm>0.0</cfm>
+            <erp>0.2</erp>
+            <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
+            <contact_surface_layer>0.0</contact_surface_layer>
+          </constraints>
+        </ode>
+        <real_time_update_rate>-1</real_time_update_rate>
+        <!--<max_step_size>0.0020</max_step_size>-->
+      </physics>
+      <gravity>0 0 -9.8</gravity>
+      <include>
+        <uri>model://sun</uri>
+      </include>
+      <model name="ground_plane">
+        <static>true</static>
+        <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>5000 5000</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="runway">
+          <pose>000 0 0.005 0 0 0</pose>
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1829 45</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Runway</name>
+            </script>
+          </material>
+        </visual>
+        <visual name="grass">
+          <pose>0 0 -0.1 0 0 0</pose>
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>5000 5000</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grass</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <%
+      i = 0
+      while i <1 do
+      i +=1
+    %>
+    <model name=<%= '"' + 'tsd_quad_' + i.to_s + '"' %>>
+      <pose><%=(1-i)*3%> 0 1 0 0 0 </pose>
+      <include>
+        <uri>model://tsd_quad</uri>
+        <pose> 0 0 0 0 0 0</pose>
+        <name><%= 'tsd_quad_' + i.to_s %></name>
+      </include>
+      <plugin name=<%='"ArduRotorNormPlugin_' + i.to_s + '"' %> filename='libArduRotorNormPlugin.so'>
+        <fdm_addr>127.0.0.1</fdm_addr>
+        <fdm_port_in><%= 9002 + (i-1)*10 %></fdm_port_in>
+        <fdm_port_out><%= 9003 + (i-1)*10 %></fdm_port_out>
+        <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+        <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+        <motor_num>4</motor_num>
+        <motor_pub><%='/tsd_quad_' + i.to_s + '/gazebo/command/prop_speed'%> </motor_pub>
+        <imuName><%='tsd_quad_' + i.to_s + '::tsd_quad_base::imu_link::imu_sensor'%></imuName>
+        <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+      </plugin>
+      <%
+    prop_timeConstantUp = 0.0125
+    prop_timeConstantDown = 0.025
+    prop_maxRotVelocity = 1000
+    prop_motorConstant = 8.599e-5
+    prop_momentConstant = 0.25
+    prop_motors={
+      "0" => {:dir => "ccw"},
+      "1" => {:dir => "cw"},
+      "2" => {:dir => "ccw"},
+      "3" => {:dir => "cw"},
+    }
+    prop_motors.keys.each do |j|
+				dir = prop_motors[j][:dir]
+      %>
+      <plugin name=<%= '"tsd_quad_' + i.to_s + '_motor_'+ j + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName><%= 'tsd_quad_'+ i.to_s + '::' + 'tsd_quad_prop_' + j + '_joint' %> </jointName>
+        <linkName><%= 'tsd_quad_'+ i.to_s + '::' + 'tsd_quad_prop_' + j + '::prop' %></linkName>
+        <turningDirection><%= dir %></turningDirection>
+        <timeConstantUp><%= prop_timeConstantUp %></timeConstantUp>
+        <timeConstantDown><%= prop_timeConstantDown %></timeConstantDown>
+        <maxRotVelocity><%= prop_maxRotVelocity %></maxRotVelocity>
+        <motorConstant><%= prop_motorConstant %></motorConstant>
+        <momentConstant><%= prop_momentConstant %></momentConstant>
+        <commandSubTopic><%='/tsd_quad_'+ i.to_s + '/gazebo/command/prop_speed'%></commandSubTopic>
+        <motorNumber><%= j %></motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic><%= '/tsd_quad_'+ i.to_s + '/prop_speed/' + j %></motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    <% end %>
+  </model>
+<% end %>
+<plugin name="ros_interface_plugin" filename="librotors_gazebo_ros_interface_plugin.so" />
+</world>
+</sdf>

@@ -1,0 +1,334 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="nonplant_hex">
+      
+      <include>
+        <uri>model://nonplant_hex_base</uri>
+        <name>nonplant_hex_base</name>
+        <pose>0 0 0.0 0 0 0.0</pose>
+      </include>
+
+      
+      
+      <include>
+        <uri>model://nonplant_hex_arm</uri>
+        <name>nonplant_hex_arm_1</name>
+        <pose>0.21650635094610968 -0.12499999999999999 0 0 0.3490658503988659 1.0471975511965979</pose>
+      </include>
+      <joint name="nonplant_hex_arm_1_joint" type="fixed">
+        <parent>nonplant_hex_base::base</parent>
+        <child>nonplant_hex_arm_1::arm</child>
+      </joint>
+      
+      <include>
+        <uri>model://nonplant_hex_arm</uri>
+        <name>nonplant_hex_arm_2</name>
+        <pose>1.5308084989341915e-17 -0.25 0 0 -0.3490658503988659 0.0</pose>
+      </include>
+      <joint name="nonplant_hex_arm_2_joint" type="fixed">
+        <parent>nonplant_hex_base::base</parent>
+        <child>nonplant_hex_arm_2::arm</child>
+      </joint>
+      
+      <include>
+        <uri>model://nonplant_hex_arm</uri>
+        <name>nonplant_hex_arm_3</name>
+        <pose>-0.21650635094610968 -0.12499999999999999 0 0 0.3490658503988659 -1.0471975511965979</pose>
+      </include>
+      <joint name="nonplant_hex_arm_3_joint" type="fixed">
+        <parent>nonplant_hex_base::base</parent>
+        <child>nonplant_hex_arm_3::arm</child>
+      </joint>
+      
+      <include>
+        <uri>model://nonplant_hex_arm</uri>
+        <name>nonplant_hex_arm_4</name>
+        <pose>-0.21650635094610965 0.12500000000000003 0 0 -0.3490658503988659 -2.0943951023931957</pose>
+      </include>
+      <joint name="nonplant_hex_arm_4_joint" type="fixed">
+        <parent>nonplant_hex_base::base</parent>
+        <child>nonplant_hex_arm_4::arm</child>
+      </joint>
+      
+      <include>
+        <uri>model://nonplant_hex_arm</uri>
+        <name>nonplant_hex_arm_5</name>
+        <pose>-4.592425496802574e-17 0.25 0 0 0.3490658503988659 -3.141592653589793</pose>
+      </include>
+      <joint name="nonplant_hex_arm_5_joint" type="fixed">
+        <parent>nonplant_hex_base::base</parent>
+        <child>nonplant_hex_arm_5::arm</child>
+      </joint>
+      
+      <include>
+        <uri>model://nonplant_hex_arm</uri>
+        <name>nonplant_hex_arm_6</name>
+        <pose>0.2165063509461096 0.1250000000000001 0 0 -0.3490658503988659 -4.1887902047863905</pose>
+      </include>
+      <joint name="nonplant_hex_arm_6_joint" type="fixed">
+        <parent>nonplant_hex_base::base</parent>
+        <child>nonplant_hex_arm_6::arm</child>
+      </joint>
+      
+
+      
+      
+      <include>
+        <uri>model://nonplant_hex_prop</uri>
+        <name>nonplant_hex_prop_1</name>
+        <pose relative_to="nonplant_hex_arm_1::arm">0 0 0.0135 0 0 0</pose>
+      </include>
+      <joint name="nonplant_hex_prop_1_joint" type="revolute">
+        <parent>nonplant_hex_arm_1::arm</parent>
+        <child>nonplant_hex_prop_1::prop</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.00001</damping>
+          </dynamics>
+          <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+      </joint>
+      <plugin name="nonplant_hex_prop_1_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>nonplant_hex_prop_1_joint</jointName>
+        <linkName>nonplant_hex_prop_1::prop</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>2.599e-05</motorConstant>
+        <momentConstant>0.06</momentConstant>
+        <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>0</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>prop_speed/0</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+      
+      <include>
+        <uri>model://nonplant_hex_prop</uri>
+        <name>nonplant_hex_prop_2</name>
+        <pose relative_to="nonplant_hex_arm_2::arm">0 0 0.0135 0 0 0</pose>
+      </include>
+      <joint name="nonplant_hex_prop_2_joint" type="revolute">
+        <parent>nonplant_hex_arm_2::arm</parent>
+        <child>nonplant_hex_prop_2::prop</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.00001</damping>
+          </dynamics>
+          <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+      </joint>
+      <plugin name="nonplant_hex_prop_2_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>nonplant_hex_prop_2_joint</jointName>
+        <linkName>nonplant_hex_prop_2::prop</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>2.599e-05</motorConstant>
+        <momentConstant>0.06</momentConstant>
+        <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>1</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>prop_speed/1</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+      
+      <include>
+        <uri>model://nonplant_hex_prop</uri>
+        <name>nonplant_hex_prop_3</name>
+        <pose relative_to="nonplant_hex_arm_3::arm">0 0 0.0135 0 0 0</pose>
+      </include>
+      <joint name="nonplant_hex_prop_3_joint" type="revolute">
+        <parent>nonplant_hex_arm_3::arm</parent>
+        <child>nonplant_hex_prop_3::prop</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.00001</damping>
+          </dynamics>
+          <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+      </joint>
+      <plugin name="nonplant_hex_prop_3_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>nonplant_hex_prop_3_joint</jointName>
+        <linkName>nonplant_hex_prop_3::prop</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>2.599e-05</motorConstant>
+        <momentConstant>0.06</momentConstant>
+        <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>2</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>prop_speed/2</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+      
+      <include>
+        <uri>model://nonplant_hex_prop</uri>
+        <name>nonplant_hex_prop_4</name>
+        <pose relative_to="nonplant_hex_arm_4::arm">0 0 0.0135 0 0 0</pose>
+      </include>
+      <joint name="nonplant_hex_prop_4_joint" type="revolute">
+        <parent>nonplant_hex_arm_4::arm</parent>
+        <child>nonplant_hex_prop_4::prop</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.00001</damping>
+          </dynamics>
+          <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+      </joint>
+      <plugin name="nonplant_hex_prop_4_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>nonplant_hex_prop_4_joint</jointName>
+        <linkName>nonplant_hex_prop_4::prop</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>2.599e-05</motorConstant>
+        <momentConstant>0.06</momentConstant>
+        <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>3</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>prop_speed/3</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+      
+      <include>
+        <uri>model://nonplant_hex_prop</uri>
+        <name>nonplant_hex_prop_5</name>
+        <pose relative_to="nonplant_hex_arm_5::arm">0 0 0.0135 0 0 0</pose>
+      </include>
+      <joint name="nonplant_hex_prop_5_joint" type="revolute">
+        <parent>nonplant_hex_arm_5::arm</parent>
+        <child>nonplant_hex_prop_5::prop</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.00001</damping>
+          </dynamics>
+          <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+      </joint>
+      <plugin name="nonplant_hex_prop_5_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>nonplant_hex_prop_5_joint</jointName>
+        <linkName>nonplant_hex_prop_5::prop</linkName>
+        <turningDirection>cw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>2.599e-05</motorConstant>
+        <momentConstant>0.06</momentConstant>
+        <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>4</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>prop_speed/4</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+      
+      <include>
+        <uri>model://nonplant_hex_prop</uri>
+        <name>nonplant_hex_prop_6</name>
+        <pose relative_to="nonplant_hex_arm_6::arm">0 0 0.0135 0 0 0</pose>
+      </include>
+      <joint name="nonplant_hex_prop_6_joint" type="revolute">
+        <parent>nonplant_hex_arm_6::arm</parent>
+        <child>nonplant_hex_prop_6::prop</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.00001</damping>
+          </dynamics>
+          <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+      </joint>
+      <plugin name="nonplant_hex_prop_6_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>nonplant_hex_prop_6_joint</jointName>
+        <linkName>nonplant_hex_prop_6::prop</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>2.599e-05</motorConstant>
+        <momentConstant>0.06</momentConstant>
+        <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+        <motorNumber>5</motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>prop_speed/5</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+      
+
+      
+      <plugin name="ArduRotorNormPlugin" filename="libArduRotorNormPlugin.so">
+        <fdm_addr>127.0.0.1</fdm_addr>
+        <fdm_port_in>9002</fdm_port_in>
+        <fdm_port_out>9003</fdm_port_out>
+        <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+        <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+        <motor_num>6</motor_num>
+        <servo_num>0</servo_num>
+        <motor_pub>/gazebo/command/prop_speed</motor_pub>
+        <imuName>nonplant_hex_base::imu_link::imu_sensor</imuName>
+        <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+      </plugin>
+
+      <plugin name="imu_plugin" filename="librotors_gazebo_imu_plugin.so">
+        <robotNamespace>nonplant_hex</robotNamespace>
+        <linkName>nonplant_hex_base::imu_link</linkName>
+        <imuTopic>imu</imuTopic>
+        <gyroscopeNoiseDensity>0.000349</gyroscopeNoiseDensity>
+        <gyroscopeBiasRandomWalk>0.000266</gyroscopeBiasRandomWalk>
+        <gyroscopeBiasCorrelationTime>600</gyroscopeBiasCorrelationTime>
+        <gyroscopeTurnOnBiasSigma>0.0004</gyroscopeTurnOnBiasSigma>
+        <accelerometerNoiseDensity>0.00324</accelerometerNoiseDensity>
+        <accelerometerRandomWalk>0.0056</accelerometerRandomWalk>
+        <accelerometerBiasCorrelationTime>600</accelerometerBiasCorrelationTime>
+        <accelerometerTurnOnBiasSigma>0.016</accelerometerTurnOnBiasSigma>
+      </plugin>
+    </model>
+</sdf>

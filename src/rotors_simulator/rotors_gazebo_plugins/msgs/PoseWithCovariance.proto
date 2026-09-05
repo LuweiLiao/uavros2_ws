@@ -1,0 +1,11 @@
+syntax = "proto2";
+package gz_geometry_msgs;
+
+import "gz/msgs/pose.proto";
+
+// Pose with covariance message type which designed to be used
+// in other message types
+message PoseWithCovariance {
+  required gz.msgs.Pose pose = 1;
+  repeated double covariance = 2 [packed=true];
+}

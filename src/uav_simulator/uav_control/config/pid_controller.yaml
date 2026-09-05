@@ -1,0 +1,14 @@
+position_gain:  {x: 0.5, y: 0.5, z: 0.5}
+attitude_gain:  {x: 0.5, y: 0.5, z: 1.0}
+
+pid_dt: 0.01
+
+pid_u:          {kp: 0.5, ki: 0.001, kd: 0.01, integral_limit: 1, output_limit: 1}
+pid_v:          {kp: 0.5, ki: 0.001, kd: 0.01, integral_limit: 1, output_limit: 1}
+pid_w:          {kp: 1.0, ki: 0.001, kd: 0.01, integral_limit: 4, output_limit: 1}
+
+pid_p:          {kp: 1.0, ki: 0.002, kd: 0.01, integral_limit: 2, output_limit: 1}
+pid_q:          {kp: 1.0, ki: 0.002, kd: 0.01, integral_limit: 2, output_limit: 1}
+pid_r:          {kp: 1.0, ki: 0.002, kd: 0.002, integral_limit: 1, output_limit: 1}
+
+

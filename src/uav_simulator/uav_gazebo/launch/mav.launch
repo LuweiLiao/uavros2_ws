@@ -1,0 +1,37 @@
+<launch>
+  <arg name="mav_name" default="iwp" />
+  <arg name="world_name" default="basic" />
+  <arg name="enable_logging" default="false" />
+  <arg name="enable_ground_truth" default="true" />
+  <arg name="log_file" default="$(var mav_name)" />
+  <arg name="debug" default="false" />
+  <arg name="gui" default="true" />
+  <arg name="paused" default="false" />
+  <!-- The following line causes gzmsg and gzerr messages to be printed to the console
+      (even when Gazebo is started through roslaunch) -->
+  <arg name="verbose" default="true" />
+
+  <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" if="$(var paused)">
+    <arg name="gz_args" value="-v4 -s $(find-pkg-share rotors_gazebo)/worlds/$(var world_name).world" />
+  </include>
+  <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" unless="$(var paused)">
+    <arg name="gz_args" value="-v4 -s -r $(find-pkg-share rotors_gazebo)/worlds/$(var world_name).world" />
+  </include>
+  <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" if="$(var gui)">
+    <arg name="gz_args" value="-v4 -g" />
+  </include>
+
+  <group scoped="true">
+    <push-ros-namespace namespace="$(var mav_name)" />
+    <!-- This include is intentionally kept at the original relative name.
+         The ROS1 baseline does not contain spawn_mav.launch; its absence is
+         reported rather than replaced by a new formal entry point. -->
+    <include file="$(find-pkg-share uav_gazebo)/launch/spawn_mav.launch">
+      <arg name="mav_name" value="$(var mav_name)" />
+      <arg name="model" value="$(find-pkg-share uav_gazebo)/urdf/$(var mav_name)/$(var mav_name)_base.xacro" />
+      <arg name="enable_logging" value="$(var enable_logging)" />
+      <arg name="enable_ground_truth" value="$(var enable_ground_truth)" />
+      <arg name="log_file" value="$(var log_file)" />
+    </include>
+  </group>
+</launch>

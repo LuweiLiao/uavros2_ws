@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="nonplant_hex_arm">
+      <link name='arm'>
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>0.00005</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0005</iyy>
+            <iyz>0</iyz>
+            <izz>0.0005</izz>
+          </inertia>
+        </inertial>
+        <collision name='arm_collision'>
+          <pose>0 0.125 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.02 0.25 0.02</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode />
+            </contact>
+            <friction>
+              <ode />
+            </friction>
+          </surface>
+        </collision>
+        <visual name='arm_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://nonplant_hex_arm/meshes/arm.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/DarkGrey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay />
+        <self_collide>0</self_collide>
+      </link>
+    </model>
+</sdf>

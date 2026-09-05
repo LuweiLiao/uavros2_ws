@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<%
+
+# Propeller blade dimensions (meters). The long box makes rotation visible.
+prop_length = 0.254
+prop_width = 0.025
+prop_height = 0.006
+prop_mass = 0.025
+
+prop_ixx = prop_mass * (prop_width ** 2 + prop_height ** 2) / 12.0
+prop_iyy = prop_mass * (prop_length ** 2 + prop_height ** 2) / 12.0
+prop_izz = prop_mass * (prop_length ** 2 + prop_width ** 2) / 12.0
+
+%>
+<sdf version="1.5">
+  <model name="pendulum_quadcopter_prop">
+    <link name="prop">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass><%= prop_mass %></mass>
+        <inertia>
+          <ixx><%= prop_ixx %></ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy><%= prop_iyy %></iyy>
+          <iyz>0</iyz>
+          <izz><%= prop_izz %></izz>
+        </inertia>
+      </inertial>
+      <collision name="rotor_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size><%= prop_length %> <%= prop_width %> <%= prop_height %></size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode />
+          </contact>
+          <friction>
+            <ode />
+          </friction>
+        </surface>
+      </collision>
+      <visual name="prop_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size><%= prop_length %> <%= prop_width %> <%= prop_height %></size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Blue</name>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay />
+      <self_collide>0</self_collide>
+    </link>
+  </model>
+</sdf>

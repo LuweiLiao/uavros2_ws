@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="mav_name" default="test" />
+    <arg name="world_name" default="arduwoodpecker_demo" />
+    <arg name="debug" default="false" />
+    <arg name="gui" default="true" />
+    <arg name="paused" default="false" />
+    <arg name="namespace" default="$(var mav_name)" />
+    <arg name="model" default="$(find-pkg-share uav_gazebo)/urdf/$(var mav_name).xacro" />
+    <arg name="x" default="0.0" />
+    <arg name="y" default="0.0" />
+    <arg name="z" default="0.1" />
+    <arg name="verbose" default="true" />
+    <arg name="enable_uav_control" default="false" />
+
+    <arg name="tsduav" default="$(find-pkg-share uav_gazebo)/models/tsd_model/tsduav_quad/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsduav_c1/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsduav_t4/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsduav_t4_nosaw/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsduav_c2/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsduav_t4_old/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsduav_quad_multi/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsduav_t4_multi/models" />
+
+    <arg name="equipment" default="$(find-pkg-share uav_gazebo)/models/ground/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsd_electric_tower/models" />
+
+    <arg name="usl" default="$(find-pkg-share uav_gazebo)/models/usl_iwp/models:$(find-pkg-share uav_gazebo)/models/usl_balancebot/models:$(find-pkg-share uav_gazebo)/models/usl_balanceTailsitter/models:$(find-pkg-share uav_gazebo)/models/usl_bv2/models:$(find-pkg-share uav_gazebo)/models/usl_bv2_second/models:$(find-pkg-share uav_gazebo)/models/usl_bicopter/models:$(find-pkg-share uav_gazebo)/models/usl_quadruped/models:$(find-pkg-share uav_gazebo)/models/usl_quadruped2/models:$(find-pkg-share uav_gazebo)/models/usl_quadruped2_bicopter/models:$(find-pkg-share uav_gazebo)/models/usl_quadruped3_bicopter/models" />
+    <arg name="ck"  default="$(find-pkg-share uav_gazebo)/models/quadruped_ck/models"/>
+
+    <arg name="quadcopter" default="$(find-pkg-share uav_gazebo)/models/quadcopter/models" />
+
+    <arg name="common" default="$(find-pkg-share uav_gazebo)/models/common/models" />
+    <arg name="uni350" default="$(find-pkg-share uav_gazebo)/models/uni350/models:$(find-pkg-share uav_gazebo)/models/uni350_multi/models" />
+    <arg name="follow_uav" default="$(find-pkg-share uav_gazebo)/models/follow_uav/models:$(find-pkg-share uav_gazebo)/models/follow_uav_multi/models" />
+
+    <arg name="other" default="$(find-pkg-share uav_gazebo)/models/tilt_tricopter/models:$(find-pkg-share uav_gazebo)/models/tilt_tricopter_fix/models:$(find-pkg-share uav_gazebo)/models/tilt_quadcopter/models:$(find-pkg-share uav_gazebo)/models/tilt_quadcopter_fix/models:$(find-pkg-share uav_gazebo)/models/tilt_quadcopter_armbot/models:$(find-pkg-share uav_gazebo)/models/nonplant_hex/models:$(find-pkg-share uav_gazebo)/models/pendulum_quadcopter/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsd_tree_obstacle/models" />
+
+    <arg name="scorpio" default="$(find-pkg-share uav_gazebo)/models/Scorpio/models" />
+
+    <!-- Gazebo Sim uses GZ_SIM_RESOURCE_PATH; the original model groups and
+         their order are retained verbatim under the new variable name. -->
+    <set_env name="GZ_SIM_RESOURCE_PATH" value="$(var tsduav):$(var equipment):$(var usl):$(var common):$(var uni350):$(var quadcopter):$(var ck):$(var other):$(var follow_uav):$(var scorpio):$(find-pkg-share uav_gazebo)/models/ground/models" />
+    <set_env name="GZ_SIM_SYSTEM_PLUGIN_PATH" value="$(find-pkg-prefix rotors_gazebo_plugins)/lib:$(find-pkg-prefix uav_gazebo_plugin)/lib" />
+    
+
+    <node if="$(var enable_uav_control)" pkg="uav_control" exec="tricopter_control_node" name="tricopter_control_node" output="screen">
+        <param from="$(find-pkg-share uav_control)/config/tricopter.yaml" />
+    </node>
+    <!-- <param name="robot_description" command="
+    $(find xacro)/xacro 
+    '$(arg model)' mav_name:=$(arg mav_name) namespace:=$(arg namespace)" /> -->
+
+    <!-- Gazebo Sim/Harmonic replacement for gazebo_ros/empty_world.launch.
+         Keep server and GUI as separate official includes, matching the
+         original gui/paused responsibilities without inventing a package. -->
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" if="$(var paused)">
+        <arg name="gz_args" value="-v4 -s $(find-pkg-share uav_gazebo)/worlds/$(var world_name).world" />
+    </include>
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" unless="$(var paused)">
+        <arg name="gz_args" value="-v4 -s -r $(find-pkg-share uav_gazebo)/worlds/$(var world_name).world" />
+    </include>
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" if="$(var gui)">
+        <arg name="gz_args" value="-v4 -g" />
+    </include>
+
+</launch>

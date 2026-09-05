@@ -1,0 +1,21 @@
+# Build / diagnostics stay local; formal source and model assets are tracked.
+/.tmp/
+/build/
+/install/
+/log/
+/logs/
+/rosbag2_*/
+/.pytest_cache/
+**/__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.env
+.env.*
+!.env.example
+**/eeprom.bin
+*.tlog
+*.tlog.raw
+*.bag
+*.mcap
+*.db3

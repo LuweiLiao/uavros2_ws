@@ -1,0 +1,630 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="quadruped_ck">
+      
+      <include>
+        <uri>model://quadruped_ck_base</uri>
+        <name>quadruped_ck_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      
+      
+      <include>
+        <uri>model://quadruped_ck_coxa</uri>
+        <name>quadruped_ck_coxa_0 </name>
+        <pose relative_to= "quadruped_ck_coxa_0_joint" > 0 0 0 0 0 0</pose>
+      </include>
+      <joint name = "quadruped_ck_coxa_0_joint" type="revolute">
+        <pose relative_to= 'quadruped_ck_base::base'> 0.09278 -0.09278 0.0 0.0 0.0 -0.7853981633974483</pose>
+        <parent>quadruped_ck_base::base</parent>
+        <child>quadruped_ck_coxa_0::base</child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower>-1.5707963267948966</lower>
+            <upper>1.5707963267948966</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = "quadruped_ck_coxa_0_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>quadruped_ck_coxa_0_joint </jointName>
+        <linkName>quadruped_ck_coxa_0::base</linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/coxa_pos</commandSubTopic>
+        <motorNumber>0</motorNumber>
+        <motorSpeedPubTopic>coxa_pos/0</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>15</p>
+          <i>5</i>
+          <d>0.6</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <include>
+        <uri>model://quadruped_ck_coxa</uri>
+        <name>quadruped_ck_coxa_1 </name>
+        <pose relative_to= "quadruped_ck_coxa_1_joint" > 0 0 0 0 0 0</pose>
+      </include>
+      <joint name = "quadruped_ck_coxa_1_joint" type="revolute">
+        <pose relative_to= 'quadruped_ck_base::base'> -0.09278 -0.09278 0.0 0.0 0.0 -2.356194490192345</pose>
+        <parent>quadruped_ck_base::base</parent>
+        <child>quadruped_ck_coxa_1::base</child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower>-1.5707963267948966</lower>
+            <upper>1.5707963267948966</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = "quadruped_ck_coxa_1_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>quadruped_ck_coxa_1_joint </jointName>
+        <linkName>quadruped_ck_coxa_1::base</linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/coxa_pos</commandSubTopic>
+        <motorNumber>1</motorNumber>
+        <motorSpeedPubTopic>coxa_pos/1</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>15</p>
+          <i>5</i>
+          <d>0.6</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <include>
+        <uri>model://quadruped_ck_coxa</uri>
+        <name>quadruped_ck_coxa_2 </name>
+        <pose relative_to= "quadruped_ck_coxa_2_joint" > 0 0 0 0 0 0</pose>
+      </include>
+      <joint name = "quadruped_ck_coxa_2_joint" type="revolute">
+        <pose relative_to= 'quadruped_ck_base::base'> -0.09278 0.09278 0.0 0.0 0.0 -3.9269908169872414</pose>
+        <parent>quadruped_ck_base::base</parent>
+        <child>quadruped_ck_coxa_2::base</child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower>-1.5707963267948966</lower>
+            <upper>1.5707963267948966</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = "quadruped_ck_coxa_2_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>quadruped_ck_coxa_2_joint </jointName>
+        <linkName>quadruped_ck_coxa_2::base</linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/coxa_pos</commandSubTopic>
+        <motorNumber>2</motorNumber>
+        <motorSpeedPubTopic>coxa_pos/2</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>15</p>
+          <i>5</i>
+          <d>0.6</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <include>
+        <uri>model://quadruped_ck_coxa</uri>
+        <name>quadruped_ck_coxa_3 </name>
+        <pose relative_to= "quadruped_ck_coxa_3_joint" > 0 0 0 0 0 0</pose>
+      </include>
+      <joint name = "quadruped_ck_coxa_3_joint" type="revolute">
+        <pose relative_to= 'quadruped_ck_base::base'> 0.09278 0.09278 0.0 0.0 0.0 -5.497787143782138</pose>
+        <parent>quadruped_ck_base::base</parent>
+        <child>quadruped_ck_coxa_3::base</child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower>-1.5707963267948966</lower>
+            <upper>1.5707963267948966</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = "quadruped_ck_coxa_3_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>quadruped_ck_coxa_3_joint </jointName>
+        <linkName>quadruped_ck_coxa_3::base</linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/coxa_pos</commandSubTopic>
+        <motorNumber>3</motorNumber>
+        <motorSpeedPubTopic>coxa_pos/3</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>15</p>
+          <i>5</i>
+          <d>0.6</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+    
+    <include>
+      <uri>model://quadruped_ck_femur</uri>
+      <name>quadruped_ck_femur_0</name>
+      <pose relative_to= "quadruped_ck_femur_0_joint" > 0 0 0 0 0 0</pose>
+    </include>
+    <joint name = "quadruped_ck_femur_0_joint" type="revolute">
+      <pose relative_to= "quadruped_ck_coxa_0::base" > 0.0471 0.0 0.0 0.0 0.0 0</pose>
+      <parent>quadruped_ck_coxa_0::base</parent>
+      <child>quadruped_ck_femur_0::base</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1.5707963267948966</lower>
+          <upper>1.5707963267948966</upper>
+        </limit>
+        <dynamics>
+          <spring_stiffness>0</spring_stiffness>
+          <spring_reference>0</spring_reference>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name = "quadruped_ck_femur_0_plugin" filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>quadruped_ck_femur_0_joint </jointName>
+      <linkName>quadruped_ck_femur_0::base</linkName>
+      <turningDirection>cw</turningDirection>
+      <motorType>position</motorType>
+      <commandSubTopic>/gazebo/command/femur_pos</commandSubTopic>
+      <motorNumber>0</motorNumber>
+      <motorSpeedPubTopic>femur_pos/0</motorSpeedPubTopic>
+      <joint_control_pid>
+        <p>10</p>
+        <i>3</i>
+        <d>0.6</d>
+        <iMax>10</iMax>
+        <iMin>-10</iMin>
+        <cmdMax>50</cmdMax>
+        <cmdMin>-50</cmdMin>
+      </joint_control_pid>
+    </plugin>
+  
+    <include>
+      <uri>model://quadruped_ck_femur</uri>
+      <name>quadruped_ck_femur_1</name>
+      <pose relative_to= "quadruped_ck_femur_1_joint" > 0 0 0 0 0 0</pose>
+    </include>
+    <joint name = "quadruped_ck_femur_1_joint" type="revolute">
+      <pose relative_to= "quadruped_ck_coxa_1::base" > 0.0471 0.0 0.0 0.0 0.0 0</pose>
+      <parent>quadruped_ck_coxa_1::base</parent>
+      <child>quadruped_ck_femur_1::base</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1.5707963267948966</lower>
+          <upper>1.5707963267948966</upper>
+        </limit>
+        <dynamics>
+          <spring_stiffness>0</spring_stiffness>
+          <spring_reference>0</spring_reference>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name = "quadruped_ck_femur_1_plugin" filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>quadruped_ck_femur_1_joint </jointName>
+      <linkName>quadruped_ck_femur_1::base</linkName>
+      <turningDirection>cw</turningDirection>
+      <motorType>position</motorType>
+      <commandSubTopic>/gazebo/command/femur_pos</commandSubTopic>
+      <motorNumber>1</motorNumber>
+      <motorSpeedPubTopic>femur_pos/1</motorSpeedPubTopic>
+      <joint_control_pid>
+        <p>10</p>
+        <i>3</i>
+        <d>0.6</d>
+        <iMax>10</iMax>
+        <iMin>-10</iMin>
+        <cmdMax>50</cmdMax>
+        <cmdMin>-50</cmdMin>
+      </joint_control_pid>
+    </plugin>
+  
+    <include>
+      <uri>model://quadruped_ck_femur</uri>
+      <name>quadruped_ck_femur_2</name>
+      <pose relative_to= "quadruped_ck_femur_2_joint" > 0 0 0 0 0 0</pose>
+    </include>
+    <joint name = "quadruped_ck_femur_2_joint" type="revolute">
+      <pose relative_to= "quadruped_ck_coxa_2::base" > 0.0471 0.0 0.0 0.0 0.0 0</pose>
+      <parent>quadruped_ck_coxa_2::base</parent>
+      <child>quadruped_ck_femur_2::base</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1.5707963267948966</lower>
+          <upper>1.5707963267948966</upper>
+        </limit>
+        <dynamics>
+          <spring_stiffness>0</spring_stiffness>
+          <spring_reference>0</spring_reference>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name = "quadruped_ck_femur_2_plugin" filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>quadruped_ck_femur_2_joint </jointName>
+      <linkName>quadruped_ck_femur_2::base</linkName>
+      <turningDirection>cw</turningDirection>
+      <motorType>position</motorType>
+      <commandSubTopic>/gazebo/command/femur_pos</commandSubTopic>
+      <motorNumber>2</motorNumber>
+      <motorSpeedPubTopic>femur_pos/2</motorSpeedPubTopic>
+      <joint_control_pid>
+        <p>10</p>
+        <i>3</i>
+        <d>0.6</d>
+        <iMax>10</iMax>
+        <iMin>-10</iMin>
+        <cmdMax>50</cmdMax>
+        <cmdMin>-50</cmdMin>
+      </joint_control_pid>
+    </plugin>
+  
+    <include>
+      <uri>model://quadruped_ck_femur</uri>
+      <name>quadruped_ck_femur_3</name>
+      <pose relative_to= "quadruped_ck_femur_3_joint" > 0 0 0 0 0 0</pose>
+    </include>
+    <joint name = "quadruped_ck_femur_3_joint" type="revolute">
+      <pose relative_to= "quadruped_ck_coxa_3::base" > 0.0471 0.0 0.0 0.0 0.0 0</pose>
+      <parent>quadruped_ck_coxa_3::base</parent>
+      <child>quadruped_ck_femur_3::base</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1.5707963267948966</lower>
+          <upper>1.5707963267948966</upper>
+        </limit>
+        <dynamics>
+          <spring_stiffness>0</spring_stiffness>
+          <spring_reference>0</spring_reference>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name = "quadruped_ck_femur_3_plugin" filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>quadruped_ck_femur_3_joint </jointName>
+      <linkName>quadruped_ck_femur_3::base</linkName>
+      <turningDirection>cw</turningDirection>
+      <motorType>position</motorType>
+      <commandSubTopic>/gazebo/command/femur_pos</commandSubTopic>
+      <motorNumber>3</motorNumber>
+      <motorSpeedPubTopic>femur_pos/3</motorSpeedPubTopic>
+      <joint_control_pid>
+        <p>10</p>
+        <i>3</i>
+        <d>0.6</d>
+        <iMax>10</iMax>
+        <iMin>-10</iMin>
+        <cmdMax>50</cmdMax>
+        <cmdMin>-50</cmdMin>
+      </joint_control_pid>
+    </plugin>
+  
+  
+  <include>
+    <uri>model://quadruped_ck_tibia</uri>
+    <name>quadruped_ck_tibia_0</name>
+    <pose relative_to= "quadruped_ck_tibia_0_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = "quadruped_ck_tibia_0_joint" type="revolute">
+    <pose relative_to= "quadruped_ck_femur_0::base" >0.128 0.0 0.0 0.0 1.5707963267948966 0</pose>
+    <parent>quadruped_ck_femur_0::base</parent>
+    <child>quadruped_ck_tibia_0::base</child>
+    <axis>
+      <xyz>0 1 0</xyz>
+      <limit>
+        <lower>-3.141592653589793</lower>
+        <upper>3.141592653589793</upper>
+        <effort>500</effort>
+        <velocity>2</velocity>
+      </limit>
+      <dynamics>
+        <spring_stiffness>0</spring_stiffness>
+        <spring_reference>0</spring_reference>
+      </dynamics>
+    </axis>
+    <physics>
+      <ode>
+        <limit>
+          <cfm>0</cfm>
+          <erp>0.2</erp>
+        </limit>
+      </ode>
+    </physics>
+  </joint>
+  <plugin name = "quadruped_ck_tibia_0_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>quadruped_ck_tibia_0_joint</jointName>
+    <linkName>quadruped_ck_tibia_0::base</linkName>
+    <turningDirection>cw</turningDirection>
+    <motorType>position</motorType>
+    <commandSubTopic>/gazebo/command/tibia_pos</commandSubTopic>
+    <motorNumber>0</motorNumber>
+    <motorSpeedPubTopic>tibia_pos/0</motorSpeedPubTopic>
+    <joint_control_pid>
+      <p>10</p>
+      <i>3</i>
+      <d>0.6</d>
+      <iMax>10</iMax>
+      <iMin>-10</iMin>
+      <cmdMax>50</cmdMax>
+      <cmdMin>-50</cmdMin>
+    </joint_control_pid>
+  </plugin>
+
+  <include>
+    <uri>model://quadruped_ck_tibia</uri>
+    <name>quadruped_ck_tibia_1</name>
+    <pose relative_to= "quadruped_ck_tibia_1_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = "quadruped_ck_tibia_1_joint" type="revolute">
+    <pose relative_to= "quadruped_ck_femur_1::base" >0.128 0.0 0.0 0.0 1.5707963267948966 0</pose>
+    <parent>quadruped_ck_femur_1::base</parent>
+    <child>quadruped_ck_tibia_1::base</child>
+    <axis>
+      <xyz>0 1 0</xyz>
+      <limit>
+        <lower>-3.141592653589793</lower>
+        <upper>3.141592653589793</upper>
+        <effort>500</effort>
+        <velocity>2</velocity>
+      </limit>
+      <dynamics>
+        <spring_stiffness>0</spring_stiffness>
+        <spring_reference>0</spring_reference>
+      </dynamics>
+    </axis>
+    <physics>
+      <ode>
+        <limit>
+          <cfm>0</cfm>
+          <erp>0.2</erp>
+        </limit>
+      </ode>
+    </physics>
+  </joint>
+  <plugin name = "quadruped_ck_tibia_1_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>quadruped_ck_tibia_1_joint</jointName>
+    <linkName>quadruped_ck_tibia_1::base</linkName>
+    <turningDirection>cw</turningDirection>
+    <motorType>position</motorType>
+    <commandSubTopic>/gazebo/command/tibia_pos</commandSubTopic>
+    <motorNumber>1</motorNumber>
+    <motorSpeedPubTopic>tibia_pos/1</motorSpeedPubTopic>
+    <joint_control_pid>
+      <p>10</p>
+      <i>3</i>
+      <d>0.6</d>
+      <iMax>10</iMax>
+      <iMin>-10</iMin>
+      <cmdMax>50</cmdMax>
+      <cmdMin>-50</cmdMin>
+    </joint_control_pid>
+  </plugin>
+
+  <include>
+    <uri>model://quadruped_ck_tibia</uri>
+    <name>quadruped_ck_tibia_2</name>
+    <pose relative_to= "quadruped_ck_tibia_2_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = "quadruped_ck_tibia_2_joint" type="revolute">
+    <pose relative_to= "quadruped_ck_femur_2::base" >0.128 0.0 0.0 0.0 1.5707963267948966 0</pose>
+    <parent>quadruped_ck_femur_2::base</parent>
+    <child>quadruped_ck_tibia_2::base</child>
+    <axis>
+      <xyz>0 1 0</xyz>
+      <limit>
+        <lower>-3.141592653589793</lower>
+        <upper>3.141592653589793</upper>
+        <effort>500</effort>
+        <velocity>2</velocity>
+      </limit>
+      <dynamics>
+        <spring_stiffness>0</spring_stiffness>
+        <spring_reference>0</spring_reference>
+      </dynamics>
+    </axis>
+    <physics>
+      <ode>
+        <limit>
+          <cfm>0</cfm>
+          <erp>0.2</erp>
+        </limit>
+      </ode>
+    </physics>
+  </joint>
+  <plugin name = "quadruped_ck_tibia_2_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>quadruped_ck_tibia_2_joint</jointName>
+    <linkName>quadruped_ck_tibia_2::base</linkName>
+    <turningDirection>cw</turningDirection>
+    <motorType>position</motorType>
+    <commandSubTopic>/gazebo/command/tibia_pos</commandSubTopic>
+    <motorNumber>2</motorNumber>
+    <motorSpeedPubTopic>tibia_pos/2</motorSpeedPubTopic>
+    <joint_control_pid>
+      <p>10</p>
+      <i>3</i>
+      <d>0.6</d>
+      <iMax>10</iMax>
+      <iMin>-10</iMin>
+      <cmdMax>50</cmdMax>
+      <cmdMin>-50</cmdMin>
+    </joint_control_pid>
+  </plugin>
+
+  <include>
+    <uri>model://quadruped_ck_tibia</uri>
+    <name>quadruped_ck_tibia_3</name>
+    <pose relative_to= "quadruped_ck_tibia_3_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = "quadruped_ck_tibia_3_joint" type="revolute">
+    <pose relative_to= "quadruped_ck_femur_3::base" >0.128 0.0 0.0 0.0 1.5707963267948966 0</pose>
+    <parent>quadruped_ck_femur_3::base</parent>
+    <child>quadruped_ck_tibia_3::base</child>
+    <axis>
+      <xyz>0 1 0</xyz>
+      <limit>
+        <lower>-3.141592653589793</lower>
+        <upper>3.141592653589793</upper>
+        <effort>500</effort>
+        <velocity>2</velocity>
+      </limit>
+      <dynamics>
+        <spring_stiffness>0</spring_stiffness>
+        <spring_reference>0</spring_reference>
+      </dynamics>
+    </axis>
+    <physics>
+      <ode>
+        <limit>
+          <cfm>0</cfm>
+          <erp>0.2</erp>
+        </limit>
+      </ode>
+    </physics>
+  </joint>
+  <plugin name = "quadruped_ck_tibia_3_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>quadruped_ck_tibia_3_joint</jointName>
+    <linkName>quadruped_ck_tibia_3::base</linkName>
+    <turningDirection>cw</turningDirection>
+    <motorType>position</motorType>
+    <commandSubTopic>/gazebo/command/tibia_pos</commandSubTopic>
+    <motorNumber>3</motorNumber>
+    <motorSpeedPubTopic>tibia_pos/3</motorSpeedPubTopic>
+    <joint_control_pid>
+      <p>10</p>
+      <i>3</i>
+      <d>0.6</d>
+      <iMax>10</iMax>
+      <iMin>-10</iMin>
+      <cmdMax>50</cmdMax>
+      <cmdMin>-50</cmdMin>
+    </joint_control_pid>
+  </plugin>
+
+
+<plugin name="ArduRotorQuadruped" filename="libArduRotorQuadruped.so">
+  <fdm_addr>127.0.0.1</fdm_addr>
+  <fdm_port_in>9002</fdm_port_in>
+  <fdm_port_out>9003</fdm_port_out>
+  <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+  <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+  <motor_num>4</motor_num>
+  <coxa_num>4</coxa_num>
+  <femur_num>4</femur_num>
+  <tibia_num>4</tibia_num>
+  
+  <coxa_pub>/gazebo/command/coxa_pos</coxa_pub>
+  <femur_pub>/gazebo/command/femur_pos</femur_pub>
+  <tibia_pub>/gazebo/command/tibia_pos</tibia_pub>
+  <imuName>quadruped_ck_base::imu_link::imu_sensor</imuName>
+  <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+</plugin>
+</model>
+</sdf>

@@ -1,0 +1,385 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="usl_iwp">
+      
+      <include>
+        <uri>model://usl_iwp_platform</uri>
+        <name>usl_iwp_platform</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://usl_iwp_tiltrotor</uri>
+        <name>usl_iwp_tiltrotor_0</name>
+        <pose>0.251 -0.171 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://usl_iwp_tiltrotor</uri>
+        <name>usl_iwp_tiltrotor_1</name>
+        <pose>-0.251 -0.171 0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://usl_iwp_tiltrotor</uri>
+        <name>usl_iwp_tiltrotor_2</name>
+        <pose>-0.251 0.171 0 0 0 3.141592653589793</pose>
+      </include>
+      <include>
+        <uri>model://usl_iwp_tiltrotor</uri>
+        <name>usl_iwp_tiltrotor_3</name>
+        <pose>0.251 0.171 0 0 0 3.141592653589793</pose>
+      </include>
+      <joint name="usl_iwp_tiltrotor_0_joint" type="fixed">
+        <parent>usl_iwp_platform::platform_base</parent>
+        <child>usl_iwp_tiltrotor_0::tiltrotor_tube</child>
+      </joint>
+      <joint name="usl_iwp_tiltrotor_1_joint" type="fixed">
+        <parent>usl_iwp_platform::platform_base</parent>
+        <child>usl_iwp_tiltrotor_1::tiltrotor_tube</child>
+      </joint>
+      <joint name="usl_iwp_tiltrotor_2_joint" type="fixed">
+        <parent>usl_iwp_platform::platform_base</parent>
+        <child>usl_iwp_tiltrotor_2::tiltrotor_tube</child>
+      </joint>
+      <joint name="usl_iwp_tiltrotor_3_joint" type="fixed">
+        <parent>usl_iwp_platform::platform_base</parent>
+        <child>usl_iwp_tiltrotor_3::tiltrotor_tube</child>
+      </joint>
+      <include>
+        <uri>model://usl_iwp_batt</uri>
+        <name>usl_iwp_batt</name>
+        <pose>0 0 -0.052 0 0 0</pose>
+      </include>
+      <joint name="usl_iwp_batt_joint" type="fixed">
+        <parent>usl_iwp_platform::platform_base</parent>
+        <child>usl_iwp_batt::platform_batt</child>
+      </joint>
+      
+      <include>
+        <uri>model://usl_iwp_claw</uri>
+        <name>usl_iwp_claw_0</name>
+        <pose>0.1595 0 -0.123 0 0 0</pose>
+      </include>
+      <joint name="usl_iwp_claw_0_joint" type="fixed">
+        <parent>usl_iwp_platform::platform_base</parent>
+        <child>usl_iwp_claw_0::usl_iwp_claw_base::claw_base</child>
+      </joint>
+      <include>
+        <uri>model://usl_iwp_claw</uri>
+        <name>usl_iwp_claw_1</name>
+        <pose>-0.1595 0 -0.123 0 0 3.141592653589793</pose>
+      </include>
+      <joint name="usl_iwp_claw_1_joint" type="fixed">
+        <parent>usl_iwp_platform::platform_base</parent>
+        <child>usl_iwp_claw_1::usl_iwp_claw_base::claw_base</child>
+      </joint>
+      <!-- 
+      <plugin name=usl_iwp_claw_flange_0_plugin filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName> usl_iwp_claw_0::usl_iwp_claw_flange_joint  </jointName>
+        <linkName> usl_iwp_claw_0::usl_iwp_claw_flange::claw_flange </linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/claw_pos</commandSubTopic>
+        <motorNumber>0</motorNumber>
+        <motorSpeedPubTopic>claw_pos/0</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>1.5</p>
+          <i>0.001</i>
+          <d>0.2</d>
+          <iMax>2</iMax>
+          <iMin>-2</iMin>
+          <cmdMax>10000</cmdMax>
+          <cmdMin>-10000</cmdMin>
+        </joint_control_pid>
+      </plugin>
+      <plugin name=usl_iwp_claw_flange_1_plugin filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName> usl_iwp_claw_1::usl_iwp_claw_flange_joint  </jointName>
+        <linkName> usl_iwp_claw_1::usl_iwp_claw_flange::claw_flange </linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/claw_pos</commandSubTopic>
+        <motorNumber>1</motorNumber>
+        <motorSpeedPubTopic>claw_pos/1</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>1.5</p>
+          <i>0.001</i>
+          <d>0.2</d>
+          <iMax>2</iMax>
+          <iMin>-2</iMin>
+          <cmdMax>10000</cmdMax>
+          <cmdMin>-10000</cmdMin>
+        </joint_control_pid>
+      </plugin> -->
+      
+      
+      <plugin name="tiltrotor_0_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName> usl_iwp_tiltrotor_0::tiltrotor_tilt_joint  </jointName>
+        <linkName> usl_iwp_tiltrotor_0::tiltrotor_tilt </linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt_pos</commandSubTopic>
+        <motorNumber>0</motorNumber>
+        <motorSpeedPubTopic>tilt_pos/0</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>1.5</p>
+          <i>0.001</i>
+          <d>0.2</d>
+          <iMax>2</iMax>
+          <iMin>-2</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <plugin name="tiltrotor_1_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName> usl_iwp_tiltrotor_1::tiltrotor_tilt_joint  </jointName>
+        <linkName> usl_iwp_tiltrotor_1::tiltrotor_tilt </linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt_pos</commandSubTopic>
+        <motorNumber>1</motorNumber>
+        <motorSpeedPubTopic>tilt_pos/1</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>1.5</p>
+          <i>0.001</i>
+          <d>0.2</d>
+          <iMax>2</iMax>
+          <iMin>-2</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <plugin name="tiltrotor_2_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName> usl_iwp_tiltrotor_2::tiltrotor_tilt_joint  </jointName>
+        <linkName> usl_iwp_tiltrotor_2::tiltrotor_tilt </linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt_pos</commandSubTopic>
+        <motorNumber>2</motorNumber>
+        <motorSpeedPubTopic>tilt_pos/2</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>1.5</p>
+          <i>0.001</i>
+          <d>0.2</d>
+          <iMax>2</iMax>
+          <iMin>-2</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <plugin name="tiltrotor_3_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName> usl_iwp_tiltrotor_3::tiltrotor_tilt_joint  </jointName>
+        <linkName> usl_iwp_tiltrotor_3::tiltrotor_tilt </linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt_pos</commandSubTopic>
+        <motorNumber>3</motorNumber>
+        <motorSpeedPubTopic>tilt_pos/3</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>1.5</p>
+          <i>0.001</i>
+          <d>0.2</d>
+          <iMax>2</iMax>
+          <iMin>-2</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+    
+    <include>
+      <uri>model://usl_iwp_prop_ccw</uri>
+      <name>usl_iwp_prop_0</name>
+      <pose>0.251 -0.33025 0.070146 0.0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://usl_iwp_prop_cw</uri>
+      <name>usl_iwp_prop_1</name>
+      <pose>-0.251 -0.33025 0.070146 0.0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://usl_iwp_prop_ccw</uri>
+      <name>usl_iwp_prop_2</name>
+      <pose>-0.251 0.33025 0.070146 0.0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://usl_iwp_prop_cw</uri>
+      <name>usl_iwp_prop_3</name>
+      <pose>0.251 0.33025 0.070146 0.0 0 0</pose>
+    </include>
+    
+    
+    <joint name="prop_0_joint" type='revolute'>
+      <child>usl_iwp_prop_0::prop</child>
+      <parent>usl_iwp_tiltrotor_0::tiltrotor_tilt</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name="prop_motor_0_plugin" filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>prop_0_joint </jointName>
+      <linkName>usl_iwp_prop_0::prop</linkName>
+      <turningDirection>ccw</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1000</maxRotVelocity>
+      <motorConstant>8.599e-05</motorConstant>
+      <momentConstant>0.25</momentConstant>
+      <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+      <motorNumber>0</motorNumber>
+      <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <motorSpeedPubTopic>prop_speed/0</motorSpeedPubTopic>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+    </plugin>
+  
+    <joint name="prop_1_joint" type='revolute'>
+      <child>usl_iwp_prop_1::prop</child>
+      <parent>usl_iwp_tiltrotor_1::tiltrotor_tilt</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name="prop_motor_1_plugin" filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>prop_1_joint </jointName>
+      <linkName>usl_iwp_prop_1::prop</linkName>
+      <turningDirection>cw</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1000</maxRotVelocity>
+      <motorConstant>8.599e-05</motorConstant>
+      <momentConstant>0.25</momentConstant>
+      <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+      <motorNumber>1</motorNumber>
+      <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <motorSpeedPubTopic>prop_speed/1</motorSpeedPubTopic>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+    </plugin>
+  
+    <joint name="prop_2_joint" type='revolute'>
+      <child>usl_iwp_prop_2::prop</child>
+      <parent>usl_iwp_tiltrotor_2::tiltrotor_tilt</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name="prop_motor_2_plugin" filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>prop_2_joint </jointName>
+      <linkName>usl_iwp_prop_2::prop</linkName>
+      <turningDirection>ccw</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1000</maxRotVelocity>
+      <motorConstant>8.599e-05</motorConstant>
+      <momentConstant>0.25</momentConstant>
+      <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+      <motorNumber>2</motorNumber>
+      <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <motorSpeedPubTopic>prop_speed/2</motorSpeedPubTopic>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+    </plugin>
+  
+    <joint name="prop_3_joint" type='revolute'>
+      <child>usl_iwp_prop_3::prop</child>
+      <parent>usl_iwp_tiltrotor_3::tiltrotor_tilt</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name="prop_motor_3_plugin" filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>prop_3_joint </jointName>
+      <linkName>usl_iwp_prop_3::prop</linkName>
+      <turningDirection>cw</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1000</maxRotVelocity>
+      <motorConstant>8.599e-05</motorConstant>
+      <momentConstant>0.25</momentConstant>
+      <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+      <motorNumber>3</motorNumber>
+      <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <motorSpeedPubTopic>prop_speed/3</motorSpeedPubTopic>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+    </plugin>
+  
+  <plugin name="ArduRotorTiltPlugin" filename="libArduRotorTiltPlugin.so">
+    <fdm_addr>127.0.0.1</fdm_addr>
+    <fdm_port_in>9002</fdm_port_in>
+    <fdm_port_out>9003</fdm_port_out>
+    <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+    <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+    <motor_num>4</motor_num>
+    <servo_num>4</servo_num>
+    <motor_pub>/gazebo/command/prop_speed</motor_pub>
+    <servo_pub>/gazebo/command/tilt_pos</servo_pub>
+    <imuName>usl_iwp_platform::imu_link::imu_sensor</imuName>
+    <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+  </plugin>
+</model>
+</sdf>

@@ -1,0 +1,113 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="usl_bv2_second_base">
+      
+      <link name="base">
+      <pose>0 0 0.0  0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>1.0</mass>
+        <inertia>
+          <ixx>0.1</ixx>
+          <iyy>0.2</iyy>
+          <izz>0.1</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="base_collision">
+        <pose>0 0 0  0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://usl_bv2_second_base/meshes/base.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <min_depth>0.001</min_depth>
+              <max_vel>0.1</max_vel>
+              <kp>1e6</kp> <!-- 接触刚度 -->
+              <kd>1e3</kd> <!-- 接触阻尼 -->
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name="base_visual">
+        <geometry>
+          <mesh>
+            <uri>model://usl_bv2_second_base/meshes/base.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <link name='imu_link'>
+    <inertial>
+      <pose>0 0 0 0 0 0</pose>
+      <mass>0.15</mass>
+      <inertia>
+        <ixx>0.00001</ixx>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyy>0.00002</iyy>
+        <iyz>0</iyz>
+        <izz>0.00002</izz>
+      </inertia>
+    </inertial>
+    <sensor name="imu_sensor" type="imu">
+      <pose>0 0 0 3.141593 0 0</pose>
+      <always_on>1</always_on>
+      <update_rate>1000.0</update_rate>
+      <topic>__default_topic__</topic>
+    </sensor>
+  </link>
+  <joint name='imu_joint' type='revolute'>
+    <child>imu_link</child>
+    <parent>base</parent>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-0.0001</lower>
+        <upper>0.00001</upper>
+        <effort>0</effort>
+        <velocity>0</velocity>
+      </limit>
+      <dynamics>
+        <damping>1.0</damping>
+      </dynamics>
+      <use_parent_model_frame>1</use_parent_model_frame>
+    </axis>
+    <physics>
+      <ode>
+        <implicit_spring_damper>1</implicit_spring_damper>
+      </ode>
+    </physics>
+  </joint>
+  <gazebo reference="base">
+    <sensor name="contact_sensor" type="contact">
+      <plugin filename="libgazebo_ros_bumper.so" name="gazebo_ros_bumper_controller"/>
+    </sensor>
+    <surface>
+      <friction>
+        <ode><mu>1.5</mu></ode> <!-- 提高摩擦系数 -->
+      </friction>
+    </surface>
+  </gazebo>
+  <plugin name="suction_plugin" filename="libgazebo_ros_force.so">
+    <bodyName>base</bodyName>
+    <topicName>suction_force</topicName>
+  </plugin>
+
+  
+</model>
+</sdf>

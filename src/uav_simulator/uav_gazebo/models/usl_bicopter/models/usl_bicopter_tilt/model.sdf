@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="usl_bicopter_tilt">
+      <link name='tilt'>
+      <pose>0.0 -0.0 0.0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>0.001</mass>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.001</izz>
+        </inertia>
+      </inertial>
+      <collision name='tilt_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.0 0.0 0.0</size>
+          </box>
+        </geometry>
+        <max_contacts>1</max_contacts>
+      </collision>
+      <visual name='tilt_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://usl_bicopter_tilt/meshes/tilt.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Blue</name>
+            <uri>__default__</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay />
+      <self_collide>0</self_collide>
+    </link>
+  </model>
+</sdf>

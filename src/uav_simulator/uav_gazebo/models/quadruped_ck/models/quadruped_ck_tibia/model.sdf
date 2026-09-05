@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="quadruped_ck_tibia">
+      <link name="base">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.001</ixx>
+          <iyy>0.001</iyy>
+          <izz>0.001</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="base_collision">
+        <pose>0 0 0  0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://quadruped_ck_tibia/meshes/tibia.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+      <visual name="base_visual">
+        <geometry>
+          <mesh>
+            <uri>model://quadruped_ck_tibia/meshes/tibia.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Orange</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+   
+  
+</model>
+</sdf>

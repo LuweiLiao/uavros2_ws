@@ -1,0 +1,33 @@
+pos_ctrl:
+  kpx: 2.5
+  kpy: 2.5
+  kpz: 2.5
+  kvx: 5
+  kvy: 5
+  kvz: 5
+
+  hover_thrust: 0.16
+
+att_ctrl:
+  roll_gain: 0.5
+  pitch_gain: 0.5
+  yaw_gain: 0.5
+
+rate_ctrl:
+  kroll: 0.1
+  kpitch: 0.1
+  kyaw: 0.1
+
+  ki_roll: 0.12
+  ki_pitch: 0.12
+  ki_yaw: 0.12
+
+  kp_roll: 1.
+  kp_pitch: 1.
+  kp_yaw: 1.
+
+control_allocator:
+  alpha: 1.9
+
+  rotor_topic: "/gazebo/command/prop_speed"
+  servo_topic: "/gazebo/command/tilt1_pos"

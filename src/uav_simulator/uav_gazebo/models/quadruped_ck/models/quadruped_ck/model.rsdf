@@ -1,0 +1,305 @@
+<?xml version="1.0" ?>
+  <%
+
+
+coxa_pid_p = 15
+coxa_pid_i = 5
+coxa_pid_d = 0.6
+
+femur_pid_p = 10
+femur_pid_i = 3
+femur_pid_d = 0.6
+
+coxa_pos_dx = 0.09278
+coxa_pos_dy = 0.09278
+coxa_pos_dz = 0.0
+coxa_pos_rot_x = 0.0
+coxa_pos_rot_y = 0.0
+coxa_pos_rot_z = -Math::PI/4
+
+coxa_legs = {
+	"0" => {
+		:dx => coxa_pos_dx, :dy => -coxa_pos_dy, :dz => coxa_pos_dz, 
+		:rot_x => coxa_pos_rot_x, :rot_y => coxa_pos_rot_y, :rot_z => -Math::PI/4
+	},
+
+	"1" => {
+		:dx => -coxa_pos_dx, :dy => -coxa_pos_dy, :dz => coxa_pos_dz, 
+		:rot_x => coxa_pos_rot_x, :rot_y => coxa_pos_rot_y, :rot_z => -3*Math::PI/4
+	},
+
+  "2" => {
+    :dx => -coxa_pos_dx, :dy => coxa_pos_dy, :dz => coxa_pos_dz, 
+    :rot_x => coxa_pos_rot_x, :rot_y => coxa_pos_rot_y, :rot_z => -5*Math::PI/4
+	},
+
+  "3" => {
+    :dx => coxa_pos_dx, :dy => coxa_pos_dy, :dz => coxa_pos_dz, 
+    :rot_x => coxa_pos_rot_x, :rot_y => coxa_pos_rot_y, :rot_z => -7*Math::PI/4
+	},
+}
+
+femur_pos_dx = 0.0471
+femur_pos_dy = 0.0
+femur_pos_dz = 0.0
+femur_pos_rot_x = 0.0
+femur_pos_rot_y = 0.0
+femur_pos_rot_z = 0
+
+femur_legs = {
+	"0" => {
+		:dx => femur_pos_dx, :dy => femur_pos_dy, :dz => femur_pos_dz, 
+		:rot_x => femur_pos_rot_x, :rot_y => femur_pos_rot_y, :rot_z => femur_pos_rot_z
+	},
+
+	"1" => {
+		:dx => femur_pos_dx, :dy => femur_pos_dy, :dz => femur_pos_dz, 
+		:rot_x => femur_pos_rot_x, :rot_y => femur_pos_rot_y, :rot_z => femur_pos_rot_z
+	},
+
+  "2" => {
+    :dx => femur_pos_dx, :dy => femur_pos_dy, :dz => femur_pos_dz, 
+    :rot_x => femur_pos_rot_x, :rot_y => femur_pos_rot_y, :rot_z => femur_pos_rot_z
+	},
+
+  "3" => {
+    :dx => femur_pos_dx, :dy => femur_pos_dy, :dz => femur_pos_dz, 
+    :rot_x => femur_pos_rot_x, :rot_y => femur_pos_rot_y, :rot_z => femur_pos_rot_z
+	},
+}
+
+tibia_pos_dx = 0.128
+tibia_pos_dy = 0.0
+tibia_pos_dz = 0.0
+tibia_pos_rot_x = 0.0
+tibia_pos_rot_y = Math::PI/2
+tibia_pos_rot_z = 0
+
+tibia_legs = {
+	"0" => {
+		:dx => tibia_pos_dx, :dy => tibia_pos_dy, :dz => tibia_pos_dz, 
+		:rot_x => tibia_pos_rot_x, :rot_y => tibia_pos_rot_y, :rot_z => tibia_pos_rot_z
+	},
+
+	"1" => {
+		:dx => tibia_pos_dx, :dy => tibia_pos_dy, :dz => tibia_pos_dz, 
+		:rot_x => tibia_pos_rot_x, :rot_y => tibia_pos_rot_y, :rot_z => tibia_pos_rot_z
+	},
+
+  "2" => {
+    :dx => tibia_pos_dx, :dy => tibia_pos_dy, :dz => tibia_pos_dz, 
+    :rot_x => tibia_pos_rot_x, :rot_y => tibia_pos_rot_y, :rot_z => tibia_pos_rot_z
+	},
+
+  "3" => {
+    :dx => tibia_pos_dx, :dy => tibia_pos_dy, :dz => tibia_pos_dz, 
+    :rot_x => tibia_pos_rot_x, :rot_y => tibia_pos_rot_y, :rot_z => tibia_pos_rot_z
+	},
+}
+
+%>
+  <sdf version="1.5">
+    <model name="quadruped_ck">
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://quadruped_ck_base</uri>
+        <name>quadruped_ck_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      <%# ====================================================================================== %>
+      <%
+			coxa_legs.keys.each do |k|
+				dx = coxa_legs[k][:dx]
+				dy = coxa_legs[k][:dy]
+				dz = coxa_legs[k][:dz]
+				rot_x = coxa_legs[k][:rot_x]
+				rot_y = coxa_legs[k][:rot_y]
+				rot_z = coxa_legs[k][:rot_z]
+		  %>
+      <include>
+        <uri>model://quadruped_ck_coxa</uri>
+        <name><%="quadruped_ck_coxa_" + k %> </name>
+        <pose relative_to= <%='"quadruped_ck_coxa_' + k + '_joint"' %> > 0 0 0 0 0 0</pose>
+      </include>
+      <joint name = <%='"quadruped_ck_coxa_' + k + '_joint"' %> type="revolute">
+        <pose relative_to= 'quadruped_ck_base::base'> <%= dx %> <%= dy %> <%= dz %> <%= rot_x %> <%= rot_y %> <%= rot_z %></pose>
+        <parent>quadruped_ck_base::base</parent>
+        <child><%="quadruped_ck_coxa_" + k + '::base' %></child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower><%= -Math::PI/2%></lower>
+            <upper><%= Math::PI/2%></upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+        <physics>
+          <ode>
+            <limit>
+              <cfm>0</cfm>
+              <erp>0.2</erp>
+            </limit>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = <%= '"quadruped_ck_coxa_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName><%="quadruped_ck_coxa_" + k + '_joint'%> </jointName>
+        <linkName><%="quadruped_ck_coxa_" + k + '::base' %></linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/coxa_pos</commandSubTopic>
+        <motorNumber><%= k %></motorNumber>
+        <motorSpeedPubTopic><%= 'coxa_pos/' + k %></motorSpeedPubTopic>
+        <joint_control_pid>
+          <p><%= coxa_pid_p %></p>
+          <i><%= coxa_pid_i %></i>
+          <d><%= coxa_pid_d %></d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    <% end %>
+    <%
+			femur_legs.keys.each do |k|
+				dx = femur_legs[k][:dx]
+				dy = femur_legs[k][:dy]
+				dz = femur_legs[k][:dz]
+				rot_x = femur_legs[k][:rot_x]
+				rot_y = femur_legs[k][:rot_y]
+				rot_z = femur_legs[k][:rot_z]
+		  %>
+    <include>
+      <uri>model://quadruped_ck_femur</uri>
+      <name><%="quadruped_ck_femur_" + k %></name>
+      <pose relative_to= <%='"quadruped_ck_femur_' + k + '_joint"' %> > 0 0 0 0 0 0</pose>
+    </include>
+    <joint name = <%='"quadruped_ck_femur_' + k + '_joint"' %> type="revolute">
+      <pose relative_to= <%='"quadruped_ck_coxa_' + k + '::base"'%> > <%= dx %> <%= dy %> <%= dz %> <%= rot_x %> <%= rot_y %> <%= rot_z %></pose>
+      <parent><%="quadruped_ck_coxa_" + k + '::base'%></parent>
+      <child><%="quadruped_ck_femur_" + k + '::base'%></child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower><%= -Math::PI/2%></lower>
+          <upper><%=  Math::PI/2%></upper>
+        </limit>
+        <dynamics>
+          <spring_stiffness>0</spring_stiffness>
+          <spring_reference>0</spring_reference>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name = <%= '"quadruped_ck_femur_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName><%="quadruped_ck_femur_" + k + '_joint'%> </jointName>
+      <linkName><%="quadruped_ck_femur_" + k + '::base' %></linkName>
+      <turningDirection>cw</turningDirection>
+      <motorType>position</motorType>
+      <commandSubTopic>/gazebo/command/femur_pos</commandSubTopic>
+      <motorNumber><%= k %></motorNumber>
+      <motorSpeedPubTopic><%= 'femur_pos/' + k %></motorSpeedPubTopic>
+      <joint_control_pid>
+        <p><%= femur_pid_p %></p>
+        <i><%= femur_pid_i %></i>
+        <d><%= femur_pid_d %></d>
+        <iMax>10</iMax>
+        <iMin>-10</iMin>
+        <cmdMax>50</cmdMax>
+        <cmdMin>-50</cmdMin>
+      </joint_control_pid>
+    </plugin>
+  <% end %>
+  <%
+			tibia_legs.keys.each do |k|
+				dx = tibia_legs[k][:dx]
+				dy = tibia_legs[k][:dy]
+				dz = tibia_legs[k][:dz]
+				rot_x = tibia_legs[k][:rot_x]
+				rot_y = tibia_legs[k][:rot_y]
+				rot_z = tibia_legs[k][:rot_z]
+		  %>
+  <include>
+    <uri>model://quadruped_ck_tibia</uri>
+    <name><%="quadruped_ck_tibia_" + k %></name>
+    <pose relative_to= <%= '"quadruped_ck_tibia_' + k + '_joint"' %> > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = <%= '"quadruped_ck_tibia_' + k + '_joint"' %> type="revolute">
+    <pose relative_to= <%='"quadruped_ck_femur_' + k + '::base"'%> ><%= dx %> <%= dy %> <%= dz %> <%= rot_x %> <%= rot_y %> <%= rot_z %></pose>
+    <parent><%='quadruped_ck_femur_' + k + '::base' %></parent>
+    <child><%='quadruped_ck_tibia_' + k + '::base' %></child>
+    <axis>
+      <xyz>0 1 0</xyz>
+      <limit>
+        <lower><%= -Math::PI/1%></lower>
+        <upper><%= Math::PI/1%></upper>
+        <effort>500</effort>
+        <velocity>2</velocity>
+      </limit>
+      <dynamics>
+        <spring_stiffness>0</spring_stiffness>
+        <spring_reference>0</spring_reference>
+      </dynamics>
+    </axis>
+    <physics>
+      <ode>
+        <limit>
+          <cfm>0</cfm>
+          <erp>0.2</erp>
+        </limit>
+      </ode>
+    </physics>
+  </joint>
+  <plugin name = <%= '"quadruped_ck_tibia_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName><%="quadruped_ck_tibia_" + k + '_joint'%></jointName>
+    <linkName><%="quadruped_ck_tibia_" + k + '::base' %></linkName>
+    <turningDirection>cw</turningDirection>
+    <motorType>position</motorType>
+    <commandSubTopic>/gazebo/command/tibia_pos</commandSubTopic>
+    <motorNumber><%= k %></motorNumber>
+    <motorSpeedPubTopic><%= 'tibia_pos/' + k %></motorSpeedPubTopic>
+    <joint_control_pid>
+      <p><%= femur_pid_p %></p>
+      <i><%= femur_pid_i %></i>
+      <d><%= femur_pid_d %></d>
+      <iMax>10</iMax>
+      <iMin>-10</iMin>
+      <cmdMax>50</cmdMax>
+      <cmdMin>-50</cmdMin>
+    </joint_control_pid>
+  </plugin>
+<% end %>
+<%# ====================================================================================== %>
+<plugin name="ArduRotorQuadruped" filename="libArduRotorQuadruped.so">
+  <fdm_addr>127.0.0.1</fdm_addr>
+  <fdm_port_in>9002</fdm_port_in>
+  <fdm_port_out>9003</fdm_port_out>
+  <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+  <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+  <motor_num>4</motor_num>
+  <coxa_num>4</coxa_num>
+  <femur_num>4</femur_num>
+  <tibia_num>4</tibia_num>
+  <%# <motor_pub>/gazebo/command/prop_speed</motor_pub> %>
+  <coxa_pub>/gazebo/command/coxa_pos</coxa_pub>
+  <femur_pub>/gazebo/command/femur_pos</femur_pub>
+  <tibia_pub>/gazebo/command/tibia_pos</tibia_pub>
+  <imuName>quadruped_ck_base::imu_link::imu_sensor</imuName>
+  <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+</plugin>
+</model>
+</sdf>

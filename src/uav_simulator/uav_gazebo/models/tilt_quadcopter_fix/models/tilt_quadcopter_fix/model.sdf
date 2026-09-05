@@ -1,0 +1,661 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="tilt_quadcopter_fix">
+      
+      <include>
+        <uri>model://tilt_quadcopter_base</uri>
+        <name>tilt_quadcopter_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+
+
+      <link name="front_rod">
+        <pose>1.4 0 0 0 0 0</pose>
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.000125</ixx>
+            <iyy>0.008458</iyy>
+            <izz>0.008458</izz>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="front_rod_collision">
+          <pose>0 0 0 0 1.57079632679 0</pose>
+          <geometry>
+            <cylinder>
+              <length>1.0</length>
+              <radius>0.025</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.5</mu>
+                <mu2>0.5</mu2>
+              </ode>
+            </friction>
+            <contact>
+              <ode>
+                <kp>2000</kp>
+                <kd>40</kd>
+                <max_vel>0.05</max_vel>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+        <visual name="front_rod_visual">
+          <pose>0 0 0 0 1.57079632679 0</pose>
+          <geometry>
+            <cylinder>
+              <length>1.0</length>
+              <radius>0.025</radius>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+            </script>
+          </material>
+        </visual>
+        <sensor name="front_rangefinder" type="ray">
+          <pose>0.5 0 0 0 0 0</pose>
+          <always_on>true</always_on>
+          <update_rate>50</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>1</samples>
+                <resolution>1</resolution>
+                <min_angle>0</min_angle>
+                <max_angle>0</max_angle>
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.05</min>
+              <max>10.0</max>
+              <resolution>0.001</resolution>
+            </range>
+          </ray>
+        </sensor>
+      </link>
+      <joint name="front_rod_joint" type="prismatic">
+        <parent>tilt_quadcopter_base::base</parent>
+        <child>front_rod</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-0.12</lower>
+            <upper>0.0</upper>
+            <effort>200</effort>
+            <velocity>1.0</velocity>
+          </limit>
+          <dynamics>
+            <damping>30.0</damping>
+            <spring_reference>0.0</spring_reference>
+            <spring_stiffness>100.0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+        <sensor name="front_rod_force_torque" type="force_torque">
+          <always_on>true</always_on>
+          <update_rate>1000</update_rate>
+          <force_torque>
+            <frame>child</frame>
+            <measure_direction>parent_to_child</measure_direction>
+          </force_torque>
+          <plugin name="front_adm002" filename="libgazebo_adm002_plugin.so">
+            <forceAxis>x</forceAxis>
+            <forceSign>1.0</forceSign>
+            <forceScale>1.0</forceScale>
+            <udpBindAddress>127.0.0.1</udpBindAddress>
+            <udpBindPort>9024</udpBindPort>
+            <streamRateHz>100.0</streamRateHz>
+            <deviceAddress>1</deviceAddress>
+            <rosTopic>/tilt_quadcopter_fix/front_rod/contact_force_x</rosTopic>
+          </plugin>
+        </sensor>
+      </joint>
+      
+      
+      <include>
+        <uri>model://tilt_quadcopter_tilt_front</uri>
+        <name>tilt_quadcopter_fix_tilt_front_0</name>
+        <pose>0.765 -0.835 0 0 0 0</pose>
+      </include>
+      <joint name = tilt_quadcopter_fix_tilt_front_0_joint type="revolute">
+        <parent>tilt_quadcopter_base::base</parent>
+        <child>tilt_quadcopter_fix_tilt_front_0::tilt</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.1</damping>
+            <spring_stiffness>0</spring_stiffness>
+            <spring_reference>0</spring_reference>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = tilt_quadcopter_fix_tilt_front_0_plugin filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>tilt_quadcopter_fix_tilt_front_0_joint </jointName>
+        <linkName>tilt_quadcopter_fix_tilt_front_0::tilt</linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt1_pos</commandSubTopic>
+        <motorNumber>0</motorNumber>
+        <motorSpeedPubTopic>tilt_pos/0</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>3</p>
+          <i>1.2</i>
+          <d>0.8</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <include>
+        <uri>model://tilt_quadcopter_tilt_front</uri>
+        <name>tilt_quadcopter_fix_tilt_front_1</name>
+        <pose>-0.765 -0.835 0 0 0 0</pose>
+      </include>
+      <joint name = tilt_quadcopter_fix_tilt_front_1_joint type="revolute">
+        <parent>tilt_quadcopter_base::base</parent>
+        <child>tilt_quadcopter_fix_tilt_front_1::tilt</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.1</damping>
+            <spring_stiffness>0</spring_stiffness>
+            <spring_reference>0</spring_reference>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = tilt_quadcopter_fix_tilt_front_1_plugin filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>tilt_quadcopter_fix_tilt_front_1_joint </jointName>
+        <linkName>tilt_quadcopter_fix_tilt_front_1::tilt</linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt1_pos</commandSubTopic>
+        <motorNumber>1</motorNumber>
+        <motorSpeedPubTopic>tilt_pos/1</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>3</p>
+          <i>1.2</i>
+          <d>0.8</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <include>
+        <uri>model://tilt_quadcopter_tilt_front</uri>
+        <name>tilt_quadcopter_fix_tilt_front_2</name>
+        <pose>-0.765 0.835 0 0 0 0</pose>
+      </include>
+      <joint name = tilt_quadcopter_fix_tilt_front_2_joint type="revolute">
+        <parent>tilt_quadcopter_base::base</parent>
+        <child>tilt_quadcopter_fix_tilt_front_2::tilt</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.1</damping>
+            <spring_stiffness>0</spring_stiffness>
+            <spring_reference>0</spring_reference>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = tilt_quadcopter_fix_tilt_front_2_plugin filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>tilt_quadcopter_fix_tilt_front_2_joint </jointName>
+        <linkName>tilt_quadcopter_fix_tilt_front_2::tilt</linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt1_pos</commandSubTopic>
+        <motorNumber>2</motorNumber>
+        <motorSpeedPubTopic>tilt_pos/2</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>3</p>
+          <i>1.2</i>
+          <d>0.8</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+      <include>
+        <uri>model://tilt_quadcopter_tilt_front</uri>
+        <name>tilt_quadcopter_fix_tilt_front_3</name>
+        <pose>0.765 0.835 0 0 0 3.141592653589793</pose>
+      </include>
+      <joint name = tilt_quadcopter_fix_tilt_front_3_joint type="revolute">
+        <parent>tilt_quadcopter_base::base</parent>
+        <child>tilt_quadcopter_fix_tilt_front_3::tilt</child>
+        <axis>
+          <xyz>0 -1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.1</damping>
+            <spring_stiffness>0</spring_stiffness>
+            <spring_reference>0</spring_reference>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = tilt_quadcopter_fix_tilt_front_3_plugin filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>tilt_quadcopter_fix_tilt_front_3_joint </jointName>
+        <linkName>tilt_quadcopter_fix_tilt_front_3::tilt</linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt1_pos</commandSubTopic>
+        <motorNumber>3</motorNumber>
+        <motorSpeedPubTopic>tilt_pos/3</motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>3</p>
+          <i>1.2</i>
+          <d>0.8</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    
+  
+  
+  
+  <include>
+    <uri>model://tilt_quadcopter_prop</uri>
+    <name>tilt_quadcopter_fix_prop_0</name>
+    <pose relative_to= "tilt_quadcopter_fix_prop_0_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = tilt_quadcopter_fix_prop_0_joint type="revolute">
+    <pose relative_to= 'tilt_quadcopter_fix_tilt_front_0::tilt' > 0 0 0.1 0.3490658503988659 0 0</pose>
+    <parent>tilt_quadcopter_fix_tilt_front_0::tilt</parent>
+    <child>tilt_quadcopter_fix_prop_0::prop</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = "prop_0_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>tilt_quadcopter_fix_prop_0_joint</jointName>
+    <linkName>tilt_quadcopter_fix_prop_0::prop</linkName>
+    <turningDirection>ccw</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1000</maxRotVelocity>
+    <motorConstant>1.199e-05</motorConstant>
+    <momentConstant>0.1</momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber>0</motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>prop_speed/0</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+  <include>
+    <uri>model://tilt_quadcopter_prop</uri>
+    <name>tilt_quadcopter_fix_prop_1</name>
+    <pose relative_to= "tilt_quadcopter_fix_prop_1_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = tilt_quadcopter_fix_prop_1_joint type="revolute">
+    <pose relative_to= 'tilt_quadcopter_fix_tilt_front_0::tilt' > 0 0 -0.1 -0.3490658503988659 0 0</pose>
+    <parent>tilt_quadcopter_fix_tilt_front_0::tilt</parent>
+    <child>tilt_quadcopter_fix_prop_1::prop</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = "prop_1_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>tilt_quadcopter_fix_prop_1_joint</jointName>
+    <linkName>tilt_quadcopter_fix_prop_1::prop</linkName>
+    <turningDirection>cw</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1000</maxRotVelocity>
+    <motorConstant>1.199e-05</motorConstant>
+    <momentConstant>0.1</momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber>1</motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>prop_speed/1</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+  <include>
+    <uri>model://tilt_quadcopter_prop</uri>
+    <name>tilt_quadcopter_fix_prop_2</name>
+    <pose relative_to= "tilt_quadcopter_fix_prop_2_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = tilt_quadcopter_fix_prop_2_joint type="revolute">
+    <pose relative_to= 'tilt_quadcopter_fix_tilt_front_1::tilt' > 0 0 0.1 0.3490658503988659 0 0</pose>
+    <parent>tilt_quadcopter_fix_tilt_front_1::tilt</parent>
+    <child>tilt_quadcopter_fix_prop_2::prop</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = "prop_2_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>tilt_quadcopter_fix_prop_2_joint</jointName>
+    <linkName>tilt_quadcopter_fix_prop_2::prop</linkName>
+    <turningDirection>cw</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1000</maxRotVelocity>
+    <motorConstant>1.199e-05</motorConstant>
+    <momentConstant>0.1</momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber>2</motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>prop_speed/2</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+  <include>
+    <uri>model://tilt_quadcopter_prop</uri>
+    <name>tilt_quadcopter_fix_prop_3</name>
+    <pose relative_to= "tilt_quadcopter_fix_prop_3_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = tilt_quadcopter_fix_prop_3_joint type="revolute">
+    <pose relative_to= 'tilt_quadcopter_fix_tilt_front_1::tilt' > 0 0 -0.1 -0.3490658503988659 0 0</pose>
+    <parent>tilt_quadcopter_fix_tilt_front_1::tilt</parent>
+    <child>tilt_quadcopter_fix_prop_3::prop</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = "prop_3_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>tilt_quadcopter_fix_prop_3_joint</jointName>
+    <linkName>tilt_quadcopter_fix_prop_3::prop</linkName>
+    <turningDirection>ccw</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1000</maxRotVelocity>
+    <motorConstant>1.199e-05</motorConstant>
+    <momentConstant>0.1</momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber>3</motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>prop_speed/3</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+  <include>
+    <uri>model://tilt_quadcopter_prop</uri>
+    <name>tilt_quadcopter_fix_prop_4</name>
+    <pose relative_to= "tilt_quadcopter_fix_prop_4_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = tilt_quadcopter_fix_prop_4_joint type="revolute">
+    <pose relative_to= 'tilt_quadcopter_fix_tilt_front_2::tilt' > 0 0 0.1 -0.3490658503988659 0 0</pose>
+    <parent>tilt_quadcopter_fix_tilt_front_2::tilt</parent>
+    <child>tilt_quadcopter_fix_prop_4::prop</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = "prop_4_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>tilt_quadcopter_fix_prop_4_joint</jointName>
+    <linkName>tilt_quadcopter_fix_prop_4::prop</linkName>
+    <turningDirection>ccw</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1000</maxRotVelocity>
+    <motorConstant>1.199e-05</motorConstant>
+    <momentConstant>0.1</momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber>4</motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>prop_speed/4</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+  <include>
+    <uri>model://tilt_quadcopter_prop</uri>
+    <name>tilt_quadcopter_fix_prop_5</name>
+    <pose relative_to= "tilt_quadcopter_fix_prop_5_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = tilt_quadcopter_fix_prop_5_joint type="revolute">
+    <pose relative_to= 'tilt_quadcopter_fix_tilt_front_2::tilt' > 0 0 -0.1 0.3490658503988659 0 0</pose>
+    <parent>tilt_quadcopter_fix_tilt_front_2::tilt</parent>
+    <child>tilt_quadcopter_fix_prop_5::prop</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = "prop_5_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>tilt_quadcopter_fix_prop_5_joint</jointName>
+    <linkName>tilt_quadcopter_fix_prop_5::prop</linkName>
+    <turningDirection>cw</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1000</maxRotVelocity>
+    <motorConstant>1.199e-05</motorConstant>
+    <momentConstant>0.1</momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber>5</motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>prop_speed/5</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+  <include>
+    <uri>model://tilt_quadcopter_prop</uri>
+    <name>tilt_quadcopter_fix_prop_6</name>
+    <pose relative_to= "tilt_quadcopter_fix_prop_6_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = tilt_quadcopter_fix_prop_6_joint type="revolute">
+    <pose relative_to= 'tilt_quadcopter_fix_tilt_front_3::tilt' > 0 0 0.1 0.3490658503988659 0 0</pose>
+    <parent>tilt_quadcopter_fix_tilt_front_3::tilt</parent>
+    <child>tilt_quadcopter_fix_prop_6::prop</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = "prop_6_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>tilt_quadcopter_fix_prop_6_joint</jointName>
+    <linkName>tilt_quadcopter_fix_prop_6::prop</linkName>
+    <turningDirection>cw</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1000</maxRotVelocity>
+    <motorConstant>1.199e-05</motorConstant>
+    <momentConstant>0.1</momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber>6</motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>prop_speed/6</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+  <include>
+    <uri>model://tilt_quadcopter_prop</uri>
+    <name>tilt_quadcopter_fix_prop_7</name>
+    <pose relative_to= "tilt_quadcopter_fix_prop_7_joint" > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = tilt_quadcopter_fix_prop_7_joint type="revolute">
+    <pose relative_to= 'tilt_quadcopter_fix_tilt_front_3::tilt' > 0 0 -0.1 -0.3490658503988659 0 0</pose>
+    <parent>tilt_quadcopter_fix_tilt_front_3::tilt</parent>
+    <child>tilt_quadcopter_fix_prop_7::prop</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = "prop_7_plugin" filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName>tilt_quadcopter_fix_prop_7_joint</jointName>
+    <linkName>tilt_quadcopter_fix_prop_7::prop</linkName>
+    <turningDirection>ccw</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1000</maxRotVelocity>
+    <motorConstant>1.199e-05</motorConstant>
+    <momentConstant>0.1</momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber>7</motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>prop_speed/7</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+
+<plugin name="ArduRotorTiltQuadcopterFix" filename="libArduRotorTiltQuadcopter.so">
+  <fdm_addr>127.0.0.1</fdm_addr>
+  <fdm_port_in>9002</fdm_port_in>
+  <fdm_port_out>9003</fdm_port_out>
+  <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+  <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+  <motor_num>8</motor_num>
+  <servo_num>4</servo_num>
+  <motor_pub>/gazebo/command/prop_speed</motor_pub>
+  <servo1_pub>/gazebo/command/tilt1_pos</servo1_pub>
+  <rangefinderName>front_rangefinder</rangefinderName>
+  <rangefinderUdpBindAddr>127.0.0.1</rangefinderUdpBindAddr>
+  <rangefinderUdpBindPort>9025</rangefinderUdpBindPort>
+  <rangefinderMinDistanceM>0.05</rangefinderMinDistanceM>
+  <rangefinderMaxDistanceM>10.0</rangefinderMaxDistanceM>
+  <rangefinderRateHz>50.0</rangefinderRateHz>
+  <imuName>tilt_quadcopter_base::imu_link::imu_sensor</imuName>
+  <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+</plugin>
+
+<plugin name="imu_plugin" filename="librotors_gazebo_imu_plugin.so">
+  <robotNamespace>tilt_quadcopter_fix</robotNamespace>
+  <linkName>tilt_quadcopter_base::imu_link</linkName>
+  <imuTopic>imu</imuTopic>
+  <gyroscopeNoiseDensity>0.000349</gyroscopeNoiseDensity>     <!-- rad/s/√Hz -->
+  <gyroscopeBiasRandomWalk>0.000266</gyroscopeBiasRandomWalk>          <!-- rad/s²/√Hz -->
+  <gyroscopeBiasCorrelationTime>600</gyroscopeBiasCorrelationTime> <!-- s -->
+  <gyroscopeTurnOnBiasSigma>0.0004</gyroscopeTurnOnBiasSigma>  <!-- rad/s -->
+  <accelerometerNoiseDensity>0.00324</accelerometerNoiseDensity> <!-- m/s²/√Hz -->
+  <accelerometerRandomWalk>0.0056</accelerometerRandomWalk>     <!-- m/s³/√Hz -->
+  <accelerometerBiasCorrelationTime>600</accelerometerBiasCorrelationTime> <!-- s -->
+  <accelerometerTurnOnBiasSigma>0.016</accelerometerTurnOnBiasSigma> <!-- m/s² -->
+</plugin>
+
+
+</model>
+</sdf>

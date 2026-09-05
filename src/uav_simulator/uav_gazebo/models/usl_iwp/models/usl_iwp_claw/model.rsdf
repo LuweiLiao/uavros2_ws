@@ -1,0 +1,181 @@
+<?xml version="1.0" ?>
+  <%
+
+%>
+  <sdf version="1.5">
+    <model name="usl_iwp_claw">
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_iwp_claw_base</uri>
+        <name>usl_iwp_claw_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_iwp_claw_flange</uri>
+        <name>usl_iwp_claw_flange</name>
+        <pose>0.00078 0 -0.0124 0 0 0</pose>
+      </include>
+      <joint name="usl_iwp_claw_flange_joint" type="prismatic">
+        <parent>usl_iwp_claw_base::claw_base</parent>
+        <child>usl_iwp_claw_flange::claw_flange</child>
+        <axis>
+          <limit>
+            <upper>0.0</upper>
+            <lower>-0.9</lower>
+          </limit>
+          <xyz>0 0 1</xyz>
+        </axis>
+      </joint>
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_iwp_claw_pole</uri>
+        <name>usl_iwp_claw_pole_0</name>
+        <pose>0 -0.0195 -0.0124 <%= -15.22 * Math::PI/180 %> 0 0</pose>
+      </include>
+      <joint name="usl_iwp_claw_pole_0_joint" type="revolute">
+        <parent>usl_iwp_claw_flange::claw_flange</parent>
+        <child>usl_iwp_claw_pole_0::claw_pole</child>
+        <pose>0 0 0 0 0 0</pose>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower><%= -(63.3-15.22) * Math::PI/180 %></lower>
+            <upper><%= 0  %></upper>
+          </limit>
+        </axis>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_iwp_claw_pole</uri>
+        <name>usl_iwp_claw_pole_1</name>
+        <pose>0 0.0195 -0.0124 <%= 15.22 * Math::PI/180 %> 0 0</pose>
+      </include>
+      <joint name="usl_iwp_claw_pole_1_joint" type="revolute">
+        <parent>usl_iwp_claw_flange::claw_flange</parent>
+        <child>usl_iwp_claw_pole_1::claw_pole</child>
+        <pose>0 0 0 0 0 0</pose>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower><%= 0 %></lower>
+            <upper><%= (63.3-15.22)*Math::PI/180  %></upper>
+          </limit>
+        </axis>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_iwp_claw_hand</uri>
+        <name>usl_iwp_claw_hand_0</name>
+        <pose>0 -0.031 -0.05 0 0 0</pose>
+      </include>
+      <joint name="usl_iwp_claw_hand_0_joint" type="revolute">
+        <parent>usl_iwp_claw_pole_0::claw_pole</parent>
+        <child>usl_iwp_claw_hand_0::claw_hand</child>
+        <pose>0 0 0 0 0 0</pose>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower><%= -Math::PI/2 %></lower>
+            <upper><%= Math::PI/2  %></upper>
+          </limit>
+        </axis>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <joint name="usl_iwp_claw_hand_0_1_joint" type="revolute">
+        <parent>usl_iwp_claw_base::claw_base</parent>
+        <child>usl_iwp_claw_hand_0::claw_hand</child>
+        <pose>0 0 -0.04 0 0 0</pose>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower><%= -Math::PI/2 %></lower>
+            <upper><%= Math::PI/2  %></upper>
+          </limit>
+        </axis>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_iwp_claw_hand</uri>
+        <name>usl_iwp_claw_hand_1</name>
+        <pose>0 0.031 -0.05 0 0 <%= Math::PI %></pose>
+      </include>
+      <joint name="usl_iwp_claw_hand_1_joint" type="revolute">
+        <parent>usl_iwp_claw_pole_1::claw_pole</parent>
+        <child>usl_iwp_claw_hand_1::claw_hand</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower><%= -Math::PI/2 %></lower>
+            <upper><%= Math::PI/2  %></upper>
+          </limit>
+        </axis>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <joint name="usl_iwp_claw_hand_1_1_joint" type="revolute">
+        <parent>usl_iwp_claw_base::claw_base</parent>
+        <child>usl_iwp_claw_hand_1::claw_hand</child>
+        <pose>0 0 -0.04 0 0 0</pose>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower><%= -Math::PI/2 %></lower>
+            <upper><%= Math::PI/2  %></upper>
+          </limit>
+        </axis>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <%# ====================================================================================== %>
+    </model>
+  </sdf>

@@ -1,0 +1,16 @@
+# Enable vision_speed for ArduPilot (stock apm_pluginlists blacklists it).
+# Blacklist param: do not pull FCU parameters over WiFi on connect.
+plugin_blacklist:
+  - actuator_control
+  - ftp
+  - safety_area
+  - hil
+  - altitude
+  - debug_value
+  - image_pub
+  - px4flow
+  - vibration
+  - wheel_odometry
+  - param
+
+plugin_whitelist: []

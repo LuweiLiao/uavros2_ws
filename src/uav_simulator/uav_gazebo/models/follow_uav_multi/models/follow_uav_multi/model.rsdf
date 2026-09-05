@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+  <%
+
+prop_dx = 0.12854
+prop_dy = 0.12889
+prop_dz = 0.0512
+
+prop_motors={
+	"0" => {:jointName => "follow_uav_multi_base::prop0_joint", :linkName => "follow_uav_multi_base::prop0"},
+	"1" => {:jointName => "follow_uav_multi_base::prop1_joint", :linkName => "follow_uav_multi_base::prop1"},
+	"2" => {:jointName => "follow_uav_multi_base::prop2_joint", :linkName => "follow_uav_multi_base::prop2"},
+	"3" => {:jointName => "follow_uav_multi_base::prop3_joint", :linkName => "follow_uav_multi_base::prop3"},
+}
+
+prop_timeConstantUp = 0.0125
+prop_timeConstantDown = 0.025
+prop_maxRotVelocity = 1000
+prop_motorConstant = 8.599e-5
+prop_momentConstant = 0.25
+
+prop_motors={
+	"0" => {:dir => "ccw"},
+	"1" => {:dir => "cw"},
+	"2" => {:dir => "ccw"},
+	"3" => {:dir => "cw"},
+}
+
+%>
+  <sdf version="1.5">
+    <model name="follow_uav_multi">
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://follow_uav_multi_base</uri>
+        <name>follow_uav_multi_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://follow_uav_multi_prop</uri>
+        <name>follow_uav_multi_prop_0</name>
+        <pose><%= prop_dx %> <%= -prop_dy %> <%= prop_dz %> 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://follow_uav_multi_prop</uri>
+        <name>follow_uav_multi_prop_1</name>
+        <pose><%= -prop_dx %> <%= -prop_dy %> <%= prop_dz %> 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://follow_uav_multi_prop</uri>
+        <name>follow_uav_multi_prop_2</name>
+        <pose><%= -prop_dx %> <%= prop_dy %> <%= prop_dz %> 0 0 <%= Math::PI %></pose>
+      </include>
+      <include>
+        <uri>model://follow_uav_multi_prop</uri>
+        <name>follow_uav_multi_prop_3</name>
+        <pose><%= prop_dx %> <%= prop_dy %> <%= prop_dz %> 0 0 <%= Math::PI %></pose>
+      </include>
+      <%
+			prop_motors.keys.each do |k|
+				dir = prop_motors[k][:dir]
+			%>
+      <joint name=<%= '"' + 'follow_uav_multi_prop_' + k + '_joint' + '"'%> type="revolute">
+        <parent>follow_uav_multi_base::platform_base</parent>
+        <child><%= 'follow_uav_multi_prop_' + k + '::prop '%></child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.00001</damping>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <%# ====================================================================================== %>
+    <% end %>
+  </model>
+  
+</sdf>

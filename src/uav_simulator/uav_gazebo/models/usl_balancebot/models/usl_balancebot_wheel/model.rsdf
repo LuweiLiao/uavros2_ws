@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+  <%
+  wheel_r  = 0.15
+  wheel_l  = 0.2
+  wheel_m = 15.3
+  %>
+  <sdf version="1.5">
+    <model name="usl_balancebot_wheel">
+      <link name='wheel'>
+      <pose>0.0 -0.0 0.0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass><%= wheel_m%></mass>
+        <inertia>
+          <ixx><%= wheel_m*(3*wheel_r*wheel_r+wheel_l*wheel_l)/12%></ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy><%=wheel_m*(3*wheel_r*wheel_r+wheel_l*wheel_l)/12%></iyy>
+          <iyz>0</iyz>
+          <izz><%=wheel_m*wheel_r*wheel_r/2%></izz>
+        </inertia>
+      </inertial>
+      <collision name='rotor_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length><%= wheel_l%></length>
+            <radius><%= wheel_r%></radius>
+          </cylinder>
+        </geometry>
+        <max_contacts>1</max_contacts>
+        <surface>
+          <friction>
+            <torsional>
+              <coefficient>0.25</coefficient>
+              <use_patch_radius>1</use_patch_radius>
+              <surface_radius>0.0686</surface_radius>
+            </torsional>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+              <fdir1>1 0 0</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient>0</restitution_coefficient>
+            <threshold>1e6</threshold>
+          </bounce>
+          <contact>
+            <ode>
+              <min_depth>0.001</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='wheel_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length><%= wheel_l%></length>
+            <radius><%= wheel_r%></radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Blue</name>
+            <uri>__default__</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay />
+      <self_collide>0</self_collide>
+    </link>
+  </model>
+</sdf>

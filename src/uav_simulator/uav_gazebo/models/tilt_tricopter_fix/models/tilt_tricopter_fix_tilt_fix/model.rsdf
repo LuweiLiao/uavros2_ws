@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+  <%
+ tilt_m = 0.2
+  %>
+  <sdf version="1.5">
+    <model name="tilt_tricopter_fix_tilt_fix">
+      <link name='tilt'>
+      <pose>0.0 -0.0 0.0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass><%=tilt_m%></mass>
+        <inertia>
+          <ixx>0.04</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.1</iyy>
+          <iyz>0</iyz>
+          <izz>0.01</izz>
+        </inertia>
+      </inertial>
+      <collision name='tilt_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.0 0.0 0.0</size>
+          </box>
+        </geometry>
+        <max_contacts>1</max_contacts>
+      </collision>
+      <visual name='tilt_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://tilt_tricopter_fix_tilt_fix/meshes/tilt_fix.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Blue</name>
+            <uri>__default__</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay />
+      <self_collide>0</self_collide>
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,105 @@
+<?xml version="1.0" ?>
+  <%
+
+%>
+<sdf version="1.5">
+  <world name="default">
+    <physics type="ode">
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>100</iters>
+          <sor>1.0</sor>
+        </solver>
+        <constraints>
+          <cfm>0.0</cfm>
+          <erp>0.2</erp>
+          <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
+          <contact_surface_layer>0.0</contact_surface_layer>
+        </constraints>
+      </ode>
+      <real_time_update_rate>-1</real_time_update_rate>
+    </physics>
+    <gravity>0 0 -9.8</gravity>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <%
+      i = 0
+      while i < 3 do
+      i += 1
+    %>
+    <model name=<%= '"usl_bicopter_' + i.to_s + '"' %>>
+      <pose><%= (1 - i) * 3 %> 0 0.5 0 0 0</pose>
+      <include>
+        <uri>model://usl_bicopter</uri>
+        <pose>0 0 0 0 0 0</pose>
+        <name><%= 'usl_bicopter_' + i.to_s %></name>
+      </include>
+
+      <plugin name=<%='"ArduRotorBicopter_' + i.to_s + '"' %> filename="libArduRotorBicopter.so">
+        <fdm_addr>127.0.0.1</fdm_addr>
+        <fdm_port_in><%= 9002 + (i - 1) * 10 %></fdm_port_in>
+        <fdm_port_out><%= 9003 + (i - 1) * 10 %></fdm_port_out>
+        <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+        <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+        <motor_num>2</motor_num>
+        <servo_num>2</servo_num>
+        <motor_pub><%= '/usl_bicopter_' + i.to_s + '/gazebo/command/prop_speed' %></motor_pub>
+        <servo_pub><%= '/usl_bicopter_' + i.to_s + '/gazebo/command/tilt_pos' %></servo_pub>
+        <imuName><%= 'usl_bicopter_' + i.to_s + '::usl_bicopter_base::imu_link::imu_sensor' %></imuName>
+        <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+      </plugin>
+      <% {"0" => "cw", "1" => "ccw"}.each do |k, dir| %>
+      <plugin name=<%= '"usl_bicopter_' + i.to_s + '_prop_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName><%= 'usl_bicopter_' + i.to_s + '::usl_bicopter_prop_' + k + '_joint' %> </jointName>
+        <linkName><%= 'usl_bicopter_' + i.to_s + '::usl_bicopter_prop_' + k + '::prop' %></linkName>
+        <turningDirection><%= dir %></turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>1.599e-5</motorConstant>
+        <momentConstant>4.599e-7</momentConstant>
+        <commandSubTopic><%= '/usl_bicopter_' + i.to_s + '/gazebo/command/prop_speed' %></commandSubTopic>
+        <motorNumber><%= k %></motorNumber>
+        <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic><%= '/usl_bicopter_' + i.to_s + '/prop_speed/' + k %></motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+      <% end %>
+      <% {"0" => -1, "1" => 1}.each do |k, dir| %>
+      <plugin name=<%= '"usl_bicopter_' + i.to_s + '_tilt_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName><%= 'usl_bicopter_' + i.to_s + '::usl_bicopter_tilt_' + k + '_joint' %> </jointName>
+        <linkName><%= 'usl_bicopter_' + i.to_s + '::usl_bicopter_tilt_' + k + '::tilt' %></linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic><%= '/usl_bicopter_' + i.to_s + '/gazebo/command/tilt_pos' %></commandSubTopic>
+        <motorNumber><%= k %></motorNumber>
+        <motorSpeedPubTopic><%= '/usl_bicopter_' + i.to_s + '/tilt_pos/' + k %></motorSpeedPubTopic>
+        <joint_control_pid>
+          <p>0.4</p>
+          <i>0.1</i>
+          <d>0.2</d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+      <% end %>
+
+    </model>
+    <% end %>
+
+    <plugin name="ros_interface_plugin" filename="librotors_gazebo_ros_interface_plugin.so" />
+  </world>
+</sdf>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="default">
+    <physics type="ode">
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>100</iters>
+          <sor>1.0</sor>
+        </solver>
+        <constraints>
+          <cfm>0.0</cfm>
+          <erp>0.2</erp>
+          <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
+          <contact_surface_layer>0.0</contact_surface_layer>
+        </constraints>
+      </ode>
+      <real_time_update_rate>1</real_time_update_rate>
+      <max_step_size>0.0020</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <gravity>0 0 -9.8</gravity>
+    <!-- <gravity>0 0 0</gravity> -->
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <model name="usl_iwp_down">
+      <include>
+        <uri>model://usl_iwp_down</uri>
+        <pose>0 0 0.0 0 0 0</pose>
+        <name>usl_iwp_down</name>
+      </include>
+    </model>
+
+    <model name="usl_iwp_tree">
+      <include>
+        <uri>model://usl_iwp_tree</uri>
+        <pose>5 0 0.0 0 0 0</pose>
+        <name>usl_iwp_tree</name>
+      </include>
+    </model>
+
+
+    <plugin name="ros_interface_plugin" filename="librotors_gazebo_ros_interface_plugin.so" />
+
+  </world>
+</sdf>

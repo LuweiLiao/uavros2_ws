@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+<sdf version="1.10">
+  <world name="outdoor">
+    <!-- Original world-level ROS interface; vehicle plugins register their topics here. -->
+    <plugin name="ros_interface_plugin" filename="librotors_gazebo_ros_interface_plugin.so"/>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu" />
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
+
+    <physics type="ode">
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>100</iters>
+          <sor>1.0</sor>
+        </solver>
+        <constraints>
+          <cfm>0.0</cfm>
+          <erp>0.2</erp>
+          <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
+          <contact_surface_layer>0.0</contact_surface_layer>
+        </constraints>
+      </ode>
+      <real_time_update_rate>-1</real_time_update_rate>
+      <!--<max_step_size>0.0020</max_step_size>-->
+    </physics>
+    <gravity>0 0 -9.8</gravity>
+
+    <!-- Use Gazebo Harmonic's default GUI configuration, as the ROS 1 world
+         also leaves GUI layout to Gazebo. Do not override it with a reduced
+         world-level plugin list. Visual capture must still use Gazebo's
+         built-in Screenshot / VideoRecorder tools (GZ-CAP-001). -->
+    
+    <!-- Gazebo Classic supplied these two models implicitly.  Gazebo Sim
+         keeps the same world-level names, but defining them inline avoids a
+         dependency on a Classic-only model database. -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1000 1000</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1000 1000</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+        <!-- User-requested world axes: the static ground link has identity
+             world pose. One-metre positive X/Y/Z axes, red/green/blue.
+             Visuals only: no new model, link, collision or physics plugin.
+             Flag 1 is Gazebo rendering's GZ_VISIBILITY_GUI. -->
+        <visual name="world_axis_x">
+          <pose>0.5 0 0 0 0 0</pose>
+          <cast_shadows>false</cast_shadows>
+          <visibility_flags>1</visibility_flags>
+          <geometry><box><size>1 0.02 0.02</size></box></geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <emissive>1 0 0 1</emissive>
+          </material>
+        </visual>
+        <visual name="world_axis_y">
+          <pose>0 0.5 0 0 0 0</pose>
+          <cast_shadows>false</cast_shadows>
+          <visibility_flags>1</visibility_flags>
+          <geometry><box><size>0.02 1 0.02</size></box></geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <emissive>0 1 0 1</emissive>
+          </material>
+        </visual>
+        <visual name="world_axis_z">
+          <pose>0 0 0.5 0 0 0</pose>
+          <cast_shadows>false</cast_shadows>
+          <visibility_flags>1</visibility_flags>
+          <geometry><box><size>0.02 0.02 1</size></box></geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+            <emissive>0 0 1 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Keep the ROS 1 world hierarchy: the vehicle include is nested in the
+         world-level model wrapper.  Only the Gazebo Sim system plugins above
+         replace the ROS 1 ROS-interface plugin. -->
+    <model name="tsduav_quad">
+      <pose>0 0 1.0 0 0 0</pose>
+      <include>
+        <uri>model://tsduav_quad</uri>
+        <name>tsduav_quad</name>
+      </include>
+    </model>
+
+  </world>
+</sdf>

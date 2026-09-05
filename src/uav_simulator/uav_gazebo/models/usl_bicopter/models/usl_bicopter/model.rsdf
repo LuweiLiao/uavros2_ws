@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+  <%
+tilt_pos_dx = 0.0
+tilt_pos_dy = 0.15949
+tilt_pos_dz = 0.09516
+
+tilt_pid_p = 0.4
+tilt_pid_i = 0.1
+tilt_pid_d = 0.2
+
+tilt_motors={
+	"0" => {:tilt_dx => tilt_pos_dx, :tilt_dy => -tilt_pos_dy, :tilt_dz => tilt_pos_dz, :tilt_rot => Math::PI, :dir => -1},
+	"1" => {:tilt_dx => tilt_pos_dx, :tilt_dy =>  tilt_pos_dy, :tilt_dz => tilt_pos_dz, :tilt_rot => 0,        :dir => 1},
+}
+
+prop_pos_dx = 0.0
+prop_pos_dy = 0.0
+prop_pos_dz = 0.05
+
+prop_timeConstantUp = 0.0125
+prop_timeConstantDown = 0.025
+prop_maxRotVelocity = 1000
+prop_motorConstant = 1.599e-5
+prop_momentConstant = 4.599e-7
+
+prop_motors={
+	"0" => {:prop_dx => prop_pos_dx, :prop_dy => -prop_pos_dy, :prop_dz => prop_pos_dz, :dir => "cw"},
+	"1" => {:prop_dx => prop_pos_dx, :prop_dy =>  prop_pos_dy, :prop_dz => prop_pos_dz, :dir => "ccw"},
+}
+
+%>
+  <sdf version="1.5">
+    <model name="usl_bicopter">
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_bicopter_base</uri>
+        <name>usl_bicopter_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      <%# ====================================================================================== %>
+      <%
+			tilt_motors.keys.each do |k|
+				tilt_dx = tilt_motors[k][:tilt_dx]
+				tilt_dy = tilt_motors[k][:tilt_dy]
+				tilt_dz = tilt_motors[k][:tilt_dz]
+				tilt_rot = tilt_motors[k][:tilt_rot]
+				dir = tilt_motors[k][:dir]
+			%>
+      <include>
+        <uri>model://usl_bicopter_tilt</uri>
+        <name><%="usl_bicopter_tilt_" + k %></name>
+        <pose relative_to=<%='"usl_bicopter_tilt_' + k + '_joint"' %>>0 0 0 0 0 0</pose>
+      </include>
+      <joint name = <%='"usl_bicopter_tilt_' + k + '_joint"' %> type="revolute">
+        <pose relative_to="usl_bicopter_base::base"><%= tilt_dx %> <%= tilt_dy %> <%= tilt_dz %> 0 0 <%= tilt_rot %></pose>
+        <parent>usl_bicopter_base::base</parent>
+        <child><%="usl_bicopter_tilt_" + k + '::tilt' %></child>
+        <axis>
+          <xyz>0 <%=dir%> 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.1</damping>
+            <spring_stiffness>0</spring_stiffness>
+            <spring_reference>0</spring_reference>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+    <% end %>
+    <%# ====================================================================================== %>
+    <%
+			prop_motors.keys.each do |k|
+				prop_dx = prop_motors[k][:prop_dx]
+				prop_dy = prop_motors[k][:prop_dy]
+				prop_dz = prop_motors[k][:prop_dz]
+				dir = prop_motors[k][:dir]
+			%>
+  <include>
+    <uri>model://usl_bicopter_prop</uri>
+    <name><%="usl_bicopter_prop_" + k %></name>
+    <pose relative_to=<%='"usl_bicopter_prop_' + k + '_joint"' %>>0 0 0 0 0 0</pose>
+  </include>
+  <joint name = <%='"usl_bicopter_prop_' + k + '_joint"' %> type="revolute">
+    <pose relative_to=<%='"usl_bicopter_tilt_' + k + '::tilt"' %>><%= prop_dx %> <%= prop_dy %> <%= prop_dz %> 0 0 0</pose>
+    <parent><%="usl_bicopter_tilt_" + k + '::tilt' %></parent>
+    <child><%="usl_bicopter_prop_" + k + '::prop' %></child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.004</damping>
+      </dynamics>
+      <use_parent_model_frame>1</use_parent_model_frame>
+    </axis>
+    <physics>
+      <ode>
+        <implicit_spring_damper>1</implicit_spring_damper>
+      </ode>
+    </physics>
+  </joint>
+<% end %>
+<%# ====================================================================================== %>
+</model>
+</sdf>

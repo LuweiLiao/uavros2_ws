@@ -1,0 +1,259 @@
+<?xml version="1.0" ?>
+  <%
+tilt_pos_dx = 0.0
+tilt_pos_dy = 0.09657
+tilt_pos_dz = 0.0365
+
+tilt_pid_p = 0.2
+tilt_pid_i = 0.005
+tilt_pid_d = 0.015
+
+tilt_motors={
+	"0" => {:tilt_dx => tilt_pos_dx, :tilt_dy => -tilt_pos_dy, :tilt_dz => tilt_pos_dz, :tilt_rot => Math::PI, :dir => -1},
+	"1" => {:tilt_dx => tilt_pos_dx, :tilt_dy =>  tilt_pos_dy, :tilt_dz => tilt_pos_dz, :tilt_rot => 0,        :dir => -1},
+}
+
+prop_pos_dx = 0.0
+prop_pos_dy = 0.09657
+prop_pos_dz = 0.0736
+
+prop_timeConstantUp = 0.0125
+prop_timeConstantDown = 0.025
+prop_maxRotVelocity = 1000
+prop_motorConstant = 1.599e-5
+prop_momentConstant = 0.02
+
+prop_motors={
+	"0" => {:tilt_dx => prop_pos_dx, :tilt_dy => -prop_pos_dy, :tilt_dz => prop_pos_dz, :dir => "cw"},
+	"1" => {:tilt_dx => prop_pos_dx, :tilt_dy =>  prop_pos_dy, :tilt_dz => prop_pos_dz, :dir => "ccw"},
+}
+
+leg_pos_dx = 0.0
+leg_pos_dy = 0.0846
+leg_pos_dz = -0.0908
+
+leg_port={
+	"0" => {:leg_dx => leg_pos_dx, :leg_dy => -leg_pos_dy, :leg_dz => leg_pos_dz, :leg_rot => 0},
+	"1" => {:leg_dx => leg_pos_dx, :leg_dy =>  leg_pos_dy, :leg_dz => leg_pos_dz, :leg_rot => Math::PI},
+}
+
+wheel_pos_dx = 0.0
+wheel_pos_dy = 0.10435
+wheel_pos_dz = -0.09087
+
+wheel_motors={
+	"0" => {:wheel_dx =>  wheel_pos_dx, :wheel_dy => -wheel_pos_dy, :wheel_dz => wheel_pos_dz, :wheel_rot => 0,       :dir => -1},
+	"1" => {:wheel_dx =>  wheel_pos_dx, :wheel_dy =>  wheel_pos_dy, :wheel_dz => wheel_pos_dz, :wheel_rot => Math::PI,:dir => -1},
+}
+
+wheel_timeConstantUp = 0.00001
+wheel_timeConstantDown = 0.00001
+wheel_maxRotVelocity = 1000
+wheel_motorConstant = 8.599e-20
+wheel_momentConstant = 8.599e-20
+
+%>
+  <sdf version="1.5">
+    <model name="usl_balanceTailsitter">
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://usl_balanceTailsitter_base</uri>
+        <name>usl_balanceTailsitter_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      <%# ====================================================================================== %>
+      <%
+			tilt_motors.keys.each do |k|
+				tilt_dx = tilt_motors[k][:tilt_dx]
+				tilt_dy = tilt_motors[k][:tilt_dy]
+				tilt_dz = tilt_motors[k][:tilt_dz]
+				tilt_rot = tilt_motors[k][:tilt_rot]
+				dir = tilt_motors[k][:dir]
+			%>
+      <include>
+        <uri>model://usl_balanceTailsitter_tilt</uri>
+        <name><%="usl_balanceTailsitter_tilt_" + k %></name>
+        <pose><%= tilt_dx %> <%= tilt_dy %> <%= tilt_dz %> 0 0 <%= tilt_rot %></pose>
+      </include>
+      <joint name = <%="usl_balanceTailsitter_tilt_" + k + '_joint' %> type="revolute">
+        <parent>usl_balanceTailsitter_base::base</parent>
+        <child><%="usl_balanceTailsitter_tilt_" + k + '::tilt' %></child>
+        <axis>
+          <xyz>0 <%=dir%> 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.004</damping>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = <%= '"tilt_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName><%="usl_balanceTailsitter_tilt_" + k + '_joint'%> </jointName>
+        <linkName><%="usl_balanceTailsitter_tilt_" + k + '::tilt' %></linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt_pos</commandSubTopic>
+        <motorNumber><%= k %></motorNumber>
+        <motorSpeedPubTopic><%= 'tilt_pos/' + k %></motorSpeedPubTopic>
+        <joint_control_pid>
+          <p><%= tilt_pid_p %></p>
+          <i><%= tilt_pid_i %></i>
+          <d><%= tilt_pid_d %></d>
+          <iMax>2</iMax>
+          <iMin>-2</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    <% end %>
+    <%# ====================================================================================== %>
+    <%
+			prop_motors.keys.each do |k|
+				prop_dx = prop_motors[k][:tilt_dx]
+				prop_dy = prop_motors[k][:tilt_dy]
+				prop_dz = prop_motors[k][:tilt_dz]
+				dir = prop_motors[k][:dir]
+			%>
+    <include>
+      <uri>model://usl_balanceTailsitter_prop</uri>
+      <name><%="usl_balanceTailsitter_prop_" + k %></name>
+      <pose><%= prop_dx %> <%= prop_dy %> <%= prop_dz %> 0 0 0</pose>
+    </include>
+    <joint name = <%="usl_balanceTailsitter_prop_" + k + '_joint' %> type="revolute">
+      <parent><%="usl_balanceTailsitter_tilt_" + k + '::tilt' %></parent>
+      <child><%="usl_balanceTailsitter_prop_" + k + '::prop' %></child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.004</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name = <%= '"prop_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName><%="usl_balanceTailsitter_prop_" + k + '_joint'%> </jointName>
+      <linkName><%="usl_balanceTailsitter_prop_" + k + '::prop' %></linkName>
+      <turningDirection><%= dir %></turningDirection>
+      <timeConstantUp><%= prop_timeConstantUp %></timeConstantUp>
+      <timeConstantDown><%= prop_timeConstantDown %></timeConstantDown>
+      <maxRotVelocity><%= prop_maxRotVelocity %></maxRotVelocity>
+      <motorConstant><%= prop_motorConstant %></motorConstant>
+      <momentConstant><%= prop_momentConstant %></momentConstant>
+      <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+      <motorNumber><%= k %></motorNumber>
+      <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <motorSpeedPubTopic><%= 'prop_speed/' + k %></motorSpeedPubTopic>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+    </plugin>
+  <% end %>
+  <%# ====================================================================================== %>
+  <%
+			leg_port.keys.each do |k|
+				leg_pos_dx = leg_port[k][:leg_dx]
+				leg_pos_dy = leg_port[k][:leg_dy]
+				leg_pos_dz = leg_port[k][:leg_dz]
+				leg_rot = leg_port[k][:leg_rot]
+			%>
+  <include>
+    <uri>model://usl_balanceTailsitter_leg</uri>
+    <name><%="usl_balanceTailsitter_leg_" + k %></name>
+    <pose><%= leg_pos_dx %> <%= leg_pos_dy %> <%= leg_pos_dz %> 0 0 <%= leg_rot %></pose>
+  </include>
+  <joint name = <%="usl_balanceTailsitter_leg_" + k + '_joint' %> type="fixed">
+    <parent>usl_balanceTailsitter_base::base</parent>
+    <child><%="usl_balanceTailsitter_leg_" + k + '::leg' %></child>
+    <physics>
+      <ode>
+        <implicit_spring_damper>1</implicit_spring_damper>
+      </ode>
+    </physics>
+  </joint>
+<% end %>
+<%# ====================================================================================== %>
+<%
+        wheel_motors.keys.each do |k|
+          wheel_dx = wheel_motors[k][:wheel_dx]
+          wheel_dy = wheel_motors[k][:wheel_dy]
+          wheel_dz = wheel_motors[k][:wheel_dz]
+          wheel_rot = wheel_motors[k][:wheel_rot]
+          dir = wheel_motors[k][:dir]
+        %>
+<include>
+  <uri>model://usl_balanceTailsitter_wheel</uri>
+  <name><%="usl_balanceTailsitter_wheel_" + k %></name>
+  <pose><%= wheel_dx %> <%= wheel_dy %> <%= wheel_dz %> 0 0 <%= wheel_rot %></pose>
+</include>
+<joint name = <%="usl_balanceTailsitter_wheel_" + k + '_joint' %> type="revolute">
+  <parent><%="usl_balanceTailsitter_leg_" + k + '::leg' %></parent>
+  <child><%="usl_balanceTailsitter_wheel_" + k + '::wheel' %></child>
+  <axis>
+    <xyz>0 1 0</xyz>
+    <limit>
+      <lower>-1e+16</lower>
+      <upper>1e+16</upper>
+    </limit>
+    <dynamics>
+      <damping>0.004</damping>
+    </dynamics>
+    <use_parent_model_frame>1</use_parent_model_frame>
+  </axis>
+  <physics>
+    <ode>
+      <implicit_spring_damper>1</implicit_spring_damper>
+    </ode>
+  </physics>
+</joint>
+<plugin name=<%= '"usl_balanceTailsitter_wheel_'+ k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+  <robotNamespace></robotNamespace>
+  <jointName><%= 'usl_balanceTailsitter_wheel_' + k + '_joint' %> </jointName>
+  <linkName><%= 'usl_balanceTailsitter_wheel_' + k + '::wheel'%></linkName>
+  <turningDirection><%= dir %></turningDirection>
+  <timeConstantUp><%= wheel_timeConstantUp %></timeConstantUp>
+  <timeConstantDown><%= wheel_timeConstantDown %></timeConstantDown>
+  <maxRotVelocity><%= wheel_maxRotVelocity %></maxRotVelocity>
+  <motorConstant><%= wheel_motorConstant %></motorConstant>
+  <momentConstant><%= wheel_momentConstant %></momentConstant>
+  <commandSubTopic>/gazebo/command/wheel_speed</commandSubTopic>
+  <motorNumber><%= k %></motorNumber>
+  <rotorDragCoefficient>0.000000018</rotorDragCoefficient>
+  <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+  <motorSpeedPubTopic><%= 'wheel_speed/' + k %></motorSpeedPubTopic>
+  <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+</plugin>
+<% end %>
+<%# ====================================================================================== %>
+<plugin name="ArduRotorBalanceTailsitter" filename="libArduRotorBalanceTailsitter.so">
+  <fdm_addr>127.0.0.1</fdm_addr>
+  <fdm_port_in>9002</fdm_port_in>
+  <fdm_port_out>9003</fdm_port_out>
+  <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+  <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+  <motor_num>2</motor_num>
+  <servo_num>2</servo_num>
+  <motor_pub>/gazebo/command/prop_speed</motor_pub>
+  <servo_pub>/gazebo/command/tilt_pos</servo_pub>
+  <imuName>usl_balanceTailsitter_base::imu_link::imu_sensor</imuName>
+  <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+</plugin>
+</model>
+</sdf>

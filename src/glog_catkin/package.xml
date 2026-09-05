@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>glog_catkin</name>
+  <version>0.3.5</version>
+  <description>glog_catkin</description>
+  <maintainer email="slynen@ethz.ch">Simon Lynen</maintainer>
+
+  <license>See package</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Ubuntu / ROS dependency keys for the upstream glog CMake target. -->
+  <depend>libgflags-dev</depend>
+  <depend>libgoogle-glog-dev</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

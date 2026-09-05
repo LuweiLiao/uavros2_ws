@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+  
+  <sdf version="1.5">
+    <model name="usl_balancebot">
+      
+      <include>
+        <uri>model://usl_balancebot_base</uri>
+        <name>usl_balancebot_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+      <include>
+        <uri>model://usl_balancebot_wheel</uri>
+        <name>usl_balancebot_wheel_0</name>
+        <pose>0.0 -0.3 -0.3 1.5707963267948966 0 0</pose>
+      </include>
+      <include>
+        <uri>model://usl_balancebot_wheel</uri>
+        <name>usl_balancebot_wheel_1</name>
+        <pose>-0.0 0.3 -0.3 1.5707963267948966  0 0</pose>
+      </include>
+
+      
+      <joint name="usl_balancebot_wheel_0_joint" type="revolute">
+        <parent>usl_balancebot_base::base</parent>
+        <child>usl_balancebot_wheel_0::wheel </child>+
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      
+      <plugin name="usl_balancebot_wheel_0_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>usl_balancebot_wheel_0_joint </jointName>
+        <linkName>usl_balancebot_wheel_0::wheel</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>1.0e-05</timeConstantUp>
+        <timeConstantDown>1.0e-05</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-20</motorConstant>
+        <momentConstant>8.599e-20</momentConstant>
+        <commandSubTopic>/gazebo/command/wheel_speed</commandSubTopic>
+        <motorNumber>0</motorNumber>
+        <rotorDragCoefficient>0.000000018</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>wheel_speed/0</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+      <joint name="usl_balancebot_wheel_1_joint" type="revolute">
+        <parent>usl_balancebot_base::base</parent>
+        <child>usl_balancebot_wheel_1::wheel </child>+
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      
+      <plugin name="usl_balancebot_wheel_1_plugin" filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName>usl_balancebot_wheel_1_joint </jointName>
+        <linkName>usl_balancebot_wheel_1::wheel</linkName>
+        <turningDirection>ccw</turningDirection>
+        <timeConstantUp>1.0e-05</timeConstantUp>
+        <timeConstantDown>1.0e-05</timeConstantDown>
+        <maxRotVelocity>1000</maxRotVelocity>
+        <motorConstant>8.599e-20</motorConstant>
+        <momentConstant>8.599e-20</momentConstant>
+        <commandSubTopic>/gazebo/command/wheel_speed</commandSubTopic>
+        <motorNumber>1</motorNumber>
+        <rotorDragCoefficient>0.000000018</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <motorSpeedPubTopic>wheel_speed/1</motorSpeedPubTopic>
+        <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      </plugin>
+    
+    <plugin name="MyBalancebotPlugin" filename="libMyBalancebotPlugin.so">
+      <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+      <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+      <motor_num>2</motor_num>
+      <wheel_1_name>usl_balancebot_wheel_0::wheel</wheel_1_name>
+      <wheel_2_name>usl_balancebot_wheel_1::wheel</wheel_2_name>
+      <motor_pub>/gazebo/command/wheel_speed</motor_pub>
+      <imuName>usl_balancebot_base::imu_link::imu_sensor</imuName>
+      <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+    </plugin>
+  </model>
+  
+</sdf>

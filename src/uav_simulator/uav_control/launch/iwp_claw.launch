@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="uav_control" exec="iwp_claw_node" name="iwp_claw_node" output="screen" />
+</launch>

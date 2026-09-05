@@ -1,0 +1,318 @@
+<?xml version="1.0" ?>
+  <%
+arm_y = 0.835
+arm_x = 0.765
+
+tilt1_pid_p = 3
+tilt1_pid_i = 1.2
+tilt1_pid_d = 0.8
+
+# servo 0: RF 右前 (+x,-y)  逆时针排列
+# servo 1: RR 右后 (-x,-y)
+# servo 2: LR 左后 (-x,+y)
+# servo 3: LF 左前 (+x,+y)
+tilt1_motors={
+  "0" => {:tilt1_dx =>  arm_x, :tilt1_dy => -arm_y, :tilt1_dz => 0, :tilt1_rot => 0,        :dir =>  1, :link_name => "tilt_quadcopter_fix_tilt_front_0", :link => "tilt_quadcopter_tilt_front"},
+  "1" => {:tilt1_dx => -arm_x, :tilt1_dy => -arm_y, :tilt1_dz => 0, :tilt1_rot => 0,        :dir =>  1, :link_name => "tilt_quadcopter_fix_tilt_front_1", :link => "tilt_quadcopter_tilt_front"},
+  "2" => {:tilt1_dx => -arm_x, :tilt1_dy =>  arm_y, :tilt1_dz => 0, :tilt1_rot => 0,        :dir =>  1, :link_name => "tilt_quadcopter_fix_tilt_front_2", :link => "tilt_quadcopter_tilt_front"},
+  "3" => {:tilt1_dx =>  arm_x, :tilt1_dy =>  arm_y, :tilt1_dz => 0, :tilt1_rot => Math::PI, :dir => -1, :link_name => "tilt_quadcopter_fix_tilt_front_3", :link => "tilt_quadcopter_tilt_front"},
+}
+
+prop_pos_dz = 0.1
+
+# 每对共轴电机绕机体 X 轴叠加一个固定安装倾角：
+# 上电机（ccw）+fixed_prop_roll，下电机（cw）-fixed_prop_roll，四条臂均一致
+fixed_prop_roll = 20.0 * Math::PI / 180.0
+
+prop_timeConstantUp = 0.0125
+prop_timeConstantDown = 0.025
+prop_maxRotVelocity = 1000
+prop_motorConstant = 1.199e-5
+prop_momentConstant = 0.1
+
+# prop 编号 = servo×2，上 ccw / 下 cw
+# 注意：prop 的位姿是相对父臂 tilt 关节的偏移（不是绝对坐标），
+# 而 tilt 关节自身已经位于 arm_x/arm_y 处，所以这里水平方向偏移为 0，
+# 只保留高度差 prop_pos_dz 用于区分共轴上下电机。
+prop_motors={
+  "0" => {:prop_dx => 0, :prop_dy => 0, :prop_dz =>  prop_pos_dz, :prop_roll =>  fixed_prop_roll, :dir => "ccw", :parent_jont => "tilt_quadcopter_fix_tilt_front_0::tilt", :link => "tilt_quadcopter_prop"},
+  "1" => {:prop_dx => 0, :prop_dy => 0, :prop_dz => -prop_pos_dz, :prop_roll => -fixed_prop_roll, :dir => "cw",  :parent_jont => "tilt_quadcopter_fix_tilt_front_0::tilt", :link => "tilt_quadcopter_prop"},
+  "2" => {:prop_dx => 0, :prop_dy => 0, :prop_dz =>  prop_pos_dz, :prop_roll =>  fixed_prop_roll, :dir => "cw", :parent_jont => "tilt_quadcopter_fix_tilt_front_1::tilt", :link => "tilt_quadcopter_prop"},
+  "3" => {:prop_dx => 0, :prop_dy => 0, :prop_dz => -prop_pos_dz, :prop_roll => -fixed_prop_roll, :dir => "ccw",  :parent_jont => "tilt_quadcopter_fix_tilt_front_1::tilt", :link => "tilt_quadcopter_prop"},
+  "4" => {:prop_dx => 0, :prop_dy => 0, :prop_dz =>  prop_pos_dz, :prop_roll => -fixed_prop_roll, :dir => "ccw", :parent_jont => "tilt_quadcopter_fix_tilt_front_2::tilt", :link => "tilt_quadcopter_prop"},
+  "5" => {:prop_dx => 0, :prop_dy => 0, :prop_dz => -prop_pos_dz, :prop_roll =>  fixed_prop_roll, :dir => "cw",  :parent_jont => "tilt_quadcopter_fix_tilt_front_2::tilt", :link => "tilt_quadcopter_prop"},
+  "6" => {:prop_dx => 0, :prop_dy => 0, :prop_dz =>  prop_pos_dz, :prop_roll =>  fixed_prop_roll, :dir => "cw", :parent_jont => "tilt_quadcopter_fix_tilt_front_3::tilt", :link => "tilt_quadcopter_prop"},
+  "7" => {:prop_dx => 0, :prop_dy => 0, :prop_dz => -prop_pos_dz, :prop_roll => -fixed_prop_roll, :dir => "ccw",  :parent_jont => "tilt_quadcopter_fix_tilt_front_3::tilt", :link => "tilt_quadcopter_prop"},
+}
+
+%>
+  <sdf version="1.5">
+    <model name="tilt_quadcopter_fix">
+      <%# ====================================================================================== %>
+      <include>
+        <uri>model://tilt_quadcopter_base</uri>
+        <name>tilt_quadcopter_base</name>
+        <pose>0 0 0.0 0 0 0</pose>
+      </include>
+<%# ====================================================================================== %>
+<%# Compliant front probe, forward rangefinder and independent ADM002 sensor emulator. %>
+      <link name="front_rod">
+        <pose>1.4 0 0 0 0 0</pose>
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.000125</ixx>
+            <iyy>0.008458</iyy>
+            <izz>0.008458</izz>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="front_rod_collision">
+          <pose>0 0 0 0 1.57079632679 0</pose>
+          <geometry>
+            <cylinder>
+              <length>1.0</length>
+              <radius>0.025</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.5</mu>
+                <mu2>0.5</mu2>
+              </ode>
+            </friction>
+            <contact>
+              <ode>
+                <kp>2000</kp>
+                <kd>40</kd>
+                <max_vel>0.05</max_vel>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+        <visual name="front_rod_visual">
+          <pose>0 0 0 0 1.57079632679 0</pose>
+          <geometry>
+            <cylinder>
+              <length>1.0</length>
+              <radius>0.025</radius>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+            </script>
+          </material>
+        </visual>
+        <sensor name="front_rangefinder" type="ray">
+          <pose>0.5 0 0 0 0 0</pose>
+          <always_on>true</always_on>
+          <update_rate>50</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>1</samples>
+                <resolution>1</resolution>
+                <min_angle>0</min_angle>
+                <max_angle>0</max_angle>
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.05</min>
+              <max>10.0</max>
+              <resolution>0.001</resolution>
+            </range>
+          </ray>
+        </sensor>
+      </link>
+      <joint name="front_rod_joint" type="prismatic">
+        <parent>tilt_quadcopter_base::base</parent>
+        <child>front_rod</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-0.12</lower>
+            <upper>0.0</upper>
+            <effort>200</effort>
+            <velocity>1.0</velocity>
+          </limit>
+          <dynamics>
+            <damping>30.0</damping>
+            <spring_reference>0.0</spring_reference>
+            <spring_stiffness>100.0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+        <sensor name="front_rod_force_torque" type="force_torque">
+          <always_on>true</always_on>
+          <update_rate>1000</update_rate>
+          <force_torque>
+            <frame>child</frame>
+            <measure_direction>parent_to_child</measure_direction>
+          </force_torque>
+          <plugin name="front_adm002" filename="libgazebo_adm002_plugin.so">
+            <forceAxis>x</forceAxis>
+            <forceSign>1.0</forceSign>
+            <forceScale>1.0</forceScale>
+            <udpBindAddress>127.0.0.1</udpBindAddress>
+            <udpBindPort>9024</udpBindPort>
+            <streamRateHz>100.0</streamRateHz>
+            <deviceAddress>1</deviceAddress>
+            <rosTopic>/tilt_quadcopter_fix/front_rod/contact_force_x</rosTopic>
+          </plugin>
+        </sensor>
+      </joint>
+      <%# ====================================================================================== %>
+      <%
+      tilt1_motors.keys.each do |k|
+        tilt1_dx = tilt1_motors[k][:tilt1_dx]
+        tilt1_dy = tilt1_motors[k][:tilt1_dy]
+        tilt1_dz = tilt1_motors[k][:tilt1_dz]
+        tilt1_rot = tilt1_motors[k][:tilt1_rot]
+        dir = tilt1_motors[k][:dir]
+        link_name = tilt1_motors[k][:link_name]
+        link = tilt1_motors[k][:link]
+      %>
+      <include>
+        <uri><%="model://" + link %></uri>
+        <name><%=link_name %></name>
+        <pose><%= tilt1_dx %> <%= tilt1_dy %> <%= tilt1_dz %> 0 0 <%= tilt1_rot %></pose>
+      </include>
+      <joint name = <%= link_name + '_joint' %> type="revolute">
+        <parent>tilt_quadcopter_base::base</parent>
+        <child><%=link_name + '::tilt' %></child>
+        <axis>
+          <xyz>0 <%=dir%> 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <damping>0.1</damping>
+            <spring_stiffness>0</spring_stiffness>
+            <spring_reference>0</spring_reference>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+        <physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+      </joint>
+      <plugin name = <%= link_name + '_plugin' %> filename='librotors_gazebo_motor_model.so'>
+        <robotNamespace></robotNamespace>
+        <jointName><%=link_name + '_joint'%> </jointName>
+        <linkName><%=link_name + '::tilt' %></linkName>
+        <turningDirection>cw</turningDirection>
+        <motorType>position</motorType>
+        <commandSubTopic>/gazebo/command/tilt1_pos</commandSubTopic>
+        <motorNumber><%= k %></motorNumber>
+        <motorSpeedPubTopic><%= 'tilt_pos/' + k %></motorSpeedPubTopic>
+        <joint_control_pid>
+          <p><%= tilt1_pid_p %></p>
+          <i><%= tilt1_pid_i %></i>
+          <d><%= tilt1_pid_d %></d>
+          <iMax>10</iMax>
+          <iMin>-10</iMin>
+          <cmdMax>50</cmdMax>
+          <cmdMin>-50</cmdMin>
+        </joint_control_pid>
+      </plugin>
+    <% end %>
+  <%# ====================================================================================== %>
+  <%# 每个 prop 的自转关节位姿相对父臂关节叠加固定 roll 角，实现共轴上下电机的固定倾转安装 %>
+  <%
+      prop_motors.keys.each do |k|
+        prop_dx = prop_motors[k][:prop_dx]
+        prop_dy = prop_motors[k][:prop_dy]
+        prop_dz = prop_motors[k][:prop_dz]
+        prop_roll = prop_motors[k][:prop_roll]
+        dir = prop_motors[k][:dir]
+        parent_jont = prop_motors[k][:parent_jont]
+        link = prop_motors[k][:link]
+  %>
+  <include>
+    <uri><%="model://" + link %></uri>
+    <name><%="tilt_quadcopter_fix_prop_" + k %></name>
+    <pose relative_to= <%='"tilt_quadcopter_fix_prop_' + k + '_joint"' %> > 0 0 0 0 0 0</pose>
+  </include>
+  <joint name = <%="tilt_quadcopter_fix_prop_" + k + '_joint' %> type="revolute">
+    <pose relative_to= '<%= parent_jont %>' > <%= prop_dx %> <%= prop_dy %> <%= prop_dz %> <%= prop_roll %> 0 0</pose>
+    <parent><%= parent_jont %></parent>
+    <child><%="tilt_quadcopter_fix_prop_" + k + '::prop' %></child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <dynamics>
+        <damping>0.0001</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  <plugin name = <%= '"prop_' + k + '_plugin"' %> filename='librotors_gazebo_motor_model.so'>
+    <robotNamespace></robotNamespace>
+    <jointName><%="tilt_quadcopter_fix_prop_" + k + '_joint'%></jointName>
+    <linkName><%="tilt_quadcopter_fix_prop_" + k + '::prop' %></linkName>
+    <turningDirection><%= dir %></turningDirection>
+    <timeConstantUp><%= prop_timeConstantUp %></timeConstantUp>
+    <timeConstantDown><%= prop_timeConstantDown %></timeConstantDown>
+    <maxRotVelocity><%= prop_maxRotVelocity %></maxRotVelocity>
+    <motorConstant><%= prop_motorConstant %></motorConstant>
+    <momentConstant><%= prop_momentConstant %></momentConstant>
+    <commandSubTopic>/gazebo/command/prop_speed</commandSubTopic>
+    <motorNumber><%= k %></motorNumber>
+    <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic><%= 'prop_speed/' + k %></motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+<% end %>
+<%# ====================================================================================== %>
+<plugin name="ArduRotorTiltQuadcopterFix" filename="libArduRotorTiltQuadcopter.so">
+  <fdm_addr>127.0.0.1</fdm_addr>
+  <fdm_port_in>9002</fdm_port_in>
+  <fdm_port_out>9003</fdm_port_out>
+  <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+  <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+  <motor_num>8</motor_num>
+  <servo_num>4</servo_num>
+  <motor_pub>/gazebo/command/prop_speed</motor_pub>
+  <servo1_pub>/gazebo/command/tilt1_pos</servo1_pub>
+  <rangefinderName>front_rangefinder</rangefinderName>
+  <rangefinderUdpBindAddr>127.0.0.1</rangefinderUdpBindAddr>
+  <rangefinderUdpBindPort>9025</rangefinderUdpBindPort>
+  <rangefinderMinDistanceM>0.05</rangefinderMinDistanceM>
+  <rangefinderMaxDistanceM>10.0</rangefinderMaxDistanceM>
+  <rangefinderRateHz>50.0</rangefinderRateHz>
+  <imuName>tilt_quadcopter_base::imu_link::imu_sensor</imuName>
+  <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+</plugin>
+
+<plugin name="imu_plugin" filename="librotors_gazebo_imu_plugin.so">
+  <robotNamespace>tilt_quadcopter_fix</robotNamespace>
+  <linkName>tilt_quadcopter_base::imu_link</linkName>
+  <imuTopic>imu</imuTopic>
+  <gyroscopeNoiseDensity>0.000349</gyroscopeNoiseDensity>     <!-- rad/s/√Hz -->
+  <gyroscopeBiasRandomWalk>0.000266</gyroscopeBiasRandomWalk>          <!-- rad/s²/√Hz -->
+  <gyroscopeBiasCorrelationTime>600</gyroscopeBiasCorrelationTime> <!-- s -->
+  <gyroscopeTurnOnBiasSigma>0.0004</gyroscopeTurnOnBiasSigma>  <!-- rad/s -->
+  <accelerometerNoiseDensity>0.00324</accelerometerNoiseDensity> <!-- m/s²/√Hz -->
+  <accelerometerRandomWalk>0.0056</accelerometerRandomWalk>     <!-- m/s³/√Hz -->
+  <accelerometerBiasCorrelationTime>600</accelerometerBiasCorrelationTime> <!-- s -->
+  <accelerometerTurnOnBiasSigma>0.016</accelerometerTurnOnBiasSigma> <!-- m/s² -->
+</plugin>
+
+
+</model>
+</sdf>

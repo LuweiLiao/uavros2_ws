@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="grass_plane">
+    <static>true</static>
+    <link name='link'>
+
+      <% 
+        n = 21                 # 21x21 块
+        tile = 50.0 / 10.0     # 每块从 50m 缩小 10 倍 -> 5m
+        half = (n - 1) / 2.0   # 10
+        ground = n * tile      # 总尺寸：21*5=105m
+      %>
+
+      <collision name='collision'>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size><%= ground %> <%= ground %></size>
+          </plane>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>.5</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+      <% for i in 0..(n-1) %>
+        <% for j in 0..(n-1) %>
+          <visual name=<%= '"' + 'visual_' + i.to_s + '_' + j.to_s + '"' %>>
+            <!-- 步长也缩小 10 倍：50 -> 5，这样块与块刚好拼接 -->
+            <pose><%= (i-half)*tile %> <%= (j-half)*tile %> 0 0 0 0</pose>
+            <cast_shadows>false</cast_shadows>
+            <geometry>
+              <plane>
+                <normal>0 0 1</normal>
+                <!-- 每块尺寸缩小 10 倍：50x50 -> 5x5 -->
+                <size><%= tile %> <%= tile %></size>
+              </plane>
+            </geometry>
+            <material>
+              <script>
+                <uri>model://grass_plane/materials/scripts</uri>
+                <uri>model://grass_plane/materials/textures</uri>
+                <name>vrc/grass</name>
+              </script>
+            </material>
+          </visual>
+        <% end %>
+      <% end %>
+
+    </link>
+  </model>
+</sdf>
