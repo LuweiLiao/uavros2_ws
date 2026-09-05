@@ -15,6 +15,7 @@
   <depend>gz_transport_vendor</depend>
   <depend>geometry_msgs</depend>
   <depend>mavlink</depend>
+  <depend>mav_msgs</depend>
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
 

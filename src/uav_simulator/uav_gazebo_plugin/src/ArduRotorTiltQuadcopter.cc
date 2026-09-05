@@ -20,9 +20,8 @@
  * The wire protocol and the SDF contract below are the ones used by
  * ArduPilot's SITL/SIM_Gazebo backend.  In particular, this is deliberately
  * not the JSON ArduPilotPlugin and it is not a new vehicle-specific aero
- * plugin.  The ROS 1 plugin published a mav_msgs::Actuators message through
- * the Gazebo ROS interface; the Sim port publishes the equivalent native
- * gz::msgs::Actuators message on the same /gazebo/command/prop_speed topic.
+ * plugin. Both versions publish ROS mav_msgs Actuators through the original
+ * Gazebo ROS interface, which owns the conversion to RotorS transport.
  */
 
 #include "ArduRotorTiltQuadcopter.hh"
@@ -46,7 +45,8 @@
 #include <unistd.h>
 
 #include <gz/math/Pose3.hh>
-#include <gz/msgs/actuators.pb.h>
+#include <mav_msgs/msg/actuators.hpp>
+#include <rclcpp/rclcpp.hpp>
 #include <gz/msgs/imu.pb.h>
 #include <gz/msgs/laserscan.pb.h>
 #include <gz/sim/components/GpuLidar.hh>
@@ -228,6 +228,16 @@ namespace gazebo
 class ArduRotorTiltQuadcopter::Private
 {
 public:
+  ~Private()
+  {
+    motorPublisher.reset();
+    servoPublisher.reset();
+    rosNode.reset();
+    // Never shut down another plugin's ROS context when this model unloads.
+    if (rosContext && rosContext->is_valid())
+      rosContext->shutdown("ArduRotorTiltQuadcopter unloaded");
+  }
+
   gz::sim::Model model{gz::sim::kNullEntity};
   gz::sim::Entity baseLink{gz::sim::kNullEntity};
   gz::sim::Entity imuLink{gz::sim::kNullEntity};
@@ -268,8 +278,10 @@ public:
   UdpSocket socketOut;
 
   gz::transport::Node node;
-  gz::transport::Node::Publisher motorPublisher;
-  gz::transport::Node::Publisher servoPublisher;
+  std::shared_ptr<rclcpp::Context> rosContext;
+  rclcpp::Node::SharedPtr rosNode;
+  rclcpp::Publisher<mav_msgs::msg::Actuators>::SharedPtr motorPublisher;
+  rclcpp::Publisher<mav_msgs::msg::Actuators>::SharedPtr servoPublisher;
   std::string servoTopic;
   std::string rangeName;
   std::string rangeBindAddress;
@@ -392,7 +404,6 @@ void ArduRotorTiltQuadcopter::Configure(
   }
   dataPtr->servoTopic = NormalizeTopic(_sdf->Get(
       "servo1_pub", std::string("/gazebo/command/tilt1_pos")).first);
-  dataPtr->servoPublisher = dataPtr->node.Advertise<gz::msgs::Actuators>(dataPtr->servoTopic);
   dataPtr->rangeName = _sdf->Get("rangefinderName", std::string("front_rangefinder")).first;
   dataPtr->rangeBindAddress = _sdf->Get("rangefinderUdpBindAddr", std::string("127.0.0.1")).first;
   dataPtr->rangeBindPort = _sdf->Get("rangefinderUdpBindPort", uint32_t(9025)).first;
@@ -432,16 +443,28 @@ void ArduRotorTiltQuadcopter::Configure(
           << " for ArduPilot FDM packets\n";
     return;
   }
-  dataPtr->socketsReady = true;
-
-  dataPtr->motorPublisher = dataPtr->node.Advertise<gz::msgs::Actuators>(
-      dataPtr->motorTopic);
-  if (!dataPtr->motorPublisher)
+  try
   {
-    gzerr << "[" << dataPtr->modelName << "] failed to advertise "
-          << dataPtr->motorTopic << "\n";
+    // Restore ROS 1's public ROS command topics. The original world bridge
+    // owns ROS-to-Gazebo conversion; bypassing it changes the command path.
+    dataPtr->rosContext = std::make_shared<rclcpp::Context>();
+    dataPtr->rosContext->init(0, nullptr);
+    rclcpp::NodeOptions options;
+    options.context(dataPtr->rosContext);
+    dataPtr->rosNode = std::make_shared<rclcpp::Node>(
+        dataPtr->modelName + "_plugin", options);
+    dataPtr->motorPublisher = dataPtr->rosNode->create_publisher<
+        mav_msgs::msg::Actuators>(dataPtr->motorTopic, rclcpp::QoS(10));
+    dataPtr->servoPublisher = dataPtr->rosNode->create_publisher<
+        mav_msgs::msg::Actuators>(dataPtr->servoTopic, rclcpp::QoS(10));
+  }
+  catch (const std::exception &error)
+  {
+    gzerr << "[" << dataPtr->modelName << "] ROS command publisher setup failed: "
+          << error.what() << "\n";
     return;
   }
+  dataPtr->socketsReady = true;
 
   // Nested model and sensor entities are not guaranteed to exist during
   // Configure().  ResolveEntities() is therefore called from PreUpdate().
@@ -641,22 +664,29 @@ void ArduRotorTiltQuadcopter::PublishMotorCommand()
   if (!dataPtr->motorPublisher || !dataPtr->ardupilotOnline)
     return;
 
-  gz::msgs::Actuators message;
+  mav_msgs::msg::Actuators message;
   // ROS 1 ApplyMotorForces emits all eight motors in order; no quad remap.
   for (int i = 0; i < dataPtr->motorNum; ++i)
-    message.add_velocity(std::clamp(dataPtr->motorSpeed[i], 0.0f, 1.0f) * 1000.0);
+  {
+    // Keep the original float array's rounding before publishing doubles.
+    const double command = std::clamp(dataPtr->motorSpeed[i], 0.0f, 1.0f);
+    const float speed = command * 1000.0f;
+    message.angular_velocities.push_back(
+        speed);
+  }
+  dataPtr->motorPublisher->publish(message);
 
   // Preserve the legacy PWM conversion including its 57.3 degree/radian factor.
-  // Actuators.velocity deliberately carries position references in RotorS.
-  gz::msgs::Actuators servo;
+  // Actuators.angular_velocities carries the original position references.
+  mav_msgs::msg::Actuators servo;
   for (int i = 0; i < dataPtr->servoNum; ++i)
   {
-    const float command = std::clamp(dataPtr->motorSpeed[dataPtr->motorNum + i], -2.0f, 2.0f);
+    const double command = std::clamp(dataPtr->motorSpeed[dataPtr->motorNum + i], -2.0f, 2.0f);
     const float pwm = (command - 0.5f) * 1000.0f + 1500.0f;
-    servo.add_velocity((pwm - 1500.0f) / 1000.0f * 135.0f / 57.3f);
+    const float position = (pwm - 1500.0f) / 1000.0f * 135.0f / 57.3f;
+    servo.angular_velocities.push_back(position);
   }
-  dataPtr->servoPublisher.Publish(servo);
-  dataPtr->motorPublisher.Publish(message);
+  dataPtr->servoPublisher->publish(servo);
 }
 
 /////////////////////////////////////////////////
@@ -673,21 +703,12 @@ void ArduRotorTiltQuadcopter::PreUpdate(
   dataPtr->SendForwardRangefinder(std::chrono::duration<double>(_info.simTime).count());
   ReceiveMotorCommand();
   PublishMotorCommand();
+  // ROS 1 sends FDM in WorldUpdateBegin, before integrating the next step.
+  // PostUpdate would combine newly integrated pose with an asynchronous IMU
+  // sample that may still describe the previous step.
+  if (dataPtr->ardupilotOnline && dataPtr->socketsReady)
+    SendState(_info, _ecm);
   dataPtr->lastSimTime = std::chrono::duration<double>(_info.simTime).count();
-}
-
-/////////////////////////////////////////////////
-void ArduRotorTiltQuadcopter::PostUpdate(
-    const gz::sim::UpdateInfo &_info,
-    const gz::sim::EntityComponentManager &_ecm)
-{
-  if (_info.paused || !dataPtr->entitiesResolved ||
-      !dataPtr->ardupilotOnline || !dataPtr->socketsReady)
-  {
-    return;
-  }
-
-  SendState(_info, _ecm);
 }
 
 /////////////////////////////////////////////////
@@ -764,6 +785,5 @@ void ArduRotorTiltQuadcopter::Reset(
 GZ_ADD_PLUGIN(gazebo::ArduRotorTiltQuadcopter, gz::sim::System,
   gazebo::ArduRotorTiltQuadcopter::ISystemConfigure,
   gazebo::ArduRotorTiltQuadcopter::ISystemPreUpdate,
-  gazebo::ArduRotorTiltQuadcopter::ISystemPostUpdate,
   gazebo::ArduRotorTiltQuadcopter::ISystemReset)
 GZ_ADD_PLUGIN_ALIAS(gazebo::ArduRotorTiltQuadcopter, "ArduRotorTiltQuadcopter")

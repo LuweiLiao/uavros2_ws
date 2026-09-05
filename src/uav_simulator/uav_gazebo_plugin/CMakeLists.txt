@@ -14,6 +14,7 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(mavlink REQUIRED)
+find_package(mav_msgs REQUIRED)
 find_package(ament_cmake_gtest REQUIRED)
 
 add_library(HelloWorldPlugin SHARED
@@ -92,6 +93,7 @@ target_compile_features(ArduRotorTiltQuadcopter PRIVATE cxx_std_17)
 target_include_directories(ArduRotorTiltQuadcopter PRIVATE include ${mavlink_INCLUDE_DIRS})
 target_link_libraries(ArduRotorTiltQuadcopter PRIVATE
   gz-sim8::gz-sim8 gz-transport13::gz-transport13)
+ament_target_dependencies(ArduRotorTiltQuadcopter PUBLIC rclcpp mav_msgs)
 
 add_library(GazeboAdm002Plugin SHARED
   src/GazeboAdm002Plugin.cc

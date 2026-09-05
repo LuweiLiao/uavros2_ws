@@ -31,7 +31,6 @@
 #include <gz/sim/components/Joint.hh>
 #include <gz/sim/components/JointPosition.hh>
 #include <gz/sim/components/JointVelocity.hh>
-#include <gz/sim/components/JointVelocityCmd.hh>
 #include <gz/sim/components/Link.hh>
 #include <gz/sim/components/Model.hh>
 #include <gz/sim/components/Name.hh>
@@ -547,20 +546,12 @@ void GazeboMotorModel::PreUpdate(
     dataPtr->filteredInput = alpha * dataPtr->filteredInput +
         (1.0 - alpha) * reference;
 
-    auto *velocityCommand = _ecm.Component<
-        gz::sim::components::JointVelocityCmd>(dataPtr->joint);
-    if (velocityCommand == nullptr)
-    {
-      velocityCommand = _ecm.CreateComponent(
-          dataPtr->joint, gz::sim::components::JointVelocityCmd({0.0}));
-    }
-    if (velocityCommand != nullptr)
-    {
-      if (velocityCommand->Data().empty())
-        velocityCommand->Data().push_back(0.0);
-      velocityCommand->Data()[0] = dataPtr->turningDirection *
-          dataPtr->filteredInput / dataPtr->rotorVelocitySlowdownSim;
-    }
+    // Classic SetVelocity changes the joint state directly. A velocity
+    // command instead asks the physics engine to apply a tracking torque,
+    // which adds dynamics absent from the original RotorS implementation.
+    gz::sim::Joint(dataPtr->joint).ResetVelocity(_ecm,
+        {dataPtr->turningDirection * dataPtr->filteredInput /
+         dataPtr->rotorVelocitySlowdownSim});
   }
   else
   {
