@@ -19,6 +19,15 @@ and plugin responsibilities are preserved. Required compatibility changes are do
 > **The full workspace is not yet ported.** These are simulation results, not
 > real-aircraft safety certification.
 
+`Scorpio` 已完成原位 API 移植及同条件 ROS 1/ROS 2 GUI + SITL 飞行对照，
+**需获批的两项临时倾转反向配置；行走未验收**。
+其远端固件版本与下述四旋翼不同，使用前请先阅读
+[Scorpio 模型说明](src/uav_simulator/uav_gazebo/models/Scorpio/README.md)。
+
+`Scorpio` passed in-place migration and same-input ROS 1/ROS 2 GUI + SITL flight
+tests **with two approved temporary tilt reversals; walking is unvalidated**. It uses a different firmware
+revision from the quad models; read its linked model notes before use.
+
 ## 目录 / Contents
 
 - [环境与范围 / Platform and scope](#platform)
@@ -26,6 +35,7 @@ and plugin responsibilities are preserved. Required compatibility changes are do
 - [准备 ArduPilot / ArduPilot setup](#ardupilot)
 - [运行普通四旋翼 / Run tsduav_quad](#quad)
 - [运行倾转四旋翼 / Run tilt_quadcopter](#tilt)
+- [Scorpio 联调与飞行条件 / Scorpio testing and flight prerequisites](src/uav_simulator/uav_gazebo/models/Scorpio/README.md)
 - [结束仿真 / Shutdown](#shutdown)
 - [ROS 接口与记录 / ROS interfaces and recording](#interfaces)
 - [架构与开发 / Architecture and development](#development)
@@ -42,6 +52,7 @@ and plugin responsibilities are preserved. Required compatibility changes are do
 | ROS | ROS 2 Jazzy |
 | Gazebo | Harmonic，Gazebo Sim 8.11.0 |
 | ArduPilot | `LuweiLiao/ardupilot`，`staging/tritilt-fixed`；验收提交 / tested commit: `99a9622610de489d65b441e2d9efe46f453bdb0d` |
+| Scorpio ArduPilot | 远端 / remote `Scorpio`，`b8fb66f58a0e767f8ff62acdc123fd74c2bb1219`；需两项临时反向 / requires two temporary reversals |
 | Plugins | 原 RotorS 和 UAVROS 插件的 Harmonic 移植 / Harmonic ports of the original RotorS and UAVROS plugins |
 | Vehicles | `tsduav_quad`：四旋翼 / quadrotor；`tilt_quadcopter`：四臂八桨、四倾转舵机 / four arms, eight rotors, four tilt servos |
 
@@ -100,10 +111,10 @@ checkouts without LFS may contain pointers instead of meshes.
 ### 3. 解析当前六包依赖 / Resolve the six-package dependency set
 
 首次使用 rosdep 时先执行一次 `sudo rosdep init`；已初始化则跳过。
-以下仅检查两个模型所需的六包，不把整个未完成移植的工作区当作已可构建。
+以下仅检查当前模型切片所需的六包，不把整个未完成移植的工作区当作已可构建。
 
 Run `sudo rosdep init` once if not initialized. This checks the six packages
-required by the two vehicles, not the incomplete full workspace.
+required by the current vehicle slice, not the incomplete full workspace.
 
 ```bash
 cd ~/Projects/uavros2_ws
@@ -477,11 +488,13 @@ uavros2_ws/
     │   │   ├── launch/spawn.launch
     │   │   ├── models/
     │   │   │   ├── tsd_model/tsduav_quad/models/tsduav_quad/model.sdf
-    │   │   │   └── tilt_quadcopter/models/tilt_quadcopter/model.sdf
+    │   │   │   ├── tilt_quadcopter/models/tilt_quadcopter/model.sdf
+    │   │   │   └── Scorpio/models/scorpio/model.sdf
     │   │   └── worlds/
     │   └── uav_gazebo_plugin/src/
     │       ├── ArduRotorNormPlugin.cc
-    │       └── ArduRotorTiltQuadcopter.cc
+    │       ├── ArduRotorTiltQuadcopter.cc
+    │       └── ArduRotorScorpio.cc
     ├── rotors_simulator/
     │   ├── rotors_comm/
     │   ├── rotors_gazebo_plugins/src/gazebo_motor_model.cpp
@@ -521,12 +534,37 @@ packages or move models to hide incomplete ports.
 | `tilt_quadcopter` | 连续两轮 13 阶段通过，包括 ±30/60/90°、每次回正与正常 LAND / Two complete 13-stage passes including ±30/60/90°, upright returns and normal LAND |
 | Tilt hold windows | 最大重力相对倾角误差 / peak tilt error: 4.9743° / 4.9682°；高度 / altitude: 2.915–3.037 m；最大水平速度 / peak horizontal speed: 0.0421 m/s |
 | `tsduav_quad` regression | 0.5 m 目标悬停 10 秒，高度 0.463–0.539 m，正常降落 / 10-second hover at 0.5 m target, altitude 0.463–0.539 m, normal landing |
+| `Scorpio` flight comparison | ROS 1/ROS 2 同固件、模型物理参数、PID 和临时反向配置，均通过 3 m 起飞、GUIDED/LOITER 各 ≥10 s、正常 LAND/解除武装；行走未验收 / Both passed the same flight gates; walking unvalidated |
 | Build | 当前所需六包通过 / The required six-package set builds |
+
+`Scorpio` 固定使用 `origin/Scorpio`：已先在 ROS 1 + Classic GUI 复现当前模型
+和固件的稳定飞行与正常降落，再通过 ROS 2 + Harmonic GUI 同条件验收。
+真机日志仅用于对照，不直接套用真机 PID、通道或机械标定参数。
+
+For `Scorpio`, the selected firmware remains `origin/Scorpio`. Stable flight and
+normal landing passed first on ROS 1 + Classic GUI, then on ROS 2 + Harmonic GUI
+under the same conditions. Hardware logs are references, not simulation PID, wiring or
+mechanical calibration presets.
 
 倾转记录：`tilt_standard_20260906_041319`、`tilt_standard_20260906_041934`；
 四旋翼回归：`quad_standard_20260906_042606`。完整历史、ROS 1 对照和参数全文见
 [模型说明](src/uav_simulator/uav_gazebo/models/tilt_quadcopter/readme.md)。
 报告、录包、截图及临时自动验收工具保留在测试机器，**不随 Git 克隆提供**。
+
+Scorpio 静态记录为 `scorpio_smoke_20260906_185352`，保留原模型物理参数与
+执行器顺序；仅 ROS 2 输出端的 24 路数字结尾话题采用用户批准的名称映射。
+当前远端配原参数的首次 ROS 1 试飞未通过；地面方向核对后，仅临时加入
+`MOT_SC_RR_REV=1`、`MOT_SC_FL_REV=1`，保持模型、算法与 PID 不变，
+ROS 1 `scorpio_ros1_flight_20260906_204227` 和 ROS 2
+`scorpio_ros2_flight_20260906_204808` 均通过。LOITER 高度分别为
+2.992–3.001 m / 2.991–3.000 m。**正式默认参数尚未修改，不能直接用原参数起飞**。
+
+Scorpio's disarmed record retains baseline physics and ordering, with only the
+24 approved ROS-side feedback name mappings. The initial bundled-profile ROS 1
+flight failed. Following ground direction checks, both named flight runs passed
+with only temporary `MOT_SC_RR_REV=1` and `MOT_SC_FL_REV=1`, retaining model physics,
+algorithms and PID. **Formal defaults are unchanged; do not fly the original
+profile without the validated overlay.**
 
 The run identifiers above refer to local test records. See the linked model notes
 for history, ROS 1 comparisons and complete parameters. Reports, bags, screenshots

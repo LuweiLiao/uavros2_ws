@@ -13,116 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
-*/
+ */
 #ifndef GAZEBO_PLUGINS_ARDUROTOR_SCORPIO_HH_
 #define GAZEBO_PLUGINS_ARDUROTOR_SCORPIO_HH_
-
-#include <gazebo/common/common.hh>
-#include <gazebo/physics/physics.hh>
-#include <sdf/sdf.hh>
-
-#include "ros/callback_queue.h"
-#include "ros/ros.h"
-#include "ros/subscribe_options.h"
-#include <ros/console.h>
-
-// #include "/home/llw/catkin_ws/build/rotors_simulator/rotors_gazebo_plugins/Actuators.pb.h"
-
-#include <gazebo/msgs/msgs.hh>
-
-#include <mav_msgs/Actuators.h>
+#include <memory>
+#include <gz/math/Pose3.hh>
+#include <gz/sim/System.hh>
 
 namespace gazebo {
-// Forward declare private data class
-class ArduPilotSocketPrivate;
-class ArduPilotPluginPrivate;
-
-/// \brief Interface ArduPilot from ardupilot stack
-/// modeled after SITL/SIM_*
-///
-/// The plugin requires the following parameters:
-/// <control>             control description block
-///    <!-- inputs from Ardupilot -->
-///    channel            attribute, ardupilot control channel
-///    multiplier         command multiplier
-///    <!-- output to Gazebo -->
-///    type               type of control, VELOCITY, POSITION or EFFORT
-///    <p_gain>           velocity pid p gain
-///    <i_gain>           velocity pid i gain
-///    <d_gain>           velocity pid d gain
-///    <i_max>            velocity pid max integral correction
-///    <i_min>            velocity pid min integral correction
-///    <cmd_max>          velocity pid max command torque
-///    <cmd_min>          velocity pid min command torque
-///    <jointName>        motor joint, torque applied here
-///    <turningDirection> rotor turning direction, 'cw' or 'ccw'
-///    frequencyCutoff    filter incoming joint state
-///    samplingRate       sampling rate for filtering incoming joint state
-///    <rotorVelocitySlowdownSim> for rotor aliasing problem, experimental
-/// <imuName>     scoped name for the imu sensor
-/// <connectionTimeoutMaxCount> timeout before giving up on
-///                             controller synchronization
-class GAZEBO_VISIBLE ArduRotorScorpio : public ModelPlugin {
-    /// \brief Constructor.
+class ArduRotorScorpio final : public gz::sim::System,
+    public gz::sim::ISystemConfigure, public gz::sim::ISystemPreUpdate,
+    public gz::sim::ISystemReset {
 public:
     ArduRotorScorpio();
-
-    /// \brief Destructor.
-public:
-    ~ArduRotorScorpio();
-
-    // Documentation Inherited.
-public:
-    virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
-
-    /// \brief Update the control surfaces controllers.
-    /// \param[in] _info Update information provided by the server.
+    ~ArduRotorScorpio() override;
+    void Configure(const gz::sim::Entity &,
+        const std::shared_ptr<const sdf::Element> &,
+        gz::sim::EntityComponentManager &, gz::sim::EventManager &) override;
+    void PreUpdate(const gz::sim::UpdateInfo &,
+                   gz::sim::EntityComponentManager &) override;
+    void Reset(const gz::sim::UpdateInfo &,
+               gz::sim::EntityComponentManager &) override;
 private:
-    void OnUpdate();
-
-    /// \brief Update PID Joint controllers.
-    /// \param[in] _dt time step size since last update.
-private:
-    void ApplyMotorForces(const double _dt);
-
-    /// \brief Reset PID Joint controllers.
-private:
+    class Private;
+    bool ResolveEntities(gz::sim::EntityComponentManager &);
+    void ApplyMotorForces(double);
     void ResetPIDs();
-
-    /// \brief Receive motor commands from ArduPilot
-private:
     void ReceiveMotorCommand();
-
-    /// \brief Receive the 18 hexapod joint commands from DroneCAN/SocketCAN.
-private:
     void ReceiveSocketCAN();
-
-    /// \brief Open the optional SocketCAN interface configured by the model.
-private:
     bool InitSocketCAN();
-
-    /// \brief Send state to ArduPilot
-private:
-    void SendState() const;
-
-    /// \brief Init ardupilot socket
-private:
-    bool InitArduPilotSockets(sdf::ElementPtr _sdf) const;
-
-    /// \brief Private data pointer.
-private:
-    std::unique_ptr<ArduPilotPluginPrivate> dataPtr;
-
-    /// \brief transform from model orientation to x-forward and z-up
-private:
-    ignition::math::Pose3d modelXYZToAirplaneXForwardZDown;
-
-    /// \brief transform from world frame to NED frame
-private:
-    ignition::math::Pose3d gazeboXYZToNED;
-
-private:
-    std::unique_ptr<ros::NodeHandle> rosNode;
+    bool InitArduPilotSockets(sdf::ElementPtr) const;
+    void SendState(const gz::sim::UpdateInfo &,
+                   const gz::sim::EntityComponentManager &) const;
+    std::unique_ptr<Private> dataPtr;
+    gz::math::Pose3d modelXYZToAirplaneXForwardZDown, gazeboXYZToNED;
 };
-}
+}  // namespace gazebo
 #endif

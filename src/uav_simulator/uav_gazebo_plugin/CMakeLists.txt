@@ -95,6 +95,13 @@ target_link_libraries(ArduRotorTiltQuadcopter PRIVATE
   gz-sim8::gz-sim8 gz-transport13::gz-transport13)
 ament_target_dependencies(ArduRotorTiltQuadcopter PUBLIC rclcpp mav_msgs)
 
+add_library(ArduRotorScorpio SHARED src/ArduRotorScorpio.cc)
+target_compile_features(ArduRotorScorpio PRIVATE cxx_std_17)
+target_include_directories(ArduRotorScorpio PRIVATE include)
+target_link_libraries(ArduRotorScorpio PRIVATE
+  gz-sim8::gz-sim8 gz-transport13::gz-transport13)
+ament_target_dependencies(ArduRotorScorpio PUBLIC rclcpp mav_msgs)
+
 add_library(GazeboAdm002Plugin SHARED
   src/GazeboAdm002Plugin.cc
 )
@@ -182,7 +189,7 @@ ament_add_gtest(test_adm002_protocol test/test_adm002_protocol.cpp)
 target_include_directories(test_adm002_protocol PRIVATE include)
 
 install(TARGETS HelloWorldPlugin HelloModelPlugin MotorsPlugin ArduRotorNormPlugin
-  ArduRotorQuadOctPlugin ArduRotorTiltQuadcopter
+  ArduRotorQuadOctPlugin ArduRotorTiltQuadcopter ArduRotorScorpio
   GazeboAdm002Plugin PoleHoldReleasePlugin PoleMavlinkPosePlugin
   position_controller
   LIBRARY DESTINATION lib

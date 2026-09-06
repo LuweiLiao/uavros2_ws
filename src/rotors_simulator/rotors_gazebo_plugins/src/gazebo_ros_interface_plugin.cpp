@@ -65,6 +65,12 @@ std::string ApprovedQuadMotorRosTopic(const std::string &topic) {
   for (int servo = 0; servo < 4; ++servo)
     if (topic == "/tilt_pos/" + std::to_string(servo))
       return "/tilt_pos/servo_" + std::to_string(servo);
+  // Scorpio's approved ROS2-only mapping (2026-09-06). The payload remains
+  // the original angular velocity; no Gazebo topic or actuator index changes.
+  for (const std::string group : {"coxa_pos", "femur_pos", "tibia_pos"})
+    for (int joint = 0; joint < 6; ++joint)
+      if (topic == "/" + group + "/" + std::to_string(joint))
+        return "/" + group + "/joint_" + std::to_string(joint);
   return topic;
 }
 }  // namespace

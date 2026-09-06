@@ -734,4 +734,12 @@ GZ_ADD_PLUGIN_ALIAS(rotors_gazebo_plugins::GazeboMotorModel,
                     "tilt_quadcopter_tilt_front_2_plugin",
                     "tilt_quadcopter_tilt_front_3_plugin",
                     "prop_0_plugin", "prop_1_plugin", "prop_2_plugin", "prop_3_plugin",
-                    "prop_4_plugin", "prop_5_plugin", "prop_6_plugin", "prop_7_plugin")
+                    "prop_4_plugin", "prop_5_plugin", "prop_6_plugin", "prop_7_plugin",
+                    "scorpio_coxa_rf_plugin", "scorpio_femur_rf_plugin", "scorpio_tibia_rf_plugin",
+                    "scorpio_coxa_rb_plugin", "scorpio_femur_rb_plugin", "scorpio_tibia_rb_plugin",
+                    "scorpio_coxa_lb_plugin", "scorpio_femur_lb_plugin", "scorpio_tibia_lb_plugin",
+                    "scorpio_coxa_lf_plugin", "scorpio_femur_lf_plugin", "scorpio_tibia_lf_plugin",
+                    "scorpio_coxa_rm_plugin", "scorpio_femur_rm_plugin", "scorpio_tibia_rm_plugin",
+                    "scorpio_coxa_lm_plugin", "scorpio_femur_lm_plugin", "scorpio_tibia_lm_plugin",
+                    "scorpio_prop_0_plugin", "scorpio_prop_1_plugin", "scorpio_prop_2_plugin",
+                    "scorpio_tilt_0_plugin", "scorpio_tilt_1_plugin", "scorpio_tilt_2_plugin")
