@@ -21,12 +21,12 @@ Runtime uses native default GZ_PARTITION (unset), host llw-Mech, user llw.
 Per-file original locations, worlds, firmware, report IDs, conversion settings and SHA-256 values follow.
 Local paths describe reproducibility/provenance on the test host; they are not prerequisites for viewing the repository media.
 
-Recording-run checks (2026-09-07; all passed, with normal LAND/disarm and complete simulator cleanup):
+Original publication checks (2026-09-07; the Scorpio item and its JSON below are historical, superseded by the continuous recording at the end):
 - quad_standard_20260907_013046: 0.5 m target, continuous hover >=10 s; original ROS motor-feedback recording passed.
 - tilt_standard_20260907_012411: all 13 stages [0,30,0,-30,0,60,0,-60,0,90,0,-90,0] passed, each hold >=10 sim seconds; gravity-relative tilt criterion, heading recorded only.
 - scorpio_ros2_flight_20260907_013228: GUIDED and LOITER holds both 10 sim seconds; LOITER altitude 2.991-2.999 m; model/PID unchanged, approved temporary rear/front-left reversals only.
 Tilt and Scorpio LAND reported PrecLand: Failsafe Measures before normal landing; precision landing is not claimed.
-The GIFs are excerpts, not continuous acceptance logs. Scorpio GIF crops the hover subject; its original MP4 preserves the full scene.
+In that original publication, GIFs were excerpts and Scorpio used a cropped hover GIF. These Scorpio files are superseded below; the two quad files are unchanged.
 OpenCV estimates one extra terminal frame in each MP4 header; all selected GIF frames decode successfully. Actual decoded frame counts are recorded below.
 
 {
@@ -188,4 +188,150 @@ OpenCV estimates one extra terminal frame in each MP4 header; all selected GIF f
     "MOT_SC_RR_REV": 1,
     "MOT_SC_FL_REV": 1
   }
+}
+
+CURRENT SCORPIO REPLACEMENT / 当前 Scorpio 连续录像 (2026-09-07)
+=============================================================
+The final JSON below describes the currently published docs/media/Scorpio.gif and Scorpio.mp4.
+It supersedes only the old Scorpio entry from scorpio_ros2_flight_20260907_013228.
+The old published files remain recoverable in Git revision 8a215b3 and at their native home-directory paths.
+No quad media, src model, plugin, PID or formal default parameter was changed for this replacement.
+World: scorpio_world. Model: Scorpio. GZ_PARTITION: unset/native default, host llw-Mech, user llw.
+Visual tool: Gazebo GUI built-in VideoRecorder; original MP4 saved to native QML shortcuts.home.
+Camera: native Gazebo GUI CameraTracking, /gui/track FOLLOW_LOOK_AT; near oblique body-follow view.
+Official camera source: https://github.com/gazebosim/gz-gui/blob/gz-gui8/src/plugins/camera_tracking/CameraTracking.cc
+One continuous run records walking, stopping, flight transition, takeoff, holds and normal landing/disarm.
+GIF: 1x, 10 fps, 624x491, 64-color shared palette, no spatial crop, no stitching or synthetic motion.
+The selected native interval is 0-56.84 s of 56.92 s; only terminal padding is omitted, with all action phases retained.
+The MP4 is byte-identical to its native source. Offline GIF palette/size optimization does not modify the original.
+Original screenshots for view QA were also Gazebo built-in Screenshot, at native ~/.gz/gui/pictures/ with provenance.
+Readiness: original AP_HexRuped Tripod backend; RC10=1000 walking, RC11=1000 Tripod, RC9=1600 forward for 8 sim seconds,
+then RC9=1500 stop for 3 sim seconds; RC10=2000 flight posture for 3 sim seconds before normal arming/takeoff.
+Rotors remained disarmed during walking; pre-arm checks were retained; no forced arming or parameter writes.
+The two approved temporary tilt reversals remain necessary; this does not validate flight with unmodified formal defaults.
+Scope: short straight tripod walking on flat ground and its flight transition, not all gaits, rough terrain, endurance,
+absolute joint-angle accuracy, precision landing, hardware safety, or a new ROS1/ROS2 gait A/B comparison.
+LAND reported PrecLand: Failsafe Measures before normal landing/disarm.
+An earlier local attempt scorpio_ros2_flight_20260907_022748 stopped after walking because the diagnostic gate
+misread SIM_STATE float coordinate units. It was cleaned up and is NOT used or stitched into this publication.
+The successful run uses lat_int/lon_int; the diagnostic correction changed no flight firmware or physics.
+All detailed telemetry and intermediate GIF conversion trials remain local; only final media metadata follows.
+
+{
+  "name": "Scorpio",
+  "report": "/home/llw/.ros/log/scorpio_ros2_flight_20260907_024028",
+  "source": "/home/llw/Scorpio_gazebo_20260907_024028.mp4",
+  "source_sha256": "323e0f018ef43203c3d0dc38f2bd8ef4ac96160fa16a03cbf3d8ba507d2e8ecd",
+  "source_fps": 25.017568517217146,
+  "source_frames": 1424,
+  "source_decoded_frames": 1423,
+  "source_duration_s": 56.92,
+  "selection_s": [
+    0,
+    56.84
+  ],
+  "playback_speed": 1,
+  "gif_fps": 10,
+  "gif_colors": 64,
+  "gif_shared_palette": true,
+  "gif_width": 624,
+  "gif_crop_xywh": null,
+  "gif_verified": {
+    "frames": 569,
+    "duration_s": 56.9,
+    "size": [
+      624,
+      491
+    ]
+  },
+  "unique_sampled_frames": 569,
+  "mp4_bytes": 15714003,
+  "gif_bytes": 9848718,
+  "gif_sha256": "0e0c5401a9905972cdeb4df114b560ea39f014d32c07309e8cb0856471aa2734",
+  "gazebo_world": "scorpio_world",
+  "partition": "native default (unset); host=llw-Mech; user=llw",
+  "native_video": {
+    "path": "/home/llw/Scorpio_gazebo_20260907_024028.mp4",
+    "tool": "Gazebo GUI VideoRecorder",
+    "use_sim_time": true,
+    "lockstep": false,
+    "camera_request": "track_mode: FOLLOW_LOOK_AT follow_target: {name: \"scorpio::scorpio_base::base\"} track_target: {name: \"scorpio::scorpio_base::base\"} follow_offset: {x: 0.55 y: -0.75 z: 0.5} track_offset: {x: 0 y: 0 z: 0.08} follow_pgain: 0.15 track_pgain: 0.15",
+    "start_wall_time": 1788720647.8976367,
+    "report": "/home/llw/.ros/log/scorpio_ros2_flight_20260907_024028",
+    "continuous_walk_flight": true,
+    "saved": true,
+    "sha256": "323e0f018ef43203c3d0dc38f2bd8ef4ac96160fa16a03cbf3d8ba507d2e8ecd",
+    "bytes": 15714003
+  },
+  "ardupilot_revision": "b8fb66f58a0e767f8ff62acdc123fd74c2bb1219",
+  "ardupilot_sha256": "3307a5dc8f404a0c8358bdef380267ee23c4ecd2d19e76ef86d5b62adc466486",
+  "compatibility_overrides": {
+    "MOT_SC_RR_REV": 1,
+    "MOT_SC_FL_REV": 1
+  },
+  "supersedes": "Scorpio media from 8a215b3; original files remain in Git history and at the native source paths",
+  "continuous_walk_flight": true,
+  "walking_validation": {
+    "displacement_m": 0.34470427267594245,
+    "max_abs_roll_deg": 0.18554159521550714,
+    "max_abs_pitch_deg": 0.2430125544599266,
+    "dynamic_leg_velocity_channels": 18,
+    "firmware_tripod_groups": [
+      [
+        0,
+        1,
+        5
+      ],
+      [
+        2,
+        3,
+        4
+      ]
+    ],
+    "tripod_velocity_phase": {
+      "within_group_min_correlation": 0.8245756863121679,
+      "between_group_best_correlation": 0.9128840884433811,
+      "between_group_lag_sim_s": -0.48,
+      "expected_half_cycle_sim_s": 0.48,
+      "passed": true
+    },
+    "feedback_contract": "Original motorSpeedPubTopic: joint angular velocity despite *_pos name; integrated over simulation time with initial-angle offset only",
+    "integration_caveat": "Velocity integration from headerless ROS feedback is a diagnostic, not an absolute joint-angle acceptance test; no position sensor or initial joint angle is added.",
+    "integrated_angle_tracking_screen_passed": false,
+    "passed": true
+  },
+  "publication_outputs": {
+    "mp4": "docs/media/Scorpio.mp4",
+    "gif": "docs/media/Scorpio.gif"
+  },
+  "camera_follow": {
+    "request": "track_mode: FOLLOW_LOOK_AT follow_target: {name: \"scorpio::scorpio_base::base\"} track_target: {name: \"scorpio::scorpio_base::base\"} follow_offset: {x: 0.55 y: -0.75 z: 0.5} track_offset: {x: 0 y: 0 z: 0.08} follow_pgain: 0.15 track_pgain: 0.15",
+    "status": "track_mode: FOLLOW_LOOK_AT\nfollow_target {\n  name: \"scorpio::scorpio_base::base\"\n}\ntrack_target {\n  name: \"scorpio::scorpio_base::base\"\n}\nfollow_offset {\n  x: 0.55\n  y: -0.75\n  z: 0.5\n}\ntrack_offset {\n  z: 0.08\n}\nfollow_pgain: 0.15\ntrack_pgain: 0.15\n\n",
+    "source": "Gazebo GUI CameraTracking /gui/track and /gui/currently_tracked"
+  },
+  "acceptance": {
+    "walk_passed": true,
+    "flight_passed": true,
+    "normal_disarm": true,
+    "cleanup_complete": true,
+    "remaining_simulators": [],
+    "remaining_ports": "",
+    "walk_seconds": 8,
+    "loiter_altitude_m": [
+      2.991,
+      2.999
+    ],
+    "max_ground_tilt_deg": 0.27187358356958663
+  },
+  "sequence": [
+    "disarmed tripod walk",
+    "stop",
+    "flight posture transition",
+    "GUIDED takeoff to 3 m",
+    "GUIDED hold >=10 s",
+    "LOITER hold >=10 s",
+    "LAND and normal disarm"
+  ],
+  "source_tree_revision": "8a215b319c70ece57ed3789876d8af535756f52b",
+  "gif_palette_sampling": "20 native-frame samples, full-scene plus subject-weighted color training; no output crop"
 }

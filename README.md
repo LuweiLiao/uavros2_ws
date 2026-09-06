@@ -20,13 +20,16 @@ and plugin responsibilities are preserved. Required compatibility changes are do
 > real-aircraft safety certification.
 
 `Scorpio` 已完成原位 API 移植及同条件 ROS 1/ROS 2 GUI + SITL 飞行对照，
-**需获批的两项临时倾转反向配置；行走未验收**。
+**需获批的两项临时倾转反向配置**。另已完成 ROS 2 短程平地三角步态直行、
+收步、起飞、悬停与降落的连续演示；其它步态、复杂地形和耐久尚未验收。
 其远端固件版本与下述四旋翼不同，使用前请先阅读
 [Scorpio 模型说明](src/uav_simulator/uav_gazebo/models/Scorpio/README.md)。
 
 `Scorpio` passed in-place migration and same-input ROS 1/ROS 2 GUI + SITL flight
-tests **with two approved temporary tilt reversals; walking is unvalidated**. It uses a different firmware
-revision from the quad models; read its linked model notes before use.
+tests **with two approved temporary tilt reversals**. A separate ROS 2 run also
+demonstrates short flat-ground tripod walking, stopping, takeoff, hover and landing
+continuously. Other gaits, rough terrain and endurance remain unvalidated. It uses
+a different firmware revision from the quad models; read its linked model notes before use.
 
 ## 目录 / Contents
 
@@ -56,30 +59,45 @@ Click a GIF for its original MP4. GIFs are converted offline from Gazebo's built
 `VideoRecorder`, not desktop captures or synthetic flight animations. Native recordings
 contain the Gazebo scene, not the desktop or surrounding GUI panels.
 
-| `tsduav_quad` | `tilt_quadcopter` | `Scorpio` |
-| --- | --- | --- |
-| [![tsduav_quad Gazebo flight](docs/media/tsduav_quad.gif)](docs/media/tsduav_quad.mp4) | [![tilt_quadcopter Gazebo pitch flight](docs/media/tilt_quadcopter.gif)](docs/media/tilt_quadcopter.mp4) | [![Scorpio Gazebo flight](docs/media/Scorpio.gif)](docs/media/Scorpio.mp4) |
-| 0.5 m 悬停 / Hover | ±30° / ±60° / ±90° 俯仰与回正 / Pitch and return to level | 3 m GUIDED / LOITER 悬停 / Holds |
-| GIF：1×，13.1 s | GIF：12×，21.9 s | GIF：2×，8.6 s，裁剪放大 / cropped close-up |
-| [运行说明 / Run](#quad) · [MP4](docs/media/tsduav_quad.mp4) | [运行说明 / Run](#tilt) · [MP4](docs/media/tilt_quadcopter.mp4) | [运行条件 / Prerequisites](src/uav_simulator/uav_gazebo/models/Scorpio/README.md) · [MP4](docs/media/Scorpio.mp4) |
+| `tsduav_quad` | `tilt_quadcopter` |
+| --- | --- |
+| [![tsduav_quad Gazebo flight](docs/media/tsduav_quad.gif)](docs/media/tsduav_quad.mp4) | [![tilt_quadcopter Gazebo pitch flight](docs/media/tilt_quadcopter.gif)](docs/media/tilt_quadcopter.mp4) |
+| 0.5 m 悬停 / Hover | ±30° / ±60° / ±90° 俯仰与回正 / Pitch and return to level |
+| GIF：1×，13.1 s | GIF：12×，21.9 s |
+| [运行说明 / Run](#quad) · [MP4](docs/media/tsduav_quad.mp4) | [运行说明 / Run](#tilt) · [MP4](docs/media/tilt_quadcopter.mp4) |
 
-GIF 为选取片段；倍率相对原生视频时间（按仿真时间录制），不是电脑墙钟时间。
-MP4 保留本轮开始录制至降落后的原生视频。GIFs are selected excerpts; playback multipliers
-refer to native video time, recorded using simulation time, not wall-clock time.
-MP4s retain the native recordings from recording start through post-landing.
-Scorpio 动图裁剪放大悬停主体；完整起降过程见 MP4。
-Scorpio's GIF is a cropped hover close-up; its MP4 shows the full-scene flight and landing.
+### Scorpio：三角步态行走 → 飞行 / Tripod walking → flight
+
+[![Scorpio 三角步态地面行走、起飞、悬停与降落 / Continuous tripod walking, takeoff, hover and landing](docs/media/Scorpio.gif)](docs/media/Scorpio.mp4)
+
+同一次仿真连续录制：**三角步态前进 → 收步 → 切换飞行 → 3 m 起飞 →
+GUIDED / LOITER 悬停 → LAND / 解除武装**。采用 Gazebo 原生近距离斜侧跟随镜头，
+GIF 为 1×、约 56.9 s，全程保留，不裁剪画面、不拼接轮次。
+
+One continuous simulation: **tripod walk → stop → switch to flight → 3 m takeoff →
+GUIDED / LOITER holds → LAND / disarm**. Gazebo's native camera follows from a
+close oblique view. The 1× GIF retains the full sequence (about 56.9 s), with no
+spatial crop or stitching of separate runs.
+
+[运行条件与行走入口 / Prerequisites and walking controls](src/uav_simulator/uav_gazebo/models/Scorpio/README.md)
+· [原始视频 / Original MP4](docs/media/Scorpio.mp4)
+
+四旋翼 GIF 为选取片段，Scorpio GIF 保留连续动作；倍率相对原生视频时间
+（按仿真时间录制），不是电脑墙钟时间。MP4 保留开始录制至降落后的原生视频。
+Quad GIFs are excerpts; Scorpio's GIF retains the continuous sequence. Playback
+multipliers refer to native video time, recorded using simulation time, not wall-clock
+time. MP4s retain the native recordings from recording start through post-landing.
 
 演示沿用下文的固定固件和已验证仿真参数，不为拍摄调整模型或 PID。
 倾转四旋翼仍采用已记录的惯量近似；Scorpio 仍需临时
-`MOT_SC_RR_REV=1`、`MOT_SC_FL_REV=1`，**不代表原默认参数可直接飞行，也不代表行走已验收**。
+`MOT_SC_RR_REV=1`、`MOT_SC_FL_REV=1`，**不代表原默认参数可直接飞行，也不是完整步态验收**。
 动图是展示材料，定量验收以遥测为准；版本、原始路径、转换设置及文件校验值见
 [媒体来源记录](docs/media/PROVENANCE.txt)。
 
 These demos retain the pinned firmware and validated simulation profiles documented below;
 no model or PID was changed for filming. The tilt quad retains its documented inertia
 approximation. Scorpio still requires temporary `MOT_SC_RR_REV=1` and `MOT_SC_FL_REV=1`;
-**unmodified defaults are not flight-ready and walking is not validated**. Telemetry, not GIFs,
+**unmodified defaults are not flight-ready; this is not full gait qualification**. Telemetry, not GIFs,
 determines quantitative acceptance. See the linked provenance record for versions, source
 paths, conversion settings and checksums.
 
@@ -574,8 +592,23 @@ packages or move models to hide incomplete ports.
 | `tilt_quadcopter` | 连续两轮 13 阶段通过，包括 ±30/60/90°、每次回正与正常 LAND / Two complete 13-stage passes including ±30/60/90°, upright returns and normal LAND |
 | Tilt hold windows | 最大重力相对倾角误差 / peak tilt error: 4.9743° / 4.9682°；高度 / altitude: 2.915–3.037 m；最大水平速度 / peak horizontal speed: 0.0421 m/s |
 | `tsduav_quad` regression | 0.5 m 目标悬停 10 秒，高度 0.463–0.539 m，正常降落 / 10-second hover at 0.5 m target, altitude 0.463–0.539 m, normal landing |
-| `Scorpio` flight comparison | ROS 1/ROS 2 同固件、模型物理参数、PID 和临时反向配置，均通过 3 m 起飞、GUIDED/LOITER 各 ≥10 s、正常 LAND/解除武装；行走未验收 / Both passed the same flight gates; walking unvalidated |
+| `Scorpio` flight comparison | ROS 1/ROS 2 同固件、模型物理参数、PID 和临时反向配置，均通过 3 m 起飞、GUIDED/LOITER 各 ≥10 s、正常 LAND/解除武装；该历史对照不包含行走 / Both passed the same flight gates; this historical comparison did not include walking |
 | Build | 当前所需六包通过 / The required six-package set builds |
+
+2026-09-07 新增 `Scorpio` ROS 2 连续演示：平地三角步态直行 8 s、约 0.345 m，
+地面最大倾角 0.272°；18 路腿关节速度反馈有动态响应，两组三足相差约 0.48 s
+（原步态半周期）。随后通过 3 m 起飞、GUIDED/LOITER 各 ≥10 s 和正常 LAND/解除武装，
+LOITER 高度 2.991–2.999 m。记录：`scorpio_ros2_flight_20260907_024028`。
+这是短程平地直行与飞行衔接检查，**不是新增 ROS 1/ROS 2 步态对照，也不验收绝对舵角精度、
+其它步态、复杂地形、耐久或真机**。
+
+Added on 2026-09-07: a continuous ROS 2 Scorpio run walked about 0.345 m in 8 s
+on flat ground (peak tilt 0.272°). All 18 leg-velocity channels responded, and the
+tripod groups were about 0.48 s apart, matching the native half-cycle. It then
+passed 3 m takeoff, GUIDED/LOITER holds of ≥10 s each and normal LAND/disarm;
+LOITER altitude was 2.991–2.999 m. This checks short straight walking and the
+flight transition, **not a new ROS 1/ROS 2 gait comparison, absolute joint-angle
+accuracy, other gaits, rough terrain, endurance or hardware operation**.
 
 `Scorpio` 固定使用 `origin/Scorpio`：已先在 ROS 1 + Classic GUI 复现当前模型
 和固件的稳定飞行与正常降落，再通过 ROS 2 + Harmonic GUI 同条件验收。
