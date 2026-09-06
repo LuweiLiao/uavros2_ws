@@ -1,0 +1,191 @@
+UAVROS 2 documentation media / 文档演示媒体
+========================================
+
+Scope: tsduav_quad, tilt_quadcopter, Scorpio; ROS 2 Jazzy + Gazebo Harmonic GUI + ArduPilot SITL.
+All source MP4 files are produced by Gazebo GUI's built-in VideoRecorder.
+No desktop/window capture, external screen recorder, generated animation or camera-stream encoder is used.
+The temporary Qt controller only loads the official plugin and invokes its native OnStart / OnStop / OnSave slots.
+GUI capture records the Gazebo scene camera, not the surrounding desktop or application chrome.
+Official source: https://github.com/gazebosim/gz-sim/tree/gz-sim8/src/gui/plugins/video_recorder
+VideoRecorder.qml defaults its save dialog to shortcuts.home; original recordings are saved there.
+MP4 publication copies are byte-identical to their native originals.
+GIF files are offline OpenCV decode + Pillow format conversions, explicitly approved by the user on 2026-09-07.
+Only time selection, frame sampling, resizing, documented spatial cropping and palette conversion are performed; no flight motion is fabricated.
+GIF time selections and playback multipliers refer to native video presentation time, recorded using simulation time.
+VideoRecorder lockstep=false: rendered frames may be sampled/dropped under load; videos are demonstrations, not timing measurements.
+Flight telemetry remains the source for quantitative flight acceptance.
+Diagnostics and temporary capture/conversion programs are not delivered under src/ or docs/.
+
+Baseline source revision for these recordings: 25a6678b8a02e0e5068b5845ad2b210421914776.
+Runtime uses native default GZ_PARTITION (unset), host llw-Mech, user llw.
+Per-file original locations, worlds, firmware, report IDs, conversion settings and SHA-256 values follow.
+Local paths describe reproducibility/provenance on the test host; they are not prerequisites for viewing the repository media.
+
+Recording-run checks (2026-09-07; all passed, with normal LAND/disarm and complete simulator cleanup):
+- quad_standard_20260907_013046: 0.5 m target, continuous hover >=10 s; original ROS motor-feedback recording passed.
+- tilt_standard_20260907_012411: all 13 stages [0,30,0,-30,0,60,0,-60,0,90,0,-90,0] passed, each hold >=10 sim seconds; gravity-relative tilt criterion, heading recorded only.
+- scorpio_ros2_flight_20260907_013228: GUIDED and LOITER holds both 10 sim seconds; LOITER altitude 2.991-2.999 m; model/PID unchanged, approved temporary rear/front-left reversals only.
+Tilt and Scorpio LAND reported PrecLand: Failsafe Measures before normal landing; precision landing is not claimed.
+The GIFs are excerpts, not continuous acceptance logs. Scorpio GIF crops the hover subject; its original MP4 preserves the full scene.
+OpenCV estimates one extra terminal frame in each MP4 header; all selected GIF frames decode successfully. Actual decoded frame counts are recorded below.
+
+{
+  "name": "tilt_quadcopter",
+  "report": "/home/llw/.ros/log/tilt_standard_20260907_012411",
+  "source": "/home/llw/tilt_quadcopter_gazebo_20260907_012411.mp4",
+  "source_sha256": "d8b12d607c58563d8c357a7febd463895c29832159019184abb8be8e4a4b4814",
+  "source_fps": 25.00354007363353,
+  "source_frames": 7063,
+  "source_decoded_frames": 7062,
+  "source_duration_s": 282.48,
+  "selection_s": [
+    8.0,
+    270.0
+  ],
+  "playback_speed": 12.0,
+  "gif_fps": 10,
+  "gif_colors": 128,
+  "gif_width": 400,
+  "gif_verified": {
+    "frames": 219,
+    "duration_s": 21.9,
+    "size": [
+      400,
+      548
+    ]
+  },
+  "unique_sampled_frames": 219,
+  "mp4_bytes": 74623835,
+  "gif_bytes": 1894595,
+  "gif_sha256": "da3ada23c9f4e9f73ca0a8dfa26d3f1878c16d95fa0634830bb9e2634e74ec0f",
+  "gazebo_world": "outdoor",
+  "partition": "native default (unset); host=llw-Mech; user=llw",
+  "native_video": {
+    "path": "/home/llw/tilt_quadcopter_gazebo_20260907_012411.mp4",
+    "tool": "Gazebo GUI VideoRecorder",
+    "use_sim_time": true,
+    "lockstep": false,
+    "camera_request": "pose: {position: {x: 1.8 y: -2.4 z: 4.2} orientation: {x: -0.16914290894358025 y: 0.08457145447179015 z: 0.8782884926686126 w: 0.43914424633430643}}",
+    "start_wall_time": 1788715512.6668828,
+    "report": "/home/llw/.ros/log/tilt_standard_20260907_012411",
+    "saved": true,
+    "sha256": "d8b12d607c58563d8c357a7febd463895c29832159019184abb8be8e4a4b4814",
+    "bytes": 74623835
+  },
+  "ardupilot_revision": "99a9622610de489d65b441e2d9efe46f453bdb0d",
+  "ardupilot_sha256": null,
+  "compatibility_overrides": {
+    "path": "/home/llw/Projects/uavros2_ws/.tmp/tilt_quadcopter/tiltquad_sitl.parm",
+    "sha256": "fbd897f110aca49626299c0cc274ee96076fa5ed7523c5b0aab129e95f36b10e",
+    "contents": "# Simulation test defaults: selected control / actuator parameters from\n# ardupilot/tilt_quadcopter/tiltquad.parm, excluding hardware sensor calibration.\n# Load after official copter.parm and gazebo-iris.parm in a fresh SITL state.\nATC_ACC_P_MAX 1100\nATC_ACC_R_MAX 1100\nATC_ACC_Y_MAX 270\nATC_ANG_LIM_TC 1\nATC_ANG_PIT_P 4.5\nATC_ANG_RLL_P 4.5\nATC_ANG_YAW_P 4.5\nATC_ANGLE_BOOST 1\nATC_ANGLE_MAX 30\nATC_INPUT_TC 0.15\nATC_LAND_P_MULT 1\nATC_LAND_R_MULT 1\nATC_LAND_Y_MULT 1\nATC_RAT_PIT_D 0.0036\nATC_RAT_PIT_D_FF 0\nATC_RAT_PIT_FF 0\nATC_RAT_PIT_FLTD 20\nATC_RAT_PIT_FLTE 0\nATC_RAT_PIT_FLTT 20\nATC_RAT_PIT_I 0.4\nATC_RAT_PIT_IMAX 0.5\nATC_RAT_PIT_NEF 0\nATC_RAT_PIT_NTF 0\nATC_RAT_PIT_P 0.5\nATC_RAT_PIT_PDMX 0\nATC_RAT_PIT_SMAX 0\nATC_RAT_RLL_D 0.0036\nATC_RAT_RLL_D_FF 0\nATC_RAT_RLL_FF 0\nATC_RAT_RLL_FLTD 20\nATC_RAT_RLL_FLTE 0\nATC_RAT_RLL_FLTT 20\nATC_RAT_RLL_I 0.4\nATC_RAT_RLL_IMAX 0.5\nATC_RAT_RLL_NEF 0\nATC_RAT_RLL_NTF 0\nATC_RAT_RLL_P 0.25\nATC_RAT_RLL_PDMX 0\nATC_RAT_RLL_SMAX 0\nATC_RAT_YAW_D 0\nATC_RAT_YAW_D_FF 0\nATC_RAT_YAW_FF 0\nATC_RAT_YAW_FLTD 100\nATC_RAT_YAW_FLTE 2.5\nATC_RAT_YAW_FLTT 20\nATC_RAT_YAW_I 0.02\nATC_RAT_YAW_IMAX 0.5\nATC_RAT_YAW_NEF 0\nATC_RAT_YAW_NTF 0\nATC_RAT_YAW_P 0.3\nATC_RAT_YAW_PDMX 0\nATC_RAT_YAW_SMAX 0\nATC_RATE_FF_ENAB 1\nATC_RATE_P_MAX 0\nATC_RATE_R_MAX 0\nATC_RATE_WPY_MAX 60\nATC_RATE_Y_MAX 0\nATC_THR_G_BOOST 0\nATC_THR_MIX_MAN 0.1\nATC_THR_MIX_MAX 0.5\nATC_THR_MIX_MIN 0.1\nFRAME_CLASS 7\nFRAME_TYPE 23\nMOT_ANTI_YAW_FAC 1\nMOT_BAT_CURR_MAX 0\nMOT_BAT_CURR_TC 5\nMOT_BAT_IDX 0\nMOT_BAT_VOLT_MAX 12.8\nMOT_BAT_VOLT_MIN 9.6\nMOT_BI_PIT_FAC 0\nMOT_BOOST_SCALE 0\nMOT_FORW_FACT 2\nMOT_HOVER_LEARN 2\nMOT_IDLE_SEC 0\nMOT_LAT_ENABLE 0\nMOT_LAT_FACT 1\nMOT_OPTIONS 0\nMOT_PIT_OFF_MAX 90\nMOT_PWM_MAX 2000\nMOT_PWM_MIN 1000\nMOT_PWM_TYPE 0\nMOT_SAFE_DISARM 0\nMOT_SAFE_TIME 1\nMOT_SLEW_DN_TIME 0\nMOT_SLEW_UP_TIME 0\nMOT_SPIN_ARM 0.1\nMOT_SPIN_MAX 0.95\nMOT_SPIN_MIN 0.15\nMOT_SPOOL_TIM_DN 0\nMOT_SPOOL_TIME 0.5\nMOT_SVO_LF_OFF 0\nMOT_SVO_LF_REV 0\nMOT_SVO_LR_OFF 0\nMOT_SVO_LR_REV 1\nMOT_SVO_RF_OFF 0\nMOT_SVO_RF_REV 1\nMOT_SVO_RR_OFF 0\nMOT_SVO_RR_REV 1\nMOT_THST_EXPO 0.65\nMOT_THST_HOVER 0.383784\nMOT_TILT_ANG_MAX 135\nMOT_TILT_EN 1\nMOT_TILT_YAW_FAC 1\nMOT_YAW_HEADROOM 200\nMOT_YAW_SV_ANGLE 30\nPSC_ANGLE_MAX 0\nPSC_D_ACC_D 0\nPSC_D_ACC_D_FF 0\nPSC_D_ACC_FF 0\nPSC_D_ACC_FLTD 0\nPSC_D_ACC_FLTE 20\nPSC_D_ACC_FLTT 0\nPSC_D_ACC_I 0.1\nPSC_D_ACC_IMAX 0.8\nPSC_D_ACC_NEF 0\nPSC_D_ACC_NTF 0\nPSC_D_ACC_P 0.05\nPSC_D_ACC_PDMX 0\nPSC_D_ACC_SMAX 0\nPSC_D_POS_P 1\nPSC_D_VEL_D 0\nPSC_D_VEL_FF 0\nPSC_D_VEL_FLTD 5\nPSC_D_VEL_FLTE 5\nPSC_D_VEL_I 0\nPSC_D_VEL_IMAX 10\nPSC_D_VEL_P 5\nPSC_JERK_D 5\nPSC_JERK_NE 5\nPSC_NE_POS_P 1\nPSC_NE_VEL_D 0.25\nPSC_NE_VEL_FF 0\nPSC_NE_VEL_FLTD 5\nPSC_NE_VEL_FLTE 5\nPSC_NE_VEL_I 1\nPSC_NE_VEL_IMAX 10\nPSC_NE_VEL_P 2\nRC7_DZ 0\nRC7_MAX 2000\nRC7_MIN 1000\nRC7_OPTION 221\nRC7_REVERSED 0\nRC7_TRIM 1500\nRC8_DZ 0\nRC8_MAX 2000\nRC8_MIN 1000\nRC8_OPTION 222\nRC8_REVERSED 0\nRC8_TRIM 1500\nSERVO1_FUNCTION 33\nSERVO1_MAX 1900\nSERVO1_MIN 1100\nSERVO1_REVERSED 0\nSERVO1_TRIM 1500\nSERVO10_FUNCTION 185\nSERVO10_MAX 2500\nSERVO10_MIN 500\nSERVO10_REVERSED 0\nSERVO10_TRIM 1500\nSERVO11_FUNCTION 186\nSERVO11_MAX 2500\nSERVO11_MIN 500\nSERVO11_REVERSED 0\nSERVO11_TRIM 1500\nSERVO12_FUNCTION 187\nSERVO12_MAX 2500\nSERVO12_MIN 500\nSERVO12_REVERSED 0\nSERVO12_TRIM 1500\nSERVO13_FUNCTION 0\nSERVO13_MAX 1900\nSERVO13_MIN 1100\nSERVO13_REVERSED 0\nSERVO13_TRIM 1500\nSERVO14_FUNCTION 0\nSERVO14_MAX 1900\nSERVO14_MIN 1100\nSERVO14_REVERSED 0\nSERVO14_TRIM 1500\nSERVO15_FUNCTION 0\nSERVO15_MAX 1900\nSERVO15_MIN 1100\nSERVO15_REVERSED 0\nSERVO15_TRIM 1500\nSERVO16_FUNCTION 0\nSERVO16_MAX 1900\nSERVO16_MIN 1100\nSERVO16_REVERSED 0\nSERVO16_TRIM 1500\nSERVO2_FUNCTION 34\nSERVO2_MAX 1900\nSERVO2_MIN 1100\nSERVO2_REVERSED 0\nSERVO2_TRIM 1500\nSERVO3_FUNCTION 35\nSERVO3_MAX 1900\nSERVO3_MIN 1100\nSERVO3_REVERSED 0\nSERVO3_TRIM 1500\nSERVO4_FUNCTION 36\nSERVO4_MAX 1900\nSERVO4_MIN 1100\nSERVO4_REVERSED 0\nSERVO4_TRIM 1500\nSERVO5_FUNCTION 37\nSERVO5_MAX 1900\nSERVO5_MIN 1100\nSERVO5_REVERSED 0\nSERVO5_TRIM 1500\nSERVO6_FUNCTION 38\nSERVO6_MAX 1900\nSERVO6_MIN 1100\nSERVO6_REVERSED 0\nSERVO6_TRIM 1500\nSERVO7_FUNCTION 39\nSERVO7_MAX 1900\nSERVO7_MIN 1100\nSERVO7_REVERSED 0\nSERVO7_TRIM 1500\nSERVO8_FUNCTION 40\nSERVO8_MAX 1900\nSERVO8_MIN 1100\nSERVO8_REVERSED 0\nSERVO8_TRIM 1500\nSERVO9_FUNCTION 184\nSERVO9_MAX 2500\nSERVO9_MIN 500\nSERVO9_REVERSED 0\nSERVO9_TRIM 1500\nTTLT_RATE_MAX 30\nTTLT_RTZ_RATE 15\n"
+  }
+}
+
+{
+  "name": "tsduav_quad",
+  "report": "/home/llw/.ros/log/quad_standard_20260907_013046",
+  "source": "/home/llw/tsduav_quad_gazebo_20260907_013046.mp4",
+  "source_sha256": "6592a8b77b7f2a313ccf00540ff20f50c30044a288cdd8c005f0a303b4432447",
+  "source_fps": 25.06038647342995,
+  "source_frames": 415,
+  "source_decoded_frames": 414,
+  "source_duration_s": 16.560000000000002,
+  "selection_s": [
+    2.0,
+    15.0
+  ],
+  "playback_speed": 1.0,
+  "gif_fps": 10,
+  "gif_colors": 128,
+  "gif_width": 400,
+  "gif_verified": {
+    "frames": 131,
+    "duration_s": 13.1,
+    "size": [
+      400,
+      548
+    ]
+  },
+  "unique_sampled_frames": 131,
+  "mp4_bytes": 3369303,
+  "gif_bytes": 950080,
+  "gif_sha256": "89d5510440a8fb0b2b73635260377547b54a0c81365c300bb16903d73418a034",
+  "gazebo_world": "outdoor",
+  "partition": "native default (unset); host=llw-Mech; user=llw",
+  "native_video": {
+    "path": "/home/llw/tsduav_quad_gazebo_20260907_013046.mp4",
+    "tool": "Gazebo GUI VideoRecorder",
+    "use_sim_time": true,
+    "lockstep": false,
+    "camera_request": "pose: {position: {x: 1.2 y: -1.6 z: 1.2} orientation: {x: -0.18770028750632597 y: 0.093850143753163 z: 0.8745104928301561 w: 0.4372552464150782}}",
+    "start_wall_time": 1788715908.8366444,
+    "report": "/home/llw/.ros/log/quad_standard_20260907_013046",
+    "saved": true,
+    "sha256": "6592a8b77b7f2a313ccf00540ff20f50c30044a288cdd8c005f0a303b4432447",
+    "bytes": 3369303
+  },
+  "ardupilot_revision": "99a9622610de489d65b441e2d9efe46f453bdb0d",
+  "ardupilot_sha256": "84e2eb32e297931cf05a1f5a3c1db9f6d781bea567a593555289c5edea06909d",
+  "compatibility_overrides": {
+    "path": "/home/llw/Projects/uavros2_ws/.tmp/runtime/quad_acceptance_ros_mapping_20260905_r3/ros1_yaw.parm",
+    "contents": "ATC_RAT_YAW_P 0.12\n",
+    "sha256": "286b7d90a3c11e9b92a89e6388ff166d2c1b7ea92c3575eb43531f845be8a38a"
+  }
+}
+
+{
+  "name": "Scorpio",
+  "report": "/home/llw/.ros/log/scorpio_ros2_flight_20260907_013228",
+  "source": "/home/llw/Scorpio_gazebo_20260907_013228.mp4",
+  "source_sha256": "d2967bb5bfed93611558d02437b9784db2f7a43c5dd469b5dad77e11d1791fef",
+  "source_fps": 25.0249500998004,
+  "source_frames": 1003,
+  "source_decoded_frames": 1002,
+  "source_duration_s": 40.08,
+  "selection_s": [
+    9.0,
+    26.0
+  ],
+  "playback_speed": 2.0,
+  "gif_fps": 10,
+  "gif_colors": 128,
+  "gif_width": 400,
+  "gif_crop_xywh": [
+    180,
+    80,
+    220,
+    301
+  ],
+  "gif_verified": {
+    "frames": 86,
+    "duration_s": 8.6,
+    "size": [
+      400,
+      547
+    ]
+  },
+  "unique_sampled_frames": 86,
+  "mp4_bytes": 7069075,
+  "gif_bytes": 670837,
+  "gif_sha256": "cef436352d59b892b9cfc92f7b7434ea6952e248ae0786620b23bb3ed3c7bfa6",
+  "gazebo_world": "scorpio_world",
+  "partition": "native default (unset); host=llw-Mech; user=llw",
+  "native_video": {
+    "path": "/home/llw/Scorpio_gazebo_20260907_013228.mp4",
+    "tool": "Gazebo GUI VideoRecorder",
+    "use_sim_time": true,
+    "lockstep": false,
+    "camera_request": "pose: {position: {x: 1.8 y: -2.4 z: 2.0} orientation: {x: -0.07377283014187884 y: 0.03688641507093943 z: 0.8913795877923487 w: 0.44568979389617447}}",
+    "start_wall_time": 1788716513.5246367,
+    "report": "/home/llw/.ros/log/scorpio_ros2_flight_20260907_013228",
+    "saved": true,
+    "sha256": "d2967bb5bfed93611558d02437b9784db2f7a43c5dd469b5dad77e11d1791fef",
+    "bytes": 7069075
+  },
+  "ardupilot_revision": "b8fb66f58a0e767f8ff62acdc123fd74c2bb1219",
+  "ardupilot_sha256": "3307a5dc8f404a0c8358bdef380267ee23c4ecd2d19e76ef86d5b62adc466486",
+  "compatibility_overrides": {
+    "MOT_SC_RR_REV": 1,
+    "MOT_SC_FL_REV": 1
+  }
+}

@@ -30,6 +30,7 @@ revision from the quad models; read its linked model notes before use.
 
 ## 目录 / Contents
 
+- [飞行演示 / Flight demos](#demos)
 - [环境与范围 / Platform and scope](#platform)
 - [安装与编译 / Installation and build](#installation)
 - [准备 ArduPilot / ArduPilot setup](#ardupilot)
@@ -42,6 +43,45 @@ revision from the quad models; read its linked model notes before use.
 - [验证与限制 / Validation and limitations](#validation)
 - [常见问题 / Troubleshooting](#troubleshooting)
 - [官方文档与来源 / References and provenance](#references)
+
+<a id="demos"></a>
+## 飞行演示 / Flight demos
+
+以下三个机型均在 **ROS 2 Jazzy + Gazebo Harmonic GUI + ArduPilot SITL** 中实际运行。
+点击动图可打开对应的原始 MP4；GIF 是 Gazebo 内置 `VideoRecorder` 视频的离线转换，
+不是桌面录屏，也不是制作的飞行动画。录像只包含 Gazebo 场景，不包含桌面及 GUI 面板。
+
+All three vehicles run in **ROS 2 Jazzy + Gazebo Harmonic GUI + ArduPilot SITL**.
+Click a GIF for its original MP4. GIFs are converted offline from Gazebo's built-in
+`VideoRecorder`, not desktop captures or synthetic flight animations. Native recordings
+contain the Gazebo scene, not the desktop or surrounding GUI panels.
+
+| `tsduav_quad` | `tilt_quadcopter` | `Scorpio` |
+| --- | --- | --- |
+| [![tsduav_quad Gazebo flight](docs/media/tsduav_quad.gif)](docs/media/tsduav_quad.mp4) | [![tilt_quadcopter Gazebo pitch flight](docs/media/tilt_quadcopter.gif)](docs/media/tilt_quadcopter.mp4) | [![Scorpio Gazebo flight](docs/media/Scorpio.gif)](docs/media/Scorpio.mp4) |
+| 0.5 m 悬停 / Hover | ±30° / ±60° / ±90° 俯仰与回正 / Pitch and return to level | 3 m GUIDED / LOITER 悬停 / Holds |
+| GIF：1×，13.1 s | GIF：12×，21.9 s | GIF：2×，8.6 s，裁剪放大 / cropped close-up |
+| [运行说明 / Run](#quad) · [MP4](docs/media/tsduav_quad.mp4) | [运行说明 / Run](#tilt) · [MP4](docs/media/tilt_quadcopter.mp4) | [运行条件 / Prerequisites](src/uav_simulator/uav_gazebo/models/Scorpio/README.md) · [MP4](docs/media/Scorpio.mp4) |
+
+GIF 为选取片段；倍率相对原生视频时间（按仿真时间录制），不是电脑墙钟时间。
+MP4 保留本轮开始录制至降落后的原生视频。GIFs are selected excerpts; playback multipliers
+refer to native video time, recorded using simulation time, not wall-clock time.
+MP4s retain the native recordings from recording start through post-landing.
+Scorpio 动图裁剪放大悬停主体；完整起降过程见 MP4。
+Scorpio's GIF is a cropped hover close-up; its MP4 shows the full-scene flight and landing.
+
+演示沿用下文的固定固件和已验证仿真参数，不为拍摄调整模型或 PID。
+倾转四旋翼仍采用已记录的惯量近似；Scorpio 仍需临时
+`MOT_SC_RR_REV=1`、`MOT_SC_FL_REV=1`，**不代表原默认参数可直接飞行，也不代表行走已验收**。
+动图是展示材料，定量验收以遥测为准；版本、原始路径、转换设置及文件校验值见
+[媒体来源记录](docs/media/PROVENANCE.txt)。
+
+These demos retain the pinned firmware and validated simulation profiles documented below;
+no model or PID was changed for filming. The tilt quad retains its documented inertia
+approximation. Scorpio still requires temporary `MOT_SC_RR_REV=1` and `MOT_SC_FL_REV=1`;
+**unmodified defaults are not flight-ready and walking is not validated**. Telemetry, not GIFs,
+determines quantitative acceptance. See the linked provenance record for versions, source
+paths, conversion settings and checksums.
 
 <a id="platform"></a>
 ## 环境与范围 / Platform and scope
@@ -94,7 +134,7 @@ source /opt/ros/jazzy/setup.bash
 mkdir -p ~/Projects
 cd ~/Projects
 git lfs install
-git clone --branch codex/tilt-quadcopter-ros2 \
+git clone --branch master \
   https://github.com/LuweiLiao/uavros2_ws.git
 cd uavros2_ws
 git lfs pull
