@@ -25,8 +25,8 @@ For the contact simulation, ArduPilot remains a separate repository. The
 on base `99a9622610de489d65b441e2d9efe46f453bdb0d`: a client connecting to port
 9025 binds loopback port 9026, matching the Gazebo rangefinder destination.
 It is specific to this single-vehicle simulation and is not a general upstream
-UART fix. Apply it only to a clean checkout of that base (or its parameter-only
-successor documented in the contact notes), then rebuild SITL:
+UART fix. For the historical Run 38 baseline, apply it to a clean checkout of
+that base together with the parameter patch, then rebuild SITL:
 
 ```bash
 git -C /path/to/ardupilot apply --check /path/to/uavros2_ws/docs/dependencies/ardupilot-range-endpoint.patch
@@ -45,7 +45,11 @@ against the same base, corresponding to local ArduPilot commit
 `641838a7741a4e75805da4937bbe6cfbf7e78c4c`. On a fresh base checkout, apply it
 with `git apply --check` followed by `git apply`, using the same absolute-path
 pattern above. Do not apply it again if checking out that parameter commit.
-This avoids requiring an unpublished parameter commit on another machine.
+The parameter commit has parent `e3d1e0511c48102ac40a0c4b5bcfea6b6896d6e9`,
+a separately committed controller update. Checking out the parameter commit
+therefore also includes that update. To reproduce historical Run 38 source, use
+base `99a9622610de489d65b441e2d9efe46f453bdb0d` plus the two supplied patches;
+do not substitute the newer branch tip for that historical baseline.
 
 The local MAVROS checkout records its applied patch at
 `95de1a72983f6e0f393d02db5f0e6f6c89d89b6a`; the import manifest deliberately pins
