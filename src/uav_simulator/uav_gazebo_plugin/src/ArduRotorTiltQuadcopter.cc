@@ -56,6 +56,7 @@
 #include <gz/sim/Model.hh>
 #include <gz/sim/Util.hh>
 #include <gz/sim/components/Imu.hh>
+#include <gz/sim/components/Lidar.hh>
 #include <gz/sim/components/Link.hh>
 #include <gz/sim/components/Name.hh>
 #include <gz/sim/components/Pose.hh>
@@ -291,6 +292,7 @@ public:
   sockaddr_in rangePeer{};
   bool rangeEnabled{false}, rangePeerKnown{false};
   double rangeValue{0.0};
+  uint64_t rangeSampleCount{0};
   std::mutex rangeMutex;
   mavlink_status_t rangeMavlinkStatus{};
 
@@ -299,6 +301,8 @@ public:
     std::lock_guard<std::mutex> lock(rangeMutex);
     rangeValue = message.ranges_size() ? message.ranges(0) :
         std::numeric_limits<double>::quiet_NaN();
+    if ((++rangeSampleCount % 100) == 1)
+      gzmsg << "[ArduRotorTiltQuadcopter] range sample " << rangeValue << " m\n";
   }
 
   void SendForwardRangefinder(double simTime)
@@ -483,14 +487,25 @@ bool ArduRotorTiltQuadcopter::ResolveEntities(
                                  gz::sim::ComponentTypeId _type,
                                  gz::sim::Entity _relative) {
     std::vector<gz::sim::Entity> result;
-    auto matches = gz::sim::entitiesFromScopedName(name, _ecm, _relative);
-    if (matches.empty())
-      matches = gz::sim::entitiesFromScopedName(name, _ecm);
-    for (const auto entity : matches)
-    {
-      if (_ecm.EntityHasComponentType(entity, _type))
+    // Search only descendants of this vehicle, including nested models.
+    // A global first-IMU fallback can silently bind a different aircraft.
+    _ecm.Each<gz::sim::components::Name>(
+        [&](gz::sim::Entity entity, const gz::sim::components::Name *component) {
+      if (!_ecm.EntityHasComponentType(entity, _type))
+        return true;
+      auto parent = entity;
+      while (parent != gz::sim::kNullEntity && parent != _relative)
+        parent = _ecm.ParentEntity(parent);
+      if (parent != _relative)
+        return true;
+      const auto scoped = gz::sim::scopedName(entity, _ecm, "::", false);
+      if (component->Data() == name || scoped == name ||
+          (scoped.size() > name.size() + 2 &&
+           scoped.compare(scoped.size() - name.size() - 2,
+                          name.size() + 2, "::" + name) == 0))
         result.push_back(entity);
-    }
+      return true;
+    });
     return result;
   };
 
@@ -570,17 +585,31 @@ bool ArduRotorTiltQuadcopter::ResolveEntities(
   // disable only range sending when absent, never invent a sensor in the model.
   auto rangeMatches = findTyped(dataPtr->rangeName,
       gz::sim::components::GpuLidar::typeId, dataPtr->model.Entity());
+  if (rangeMatches.empty())
+    rangeMatches = findTyped(dataPtr->rangeName,
+        gz::sim::components::Lidar::typeId, dataPtr->model.Entity());
   if (!rangeMatches.empty())
   {
-    const auto *component = _ecm.Component<gz::sim::components::GpuLidar>(rangeMatches.front());
-    std::string topic = component->Data().Topic();
+    std::string topic;
+    if (const auto *gpu = _ecm.Component<gz::sim::components::GpuLidar>(rangeMatches.front()))
+      topic = gpu->Data().Topic();
+    else if (const auto *lidar = _ecm.Component<gz::sim::components::Lidar>(rangeMatches.front()))
+      topic = lidar->Data().Topic();
     if (topic.empty())
-      topic = "/" + gz::sim::scopedName(rangeMatches.front(), _ecm) + "/scan";
+      topic = "/" + gz::sim::scopedName(rangeMatches.front(), _ecm, "/", true) + "/scan";
+    gzmsg << "[" << dataPtr->modelName << "] resolved range topic " << topic << "\n";
     if (!dataPtr->rangeSocket.Bind(dataPtr->rangeBindAddress, dataPtr->rangeBindPort))
     {
       gzerr << "[ArduRotorTiltQuadcopter] could not bind rangefinder socket\n";
       return false;
     }
+    // ArduPilot SERIAL7 listens on the next port and may not emit a packet
+    // for peer discovery. Seed the destination so range transmission starts
+    // immediately after the first lidar sample.
+    dataPtr->rangePeer.sin_family = AF_INET;
+    dataPtr->rangePeer.sin_port = htons(9026);
+    dataPtr->rangePeer.sin_addr.s_addr = inet_addr(dataPtr->rangeBindAddress.c_str());
+    dataPtr->rangePeerKnown = true;
     dataPtr->rangeEnabled = dataPtr->node.Subscribe(topic, &Private::OnRange, dataPtr.get());
   }
   else
@@ -724,15 +753,14 @@ void ArduRotorTiltQuadcopter::SendState(
     imu = dataPtr->imuMessage;
   }
 
-  const auto pose = gz::sim::Link(dataPtr->baseLink).WorldPose(_ecm);
-  const auto velocity = gz::sim::Link(dataPtr->baseLink).WorldLinearVelocity(
-      _ecm);
-  if (!pose || !velocity)
+  const auto pose = gz::sim::worldPose(dataPtr->baseLink, _ecm);
+  auto velocity = gz::sim::Link(dataPtr->baseLink).WorldLinearVelocity(_ecm);
+  if (!velocity)
     return;
 
   // Keep the ROS 1 Pose3d composition and frame convention unchanged.
   const gz::math::Pose3d gazeboXYZToModelXForwardZDown =
-      dataPtr->modelXYZToAirplaneXForwardZDown + *pose;
+      dataPtr->modelXYZToAirplaneXForwardZDown + pose;
   const gz::math::Pose3d nedToModelXForwardZUp =
       gazeboXYZToModelXForwardZDown - dataPtr->gazeboXYZToNED;
 
@@ -787,3 +815,4 @@ GZ_ADD_PLUGIN(gazebo::ArduRotorTiltQuadcopter, gz::sim::System,
   gazebo::ArduRotorTiltQuadcopter::ISystemPreUpdate,
   gazebo::ArduRotorTiltQuadcopter::ISystemReset)
 GZ_ADD_PLUGIN_ALIAS(gazebo::ArduRotorTiltQuadcopter, "ArduRotorTiltQuadcopter")
+GZ_ADD_PLUGIN_ALIAS(gazebo::ArduRotorTiltQuadcopter, "ArduRotorTiltQuadcopterFix")

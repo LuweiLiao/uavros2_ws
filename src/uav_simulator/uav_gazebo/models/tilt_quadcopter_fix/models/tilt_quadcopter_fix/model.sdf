@@ -56,16 +56,17 @@
             </cylinder>
           </geometry>
           <material>
-            <script>
-              <name>Gazebo/Black</name>
-            </script>
+            <ambient>0 0 0 1</ambient>
+            <diffuse>0 0 0 1</diffuse>
           </material>
         </visual>
-        <sensor name="front_rangefinder" type="ray">
+        <sensor name="front_rangefinder" type="gpu_lidar">
+          <visualize>true</visualize>
+          <!-- Face the fixed contact wall at x=3.2 in the world frame. -->
           <pose>0.5 0 0 0 0 0</pose>
           <always_on>true</always_on>
           <update_rate>50</update_rate>
-          <ray>
+          <lidar>
             <scan>
               <horizontal>
                 <samples>1</samples>
@@ -79,7 +80,7 @@
               <max>10.0</max>
               <resolution>0.001</resolution>
             </range>
-          </ray>
+          </lidar>
         </sensor>
       </link>
       <joint name="front_rod_joint" type="prismatic">
@@ -131,7 +132,7 @@
         <name>tilt_quadcopter_fix_tilt_front_0</name>
         <pose>0.765 -0.835 0 0 0 0</pose>
       </include>
-      <joint name = tilt_quadcopter_fix_tilt_front_0_joint type="revolute">
+      <joint name = "tilt_quadcopter_fix_tilt_front_0_joint" type="revolute">
         <parent>tilt_quadcopter_base::base</parent>
         <child>tilt_quadcopter_fix_tilt_front_0::tilt</child>
         <axis>
@@ -153,7 +154,7 @@
           </ode>
         </physics>
       </joint>
-      <plugin name = tilt_quadcopter_fix_tilt_front_0_plugin filename='librotors_gazebo_motor_model.so'>
+      <plugin name = "tilt_quadcopter_fix_tilt_front_0_plugin" filename='librotors_gazebo_motor_model.so'>
         <robotNamespace></robotNamespace>
         <jointName>tilt_quadcopter_fix_tilt_front_0_joint </jointName>
         <linkName>tilt_quadcopter_fix_tilt_front_0::tilt</linkName>
@@ -178,7 +179,7 @@
         <name>tilt_quadcopter_fix_tilt_front_1</name>
         <pose>-0.765 -0.835 0 0 0 0</pose>
       </include>
-      <joint name = tilt_quadcopter_fix_tilt_front_1_joint type="revolute">
+      <joint name = "tilt_quadcopter_fix_tilt_front_1_joint" type="revolute">
         <parent>tilt_quadcopter_base::base</parent>
         <child>tilt_quadcopter_fix_tilt_front_1::tilt</child>
         <axis>
@@ -200,7 +201,7 @@
           </ode>
         </physics>
       </joint>
-      <plugin name = tilt_quadcopter_fix_tilt_front_1_plugin filename='librotors_gazebo_motor_model.so'>
+      <plugin name = "tilt_quadcopter_fix_tilt_front_1_plugin" filename='librotors_gazebo_motor_model.so'>
         <robotNamespace></robotNamespace>
         <jointName>tilt_quadcopter_fix_tilt_front_1_joint </jointName>
         <linkName>tilt_quadcopter_fix_tilt_front_1::tilt</linkName>
@@ -225,7 +226,7 @@
         <name>tilt_quadcopter_fix_tilt_front_2</name>
         <pose>-0.765 0.835 0 0 0 0</pose>
       </include>
-      <joint name = tilt_quadcopter_fix_tilt_front_2_joint type="revolute">
+      <joint name = "tilt_quadcopter_fix_tilt_front_2_joint" type="revolute">
         <parent>tilt_quadcopter_base::base</parent>
         <child>tilt_quadcopter_fix_tilt_front_2::tilt</child>
         <axis>
@@ -247,7 +248,7 @@
           </ode>
         </physics>
       </joint>
-      <plugin name = tilt_quadcopter_fix_tilt_front_2_plugin filename='librotors_gazebo_motor_model.so'>
+      <plugin name = "tilt_quadcopter_fix_tilt_front_2_plugin" filename='librotors_gazebo_motor_model.so'>
         <robotNamespace></robotNamespace>
         <jointName>tilt_quadcopter_fix_tilt_front_2_joint </jointName>
         <linkName>tilt_quadcopter_fix_tilt_front_2::tilt</linkName>
@@ -272,7 +273,7 @@
         <name>tilt_quadcopter_fix_tilt_front_3</name>
         <pose>0.765 0.835 0 0 0 3.141592653589793</pose>
       </include>
-      <joint name = tilt_quadcopter_fix_tilt_front_3_joint type="revolute">
+      <joint name = "tilt_quadcopter_fix_tilt_front_3_joint" type="revolute">
         <parent>tilt_quadcopter_base::base</parent>
         <child>tilt_quadcopter_fix_tilt_front_3::tilt</child>
         <axis>
@@ -294,7 +295,7 @@
           </ode>
         </physics>
       </joint>
-      <plugin name = tilt_quadcopter_fix_tilt_front_3_plugin filename='librotors_gazebo_motor_model.so'>
+      <plugin name = "tilt_quadcopter_fix_tilt_front_3_plugin" filename='librotors_gazebo_motor_model.so'>
         <robotNamespace></robotNamespace>
         <jointName>tilt_quadcopter_fix_tilt_front_3_joint </jointName>
         <linkName>tilt_quadcopter_fix_tilt_front_3::tilt</linkName>
@@ -322,7 +323,7 @@
     <name>tilt_quadcopter_fix_prop_0</name>
     <pose relative_to= "tilt_quadcopter_fix_prop_0_joint" > 0 0 0 0 0 0</pose>
   </include>
-  <joint name = tilt_quadcopter_fix_prop_0_joint type="revolute">
+  <joint name = "tilt_quadcopter_fix_prop_0_joint" type="revolute">
     <pose relative_to= 'tilt_quadcopter_fix_tilt_front_0::tilt' > 0 0 0.1 0.3490658503988659 0 0</pose>
     <parent>tilt_quadcopter_fix_tilt_front_0::tilt</parent>
     <child>tilt_quadcopter_fix_prop_0::prop</child>
@@ -360,7 +361,7 @@
     <name>tilt_quadcopter_fix_prop_1</name>
     <pose relative_to= "tilt_quadcopter_fix_prop_1_joint" > 0 0 0 0 0 0</pose>
   </include>
-  <joint name = tilt_quadcopter_fix_prop_1_joint type="revolute">
+  <joint name = "tilt_quadcopter_fix_prop_1_joint" type="revolute">
     <pose relative_to= 'tilt_quadcopter_fix_tilt_front_0::tilt' > 0 0 -0.1 -0.3490658503988659 0 0</pose>
     <parent>tilt_quadcopter_fix_tilt_front_0::tilt</parent>
     <child>tilt_quadcopter_fix_prop_1::prop</child>
@@ -398,7 +399,7 @@
     <name>tilt_quadcopter_fix_prop_2</name>
     <pose relative_to= "tilt_quadcopter_fix_prop_2_joint" > 0 0 0 0 0 0</pose>
   </include>
-  <joint name = tilt_quadcopter_fix_prop_2_joint type="revolute">
+  <joint name = "tilt_quadcopter_fix_prop_2_joint" type="revolute">
     <pose relative_to= 'tilt_quadcopter_fix_tilt_front_1::tilt' > 0 0 0.1 0.3490658503988659 0 0</pose>
     <parent>tilt_quadcopter_fix_tilt_front_1::tilt</parent>
     <child>tilt_quadcopter_fix_prop_2::prop</child>
@@ -436,7 +437,7 @@
     <name>tilt_quadcopter_fix_prop_3</name>
     <pose relative_to= "tilt_quadcopter_fix_prop_3_joint" > 0 0 0 0 0 0</pose>
   </include>
-  <joint name = tilt_quadcopter_fix_prop_3_joint type="revolute">
+  <joint name = "tilt_quadcopter_fix_prop_3_joint" type="revolute">
     <pose relative_to= 'tilt_quadcopter_fix_tilt_front_1::tilt' > 0 0 -0.1 -0.3490658503988659 0 0</pose>
     <parent>tilt_quadcopter_fix_tilt_front_1::tilt</parent>
     <child>tilt_quadcopter_fix_prop_3::prop</child>
@@ -474,7 +475,7 @@
     <name>tilt_quadcopter_fix_prop_4</name>
     <pose relative_to= "tilt_quadcopter_fix_prop_4_joint" > 0 0 0 0 0 0</pose>
   </include>
-  <joint name = tilt_quadcopter_fix_prop_4_joint type="revolute">
+  <joint name = "tilt_quadcopter_fix_prop_4_joint" type="revolute">
     <pose relative_to= 'tilt_quadcopter_fix_tilt_front_2::tilt' > 0 0 0.1 -0.3490658503988659 0 0</pose>
     <parent>tilt_quadcopter_fix_tilt_front_2::tilt</parent>
     <child>tilt_quadcopter_fix_prop_4::prop</child>
@@ -512,7 +513,7 @@
     <name>tilt_quadcopter_fix_prop_5</name>
     <pose relative_to= "tilt_quadcopter_fix_prop_5_joint" > 0 0 0 0 0 0</pose>
   </include>
-  <joint name = tilt_quadcopter_fix_prop_5_joint type="revolute">
+  <joint name = "tilt_quadcopter_fix_prop_5_joint" type="revolute">
     <pose relative_to= 'tilt_quadcopter_fix_tilt_front_2::tilt' > 0 0 -0.1 0.3490658503988659 0 0</pose>
     <parent>tilt_quadcopter_fix_tilt_front_2::tilt</parent>
     <child>tilt_quadcopter_fix_prop_5::prop</child>
@@ -550,7 +551,7 @@
     <name>tilt_quadcopter_fix_prop_6</name>
     <pose relative_to= "tilt_quadcopter_fix_prop_6_joint" > 0 0 0 0 0 0</pose>
   </include>
-  <joint name = tilt_quadcopter_fix_prop_6_joint type="revolute">
+  <joint name = "tilt_quadcopter_fix_prop_6_joint" type="revolute">
     <pose relative_to= 'tilt_quadcopter_fix_tilt_front_3::tilt' > 0 0 0.1 0.3490658503988659 0 0</pose>
     <parent>tilt_quadcopter_fix_tilt_front_3::tilt</parent>
     <child>tilt_quadcopter_fix_prop_6::prop</child>
@@ -588,7 +589,7 @@
     <name>tilt_quadcopter_fix_prop_7</name>
     <pose relative_to= "tilt_quadcopter_fix_prop_7_joint" > 0 0 0 0 0 0</pose>
   </include>
-  <joint name = tilt_quadcopter_fix_prop_7_joint type="revolute">
+  <joint name = "tilt_quadcopter_fix_prop_7_joint" type="revolute">
     <pose relative_to= 'tilt_quadcopter_fix_tilt_front_3::tilt' > 0 0 -0.1 -0.3490658503988659 0 0</pose>
     <parent>tilt_quadcopter_fix_tilt_front_3::tilt</parent>
     <child>tilt_quadcopter_fix_prop_7::prop</child>
@@ -638,7 +639,7 @@
   <rangefinderMinDistanceM>0.05</rangefinderMinDistanceM>
   <rangefinderMaxDistanceM>10.0</rangefinderMaxDistanceM>
   <rangefinderRateHz>50.0</rangefinderRateHz>
-  <imuName>tilt_quadcopter_base::imu_link::imu_sensor</imuName>
+  <imuName>imu_sensor</imuName>
   <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
 </plugin>
 

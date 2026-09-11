@@ -5,6 +5,9 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float64.hpp>
 #include <sdf/sdf.hh>
+#include <gz/transport/Node.hh>
+#include <gz/msgs/wrench.pb.h>
+#include <mutex>
 
 #include <cstdint>
 #include <memory>
@@ -69,6 +72,10 @@ private:
     struct sockaddr_in_storage;
     std::unique_ptr<sockaddr_in_storage> peer_address_;
     double last_stream_time_s_ = 0.0;
+    mutable std::mutex wrench_mutex_;
+    gz::msgs::Wrench measured_wrench_;
+    bool wrench_subscribed_ = false;
+    gz::transport::Node sensor_transport_;
 };
 
 }  // namespace gazebo

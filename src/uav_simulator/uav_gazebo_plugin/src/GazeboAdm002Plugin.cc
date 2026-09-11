@@ -15,7 +15,7 @@
 
 #include <gz/msgs/wrench.pb.h>
 #include <gz/plugin/Register.hh>
-#include <gz/sim/components/WrenchMeasured.hh>
+#include <gz/sim/components/Sensor.hh>
 #include <gz/sim/Util.hh>
 
 namespace gazebo
@@ -131,15 +131,10 @@ void GazeboAdm002Plugin::CloseSocket()
 }
 
 double GazeboAdm002Plugin::SelectedForceNewton(
-    const gz::sim::EntityComponentManager &ecm) const
+    const gz::sim::EntityComponentManager &/*ecm*/) const
 {
-    const auto *wrench = ecm.Component<gz::sim::components::WrenchMeasured>(
-        sensor_entity_);
-    if (!wrench) {
-        return 0.0;
-    }
-
-    const auto &force = wrench->Data().force();
+    std::lock_guard<std::mutex> lock(wrench_mutex_);
+    const auto &force = measured_wrench_.force();
     const double component = force_axis_ == "x" ? force.x() :
                              force_axis_ == "y" ? force.y() : force.z();
     return component * force_sign_;
@@ -151,6 +146,23 @@ void GazeboAdm002Plugin::OnUpdate(
 {
     if (info.paused) {
         return;
+    }
+
+    // ForceTorque publishes the configured sensor-frame measurement. In Sim 8
+    // it does not populate WrenchMeasured; subscribing also enables updates.
+    if (!wrench_subscribed_) {
+        const auto *topic = ecm.Component<gz::sim::components::SensorTopic>(sensor_entity_);
+        if (!topic) {
+            return;
+        }
+        wrench_subscribed_ = sensor_transport_.Subscribe<gz::msgs::Wrench>(topic->Data(),
+            [this](const gz::msgs::Wrench &message) {
+                std::lock_guard<std::mutex> lock(wrench_mutex_);
+                measured_wrench_ = message;
+            });
+        if (!wrench_subscribed_) {
+            return;
+        }
     }
 
     const double force_n = SelectedForceNewton(ecm);
