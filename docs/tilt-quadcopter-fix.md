@@ -15,8 +15,9 @@
 - 历史固件二进制 SHA256：`7dd2635d8e361f9a1d19be0b5632aa2796253171191a0eb7eaeb44ad60d366ec`。
 
 固定版本、参数补丁及 SITL 测距端口适配见[依赖说明](dependencies/README.md)。
-ArduPilot 当前工作树还有后续 `mode_impedance.cpp` / `mode.h` 调参、UART 适配和
-测距接收计数诊断；整理未提交或覆盖这些改动。当前二进制已经不同于历史二进制，
+整理开始时 ArduPilot 工作树还有后续 `mode_impedance.cpp` / `mode.h` 调参、UART 适配和
+测距接收计数诊断；这些改动不属于本次参数提交，最新状态以独立仓库 `git status` 为准。
+本轮检查的二进制已经不同于历史二进制，
 不能直接把当前代码宣称为下面的历史验收配置。
 
 ## 已保留的功能修复

@@ -31,6 +31,21 @@ demonstrates short flat-ground tripod walking, stopping, takeoff, hover and land
 continuously. Other gaits, rough terrain and endurance remain unvalidated. It uses
 a different firmware revision from the quad models; read its linked model notes before use.
 
+`tsduav_t4` 已完成同固件/同参数的 ROS 1→ROS 2 GUI 专用弧线起降本机对照，
+使用 `origin/tsd4-onekey-land` 固定提交及获批的本地最终下降/落地检测修正，
+ROS 2 出生高度单独获批为 0.85 m。修正与原名 `tsdt4/mav.parm` 已本地提交至
+ArduPilot 的 `codex/tsduav-t4-sitl`，固定提交 `a2f931635d1d062a7e237336d23bc0036c23c546`。
+**按用户要求未推送；GitHub 上的原分支仍不等于这份验收配置。**
+详见 [T4 原模型说明](src/uav_simulator/uav_gazebo/models/tsd_model/tsduav_t4/readme.md)。
+
+`tsduav_t4` has local same-firmware/profile ROS 1→ROS 2 GUI validation of its
+dedicated arc sequence, using the pinned `origin/tsd4-onekey-land` revision plus
+approved final-descent/landing-detector corrections and a separately approved
+0.85 m ROS 2 spawn. The corrections and original `tsdt4/mav.parm` are committed
+locally in ArduPilot branch `codex/tsduav-t4-sitl` at the revision above.
+**No push was made, as requested; the stock GitHub branch is not the accepted
+configuration.** See the original model notes linked above.
+
 ## 目录 / Contents
 
 - [飞行演示 / Flight demos](#demos)
@@ -40,6 +55,7 @@ a different firmware revision from the quad models; read its linked model notes 
 - [运行普通四旋翼 / Run tsduav_quad](#quad)
 - [运行倾转四旋翼 / Run tilt_quadcopter](#tilt)
 - [Scorpio 联调与飞行条件 / Scorpio testing and flight prerequisites](src/uav_simulator/uav_gazebo/models/Scorpio/README.md)
+- [T4 专用弧线起降与本机验证 / T4 dedicated sequence and local validation](src/uav_simulator/uav_gazebo/models/tsd_model/tsduav_t4/readme.md)
 - [结束仿真 / Shutdown](#shutdown)
 - [ROS 接口与记录 / ROS interfaces and recording](#interfaces)
 - [架构与开发 / Architecture and development](#development)
@@ -195,6 +211,10 @@ The two Protobuf rosdep keys do not resolve in the checked environment. Their
 packages were explicitly installed in step 1; they are not optional.
 
 ### 4. 编译 / Build
+
+接触仿真还需要固定的 MAVROS 源码及插件参数补丁。编译前按
+[外部依赖说明](docs/dependencies/README.md)导入 `dependencies.repos` 并应用补丁。
+This contact setup requires the pinned MAVROS source and patch documented above.
 
 使用只加载系统 ROS 的新终端，不加载正在重编译的工作区 overlay。
 
@@ -546,6 +566,7 @@ uavros2_ws/
     │   │   ├── launch/spawn.launch
     │   │   ├── models/
     │   │   │   ├── tsd_model/tsduav_quad/models/tsduav_quad/model.sdf
+    │   │   │   ├── tsd_model/tsduav_t4/models/tsduav_t4/model.sdf
     │   │   │   ├── tilt_quadcopter/models/tilt_quadcopter/model.sdf
     │   │   │   └── Scorpio/models/scorpio/model.sdf
     │   │   └── worlds/
@@ -717,3 +738,78 @@ Revisions record provenance; migration comparisons use actual local ROS 1 files,
 including pre-existing changes. Original copyrights and licenses remain per
 component; see each package, for example the linked `uav_simulator` license.
 No replacement blanket license is claimed for this aggregate repository.
+
+## tilt_quadcopter_fix：已验证的独显起降流程（2026-09-08）
+
+ROS1 Docker Gazebo Classic 基线与主机 ROS2 Jazzy / Gazebo Sim 8 均已完成
+GUIDED 2 m 起飞、8 仿真秒悬停、LAND/disarm。NVIDIA RTX 2060 实际渲染已验证。
+完整 bag/BIN、曲线、参数差值、原路径审计和清理记录见
+[本模型验收与依赖记录](docs/tilt-quadcopter-fix.md)。
+2026-09-10 已进一步完成本模型 IMPEDANCE 接触验收：2 m 起飞/悬停、
+CONTACT_CONFIRM、45.06 仿真秒连续 FORCE_HOLD、正常 LAND/disarm。
+1 N 参考下末 10 s 平均力 0.921 N、RMS 误差 0.080 N；保持高度 1.977–1.981 m，
+原始冲击峰值 1.628 N（8 N 中止限值不变）。±0.1 N 误差带收敛约需 34 s。
+本次修复了缺失的 Gazebo Sim 系统、实体/测距绑定，以及误把前四路电机配置成舵机的参数；
+必须核验 SERVO1–8=33…40、SERVO9–12=184…187，避免旧 EEPROM 覆盖正确映射。
+飞行前保持 `ARMING_SKIPCHK=0`；本版 MAVROS 将模式29显示为 `CMODE(29)`。
+[接触验收摘要](docs/tilt-quadcopter-fix.md)记录版本、指标和本机原始证据位置。
+原始 bag/BIN 和一次性诊断脚本不随 Git 分发。
+其他模型、扰动工况、更高精度/更快响应和高频 MAVROS 测距仍需独立验收。
+ROS2 本次约 0.53 倍实时；测距输入保持 50 Hz，而最终 MAVROS 测距话题实测约 4 Hz。
+
+每轮先检查上轮 server/GUI/SITL 已退出及对应端口释放。以下为三个终端的正式入口，
+必须按 Gazebo → SITL → MAVROS 顺序启动；状态、参数和传感器门槛通过后才解锁。
+所有 GUI 与渲染传感器只使用 NVIDIA，不允许核显或软件回退。
+
+Gazebo 终端：
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source ~/Projects/uavros2_ws/.tmp/install/colcon/setup.bash
+export GZ_PARTITION=tilt_fix_ros2_manual
+export __NV_PRIME_RENDER_OFFLOAD=1
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json
+nvidia-smi
+ros2 launch uav_gazebo spawn.launch world_name:=tilt_quadcopter_fix gui:=true
+```
+
+SITL 终端（使用 `staging/tritilt-fixed` 的固定基线及[已记录补丁](docs/dependencies/README.md)，
+不要仅凭分支名判断验收版本）：
+
+```bash
+cd /home/llw/Projects/ardupilot/tilt_quadcopter
+PATH=/home/llw/venv-ardupilot/bin:$PATH \
+ /home/llw/Projects/ardupilot/Tools/autotest/sim_vehicle.py \
+ -v ArduCopter -f gazebo-iris -N --udp --out=127.0.0.1:14551 \
+ -A '--serial6=udpclient:127.0.0.1:9024 --serial7=udpclient:127.0.0.1:9025' \
+ --add-param-file /home/llw/Projects/ardupilot/Tools/autotest/default_params/gazebo-tilt-quadcopter-fix-contact.parm \
+ --mavproxy-args '--cmd="rc 1 1500; rc 2 1500; rc 3 1000; rc 4 1500; rc 7 1500; rc 8 1000"'
+```
+
+MAVROS 终端：
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source ~/Projects/uavros2_ws/.tmp/install/colcon/setup.bash
+ros2 launch uav_gazebo apm.launch fcu_url:=udp://:14551@
+```
+
+使用仿真时钟监视/录制时，在同一 `GZ_PARTITION` 中增加官方 clock bridge：
+
+```bash
+source /opt/ros/jazzy/setup.bash
+export GZ_PARTITION=tilt_fix_ros2_manual
+ros2 run ros_gz_bridge parameter_bridge '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'
+```
+
+不要重复启动 MAVProxy。飞行前开始记录，LAND 后确认解除武装、正常结束录制，
+再逐项停止本轮进程并复核实际 Gazebo server/GUI PID；仅退出 launch 不算完成清理。
+
+测距模型保留 `<visualize>true</visualize>`。当前正式源码没有自定义
+MarkerManager 测距线实现，因此不承诺自动显示青色线或 0.2 s 超时效果。
+
+本节的起飞/接触结果为 2026-09-10 历史验收；2026-09-11 整理未重新执行飞行。
+后续固件调参、构建版本及本地补丁须按验收记录分别核验。
+
+工作空间提交边界、暂缓材质改动与检查结果见[整理记录](docs/workspace-hygiene.md)。
