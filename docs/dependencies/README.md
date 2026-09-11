@@ -38,7 +38,7 @@ The historical run also had a diagnostic `DISTANCE_SENSOR` receive counter in
 dependency. Newer local `mode_impedance.cpp` tuning is outside this pinned
 historical baseline. Do not label a newly built binary as the historical binary.
 
-这些补丁仅用于复现本机仿真环境。本次没有推送依赖分支。
+这些补丁仅用于复现本机仿真环境。MAVROS 修改通过本仓库补丁分发，未提交到官方上游。
 
 The accepted parameter file is also carried as `ardupilot-contact-parameters.patch`
 against the same base, corresponding to local ArduPilot commit
@@ -54,3 +54,13 @@ do not substitute the newer branch tip for that historical baseline.
 The local MAVROS checkout records its applied patch at
 `95de1a72983f6e0f393d02db5f0e6f6c89d89b6a`; the import manifest deliberately pins
 its upstream parent, so a fresh import does not require this unpublished commit.
+
+## GitHub 发布位置
+
+ROS2 整理分支为
+[`codex/migrate-tsduav-t4`](https://github.com/LuweiLiao/uavros2_ws/tree/codex/migrate-tsduav-t4)。
+接触固件提交 `641838a7741a4e75805da4937bbe6cfbf7e78c4c` 发布在个人 ArduPilot 仓库的
+[`codex/tilt-contact-ros2-validation`](https://github.com/LuweiLiao/ardupilot/tree/codex/tilt-contact-ros2-validation)。
+发布时远端 `staging/tritilt-fixed` 已有另一套控制修改，与本地版本分叉，因此保留
+两条分支，没有强制覆盖或合并。复现时应按上述提交及补丁选择版本，不要只跟随
+`staging/tritilt-fixed` 分支名。T4 独立固件分支的历史发布状态仍见其模型说明。

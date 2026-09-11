@@ -54,4 +54,5 @@ Python 缓存保持忽略；归档后备份不再留在正式模型目录。没�
   `angular_velocity`、`linear_acceleration`、`use_parent_model_frame` SDF 字段警告。
 - 本轮未重飞、未进行材质 GUI 对照；历史飞行验收不能等同于当前固件的重新验收。
 
-检查细节保存在上述本机归档目录及默认 `log/` 中。所有提交均为本地提交，未推送。
+检查细节保存在上述本机归档目录及默认 `log/` 中。整理完成时所有提交均为本地提交；之后按用户要求发布到 GitHub，位置及分支边界见
+[依赖发布说明](dependencies/README.md#github-发布位置)。

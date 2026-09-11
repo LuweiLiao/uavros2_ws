@@ -774,7 +774,7 @@ nvidia-smi
 ros2 launch uav_gazebo spawn.launch world_name:=tilt_quadcopter_fix gui:=true
 ```
 
-SITL 终端（使用 `staging/tritilt-fixed` 的固定基线及[已记录补丁](docs/dependencies/README.md)，
+SITL 终端（使用[已记录的固定基线、发布分支和补丁](docs/dependencies/README.md)，
 不要仅凭分支名判断验收版本）：
 
 ```bash
