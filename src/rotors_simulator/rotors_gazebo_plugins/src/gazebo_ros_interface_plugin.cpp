@@ -58,6 +58,7 @@ std::string CanonicalTopic(const std::string &value) {
 std::string ApprovedQuadMotorRosTopic(const std::string &topic) {
   // User-approved ROS2-only exceptions: quad (2026-09-05) and the original
   // tilt_quadcopter's eight motors / four servos (2026-09-06).
+  // tsduav_t4's eight motor outputs use the same approved mapping (2026-09-07).
   // Keep SDF, Gazebo private paths and actuator order unchanged.
   for (int motor = 0; motor < 8; ++motor)
     if (topic == "/prop_speed/" + std::to_string(motor))

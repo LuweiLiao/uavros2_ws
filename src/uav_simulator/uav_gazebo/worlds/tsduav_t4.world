@@ -1,19 +1,20 @@
 <?xml version="1.0" ?>
-<sdf version="1.4">
+<sdf version="1.10">
   <world name="outdoor">
 
-    <!-- Fixed T4 tuning view: distant side elevation used for every video run. -->
-    <gui fullscreen="0">
-      <camera name="user_camera">
-        <pose>0 -13 4.5 0 0.277283314 1.570796241</pose>
-        <view_controller>orbit</view_controller>
-      </camera>
-    </gui>
+    <!-- Use Harmonic's complete default GUI. Classic's gui/camera element
+         is not the Gazebo Sim camera configuration API. -->
 
 
     <!-- Only one ROS interface plugin is required per world, as any other plugin can connect a Gazebo
          topic to a ROS topic (or vise versa). -->
     <plugin name="ros_interface_plugin" filename="librotors_gazebo_ros_interface_plugin.so"/>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu" />
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
 
     <physics type="ode">
       <ode>
@@ -33,16 +34,43 @@
     </physics>
     <gravity>0 0 -9.8</gravity>
     
-    <include>
-      <uri>model://sun</uri>
-    </include>
-
-    <include>
-      <uri>model://ground_plane</uri>
-    </include>
+    <!-- Classic's implicit sun/ground resources, at their original names. -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range><constant>0.9</constant>
+        <linear>0.01</linear><quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <surface>
+            <friction><ode><mu>100</mu><mu2>50</mu2></ode></friction>
+            <contact><collide_bitmask>0xffff</collide_bitmask></contact>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient><diffuse>0.7 0.7 0.7 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
 
     <model name="tsduav_t4">
-      <pose>0 0 0.5 0 0 0</pose>
+      <!-- Approved ROS2 initial-condition exception: 0.85 m clears the original
+           suspended-link collision mesh; let the unchanged model settle. -->
+      <pose>0 0 0.85 0 0 0</pose>
       <include>
         <uri>model://tsduav_t4</uri>
         <name>tsduav_t4</name>

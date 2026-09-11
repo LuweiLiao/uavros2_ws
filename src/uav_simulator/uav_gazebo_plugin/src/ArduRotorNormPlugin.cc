@@ -35,6 +35,7 @@
 #include <gz/sim/Link.hh>
 #include <gz/sim/Model.hh>
 #include <gz/sim/Util.hh>
+#include <gz/sim/components/CanonicalLink.hh>
 #include <gz/sim/components/Imu.hh>
 #include <gz/sim/components/Link.hh>
 #include <gz/sim/components/Name.hh>
@@ -216,6 +217,7 @@ public:
   bool entitiesResolved{false};
   bool socketsReady{false};
   bool warnedNoImu{false};
+  bool warnedNoCanonicalLink{false};
   double lastSimTime{0.0};
 
   // Gazebo Sim can execute many update iterations per wall-clock second when
@@ -398,18 +400,25 @@ bool ArduRotorNormPlugin::ResolveEntities(
   }
   dataPtr->imuLink = imuParent;
 
-  // Find the original canonical body link by its unscoped name.  This keeps
-  // the nested tsduav_quad_base hierarchy intact while avoiding a new SDF key.
-  auto baseMatches = findTyped("platform_base",
-                               gz::sim::components::Link::typeId,
-                               dataPtr->model.Entity());
-  if (baseMatches.empty())
+  // Classic's Model::GetLink() defaults to the canonical link. Do not
+  // hard-code tsduav_quad's "platform_base": T4's canonical body is "base".
+  // Harmonic's Model::CanonicalLink() only checks direct child links.
+  // SdfEntityCreator resolves nested SDF canonical-link semantics and stores
+  // the result on the model in ModelCanonicalLink; use that reference.
+  const auto *canonicalLink =
+      _ecm.Component<gz::sim::components::ModelCanonicalLink>(
+          dataPtr->model.Entity());
+  if (!canonicalLink || canonicalLink->Data() == gz::sim::kNullEntity)
   {
-    gzerr << "[" << dataPtr->modelName
-          << "] cannot find nested link [platform_base]\n";
+    if (!dataPtr->warnedNoCanonicalLink)
+    {
+      gzdbg << "[" << dataPtr->modelName
+            << "] waiting for the model's resolved canonical link\n";
+      dataPtr->warnedNoCanonicalLink = true;
+    }
     return false;
   }
-  dataPtr->baseLink = baseMatches.front();
+  dataPtr->baseLink = canonicalLink->Data();
 
   gz::sim::Link(dataPtr->baseLink).EnableVelocityChecks(_ecm);
   gz::sim::Link(dataPtr->imuLink).EnableVelocityChecks(_ecm);
@@ -440,7 +449,9 @@ bool ArduRotorNormPlugin::ResolveEntities(
 
   dataPtr->entitiesResolved = true;
   gzmsg << "[" << dataPtr->modelName << "] resolved IMU topic "
-        << imuTopic << " and body link platform_base\n";
+        << imuTopic << " and body link "
+        << gz::sim::Link(dataPtr->baseLink).Name(_ecm).value_or("<unnamed>")
+        << "\n";
   return true;
 }
 
@@ -587,15 +598,17 @@ void ArduRotorNormPlugin::SendState(
     imu = dataPtr->imuMessage;
   }
 
-  const auto pose = gz::sim::Link(dataPtr->baseLink).WorldPose(_ecm);
+  // The ROS1 packet uses Model::WorldPose(), not the canonical link pose;
+  // they can differ for a nested or articulated assembly.
+  const auto pose = gz::sim::worldPose(dataPtr->model.Entity(), _ecm);
   const auto velocity = gz::sim::Link(dataPtr->baseLink).WorldLinearVelocity(
       _ecm);
-  if (!pose || !velocity)
+  if (!velocity)
     return;
 
   // Keep the ROS 1 Pose3d composition and frame convention unchanged.
   const gz::math::Pose3d gazeboXYZToModelXForwardZDown =
-      dataPtr->modelXYZToAirplaneXForwardZDown + *pose;
+      dataPtr->modelXYZToAirplaneXForwardZDown + pose;
   const gz::math::Pose3d nedToModelXForwardZUp =
       gazeboXYZToModelXForwardZDown - dataPtr->gazeboXYZToNED;
 
