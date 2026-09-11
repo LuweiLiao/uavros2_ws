@@ -1,0 +1,30 @@
+diff --git a/libraries/AP_HAL_SITL/UARTDriver.cpp b/libraries/AP_HAL_SITL/UARTDriver.cpp
+index 358fb61482..e4179ac147 100644
+--- a/libraries/AP_HAL_SITL/UARTDriver.cpp
++++ b/libraries/AP_HAL_SITL/UARTDriver.cpp
+@@ -509,6 +509,20 @@ void UARTDriver::_udp_start_client(const char *address, uint16_t port)
+     int one = 1;
+     setsockopt(_fd,SOL_SOCKET,SO_BROADCAST,(char *)&one,sizeof(one));
+ 
++    // Keep the rangefinder MAVLink source endpoint stable for the Gazebo
++    // bridge, which replies to the sender address.
++    if (port == 9025) {
++        struct sockaddr_in local{};
++        local.sin_family = AF_INET;
++        local.sin_port = htons(9026);
++        local.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
++        setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
++        if (bind(_fd, (struct sockaddr *)&local, sizeof(local)) == -1) {
++            fprintf(stderr, "udp bind fixed range source port failed - %s\n", strerror(errno));
++            exit(1);
++        }
++    }
++
+     ret = connect(_fd, (struct sockaddr *)&sockaddr, sizeof(sockaddr));
+     if (ret == -1) {
+         fprintf(stderr, "udp connect failed on port %u - %s\n",
+@@ -1054,4 +1068,3 @@ void UARTDriver::uart_info(ExpandingString &str, StatsTracker &stats, const uint
+ #endif
+ 
+ #endif // CONFIG_HAL_BOARD
+-

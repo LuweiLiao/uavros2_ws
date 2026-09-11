@@ -1,0 +1,5 @@
+repositories:
+  mavros:
+    type: git
+    url: https://github.com/mavlink/mavros.git
+    version: 3a070636ec8943d3fffe6b67bc903c144f12fced

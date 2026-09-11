@@ -1,0 +1,19 @@
+diff --git a/mavros/src/lib/plugin.cpp b/mavros/src/lib/plugin.cpp
+index 6847a88..761cd39 100644
+--- a/mavros/src/lib/plugin.cpp
++++ b/mavros/src/lib/plugin.cpp
+@@ -32,7 +32,13 @@ Plugin::Plugin(
+   // __node/__ns remap rules (a component container remaps itself with
+   // e.g. -r __node:=<container>), otherwise every plugin node is renamed.
+   rclcpp::NodeOptions node_options(options);
+-  node_options.use_global_arguments(false);
++  // Keep global parameter files, but override identity remaps locally so
++  // container-level __node / __ns rules cannot rename every plugin.
++  auto arguments = node_options.arguments();
++  arguments.insert(arguments.end(), {"--ros-args", "-r", "__node:=" + subnode,
++    "-r", std::string("__ns:=") + uas_->get_fully_qualified_name()});
++  node_options.arguments(arguments);
++  node_options.use_global_arguments(true);
+   node_options.use_intra_process_comms(true);
+   node = rclcpp::Node::make_shared(subnode, uas_->get_fully_qualified_name(), node_options);
+ }

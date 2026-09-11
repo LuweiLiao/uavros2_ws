@@ -22,6 +22,8 @@
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>mavros</exec_depend>
+  <exec_depend>mavros_extras</exec_depend>
   <exec_depend>rotors_gazebo_plugins</exec_depend>
   <exec_depend>uav_control</exec_depend>
   <exec_depend>uav_gazebo_plugin</exec_depend>

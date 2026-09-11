@@ -19,3 +19,8 @@
 *.bag
 *.mcap
 *.db3
+
+# Imported source dependency: pinned in dependencies.repos with a tracked patch.
+/src/mavros/
+# SITL terrain cache.
+/terrain/
