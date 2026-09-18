@@ -1,5 +1,10 @@
 # UAVROS 2
 
+**部分模型现通过可选私有子模块提供。** Scorpio、tsd_model、
+usl_quadruped2、usl_quadruped2_bicopter、usl_quadruped3_bicopter 及其输电塔派生网格
+需要私有仓库权限；普通克隆和公共模型构建不需要该权限。
+详见 [私有模型使用说明](docs/private-models.md)。旧公开历史暂未清理。
+
 **保留 ROS 1 架构的无人机仿真工作区 · A ROS 2 UAV simulation workspace preserving the ROS 1 architecture**
 
 UAVROS 2 将原 `uavros_ws` 迁移到 ROS 2 Jazzy 与 Gazebo Harmonic，结合原 RotorS

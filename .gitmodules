@@ -1,0 +1,3 @@
+[submodule "private/uavros2_model_prviate"]
+	path = private/uavros2_model_prviate
+	url = git@github.com:LuweiLiao/uavros2_model_prviate.git
