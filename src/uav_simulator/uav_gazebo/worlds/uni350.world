@@ -1,13 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <sdf version="1.4">
   <world name="outdoor">
-
-
-    <!-- Only one ROS interface plugin is required per world, as any other plugin can connect a Gazebo
-         topic to a ROS topic (or vise versa). -->
-    <plugin name="ros_interface_plugin" filename="librotors_gazebo_ros_interface_plugin.so"/>
-
-    <physics type="ode">
+    <physics type="ode" name="default_physics">
       <ode>
         <solver>
           <type>quick</type>
@@ -22,25 +16,60 @@
         </constraints>
       </ode>
       <real_time_update_rate>-1</real_time_update_rate>
-      <!--<max_step_size>0.0020</max_step_size>-->
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
     </physics>
     <gravity>0 0 -9.8</gravity>
-    
-    <include>
-      <uri>model://sun</uri>
-    </include>
-
-    <include>
-      <uri>model://ground_plane</uri>
-    </include>
-
+    <!-- Start just above ground for normal SITL pre-arm and takeoff. -->
     <model name="uni350">
-      <pose>0 0 2.0 0 0 0</pose>
+      <pose>0 0 0.12 0 0 0</pose>
       <include>
         <uri>model://uni350</uri>
         <name>uni350</name>
       </include>
     </model>
-
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands" />
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu" />
+    <!-- Inline Classic built-in resources: Harmonic has no bundled sun/ground_plane. -->
+    <light name="sun" type="directional">
+      <pose>0 0 8 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.3 0.4 -1</direction>
+      <cast_shadows>true</cast_shadows>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="ground_link">
+        <collision name="ground_collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>20 20</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="ground_visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>20 20</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.65 0.68 0.70 1</ambient>
+            <diffuse>0.65 0.68 0.70 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
   </world>
 </sdf>

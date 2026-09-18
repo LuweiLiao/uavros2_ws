@@ -725,6 +725,8 @@ GZ_ADD_PLUGIN_ALIAS(rotors_gazebo_plugins::GazeboMotorModel,
                     // name.  Gazebo Sim resolves it as a plugin alias, so
                     // retain the original model instance names here rather
                     // than changing the model.sdf contract.
+                    "uni350_prop_0_plugin", "uni350_prop_1_plugin",
+                    "uni350_prop_2_plugin", "uni350_prop_3_plugin",
                     "tsduav_quad_prop_0_plugin",
                     "tsduav_quad_prop_1_plugin",
                     "tsduav_quad_prop_2_plugin",
