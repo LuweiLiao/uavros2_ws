@@ -29,11 +29,13 @@
 
     <arg name="other" default="$(find-pkg-share uav_gazebo)/models/tilt_tricopter/models:$(find-pkg-share uav_gazebo)/models/tilt_tricopter_fix/models:$(find-pkg-share uav_gazebo)/models/tilt_quadcopter/models:$(find-pkg-share uav_gazebo)/models/tilt_quadcopter_fix/models:$(find-pkg-share uav_gazebo)/models/tilt_quadcopter_armbot/models:$(find-pkg-share uav_gazebo)/models/nonplant_hex/models:$(find-pkg-share uav_gazebo)/models/pendulum_quadcopter/models:$(find-pkg-share uav_gazebo)/models/tsd_model/tsd_tree_obstacle/models" />
 
+    <arg name="powerline_perching" default="$(find-pkg-share uav_gazebo)/models/powerline_perching/models" />
+
     <arg name="scorpio" default="$(find-pkg-share uav_gazebo)/models/Scorpio/models" />
 
     <!-- Gazebo Sim uses GZ_SIM_RESOURCE_PATH; the original model groups and
          their order are retained verbatim under the new variable name. -->
-    <set_env name="GZ_SIM_RESOURCE_PATH" value="$(var tsduav):$(var equipment):$(var usl):$(var common):$(var uni350):$(var quadcopter):$(var ck):$(var other):$(var follow_uav):$(var scorpio):$(find-pkg-share uav_gazebo)/models/ground/models" />
+    <set_env name="GZ_SIM_RESOURCE_PATH" value="$(var tsduav):$(var equipment):$(var usl):$(var common):$(var uni350):$(var quadcopter):$(var ck):$(var other):$(var follow_uav):$(var scorpio):$(var powerline_perching):$(find-pkg-share uav_gazebo)/models/ground/models" />
     <set_env name="GZ_SIM_SYSTEM_PLUGIN_PATH" value="$(find-pkg-prefix rotors_gazebo_plugins)/lib:$(find-pkg-prefix uav_gazebo_plugin)/lib" />
     
 

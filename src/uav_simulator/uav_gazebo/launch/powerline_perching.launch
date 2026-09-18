@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- New concept authorized by user; not a renamed ROS 1 launch. -->
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="false"/>
+  <arg name="world_name" default="powerline_perching"/>
+  <include file="$(find-pkg-share uav_gazebo)/launch/spawn.launch">
+    <arg name="world_name" value="$(var world_name)"/>
+    <arg name="gui" value="$(var gui)"/>
+    <arg name="paused" value="$(var paused)"/>
+  </include>
+  <node pkg="ros_gz_bridge" exec="parameter_bridge" name="powerline_perching_bridge" output="screen"
+        args="/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock /powerline_perching/imu@sensor_msgs/msg/Imu[gz.msgs.IMU /powerline_perching/contact@ros_gz_interfaces/msg/Contacts[gz.msgs.Contacts /powerline_perching/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry /powerline_perching/command/motor_speed@actuator_msgs/msg/Actuators]gz.msgs.Actuators /powerline_perching/motor_speed/motor_0@std_msgs/msg/Float32[gz.msgs.Float /powerline_perching/motor_speed/motor_1@std_msgs/msg/Float32[gz.msgs.Float /powerline_perching/motor_speed/motor_2@std_msgs/msg/Float32[gz.msgs.Float /powerline_perching/motor_speed/motor_3@std_msgs/msg/Float32[gz.msgs.Float">
+    <param name="use_sim_time" value="true"/>
+  </node>
+</launch>

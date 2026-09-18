@@ -46,6 +46,17 @@ locally in ArduPilot branch `codex/tsduav-t4-sitl` at the revision above.
 **No push was made, as requested; the stock GitHub branch is not the accepted
 configuration.** See the original model notes linked above.
 
+新增设计：[输电线停靠四旋翼](src/uav_simulator/uav_gazebo/models/powerline_perching/README.md)
+采用上凸喇叭槽和低位机体，接入下视 RGB-D 相机与 ArduPilot SITL，
+已跑通橙色试验导线及带输电塔灰色导线场景中的 LOITER 起飞、GUIDED 视觉落线及正常解除武装。
+低重心结构仍有摆动；真实导线、复杂背景和阵风条件未验证。
+本次发布分支为 `codex/powerline-vision-perching`，配套 ArduPilot 同名分支。
+复现说明见模型 README 和 `docs/concepts/powerline-flight-validation.md`。
+为保留已验证的录像入口，显式跟踪 `.tmp/powerline_perching/` 下精选的
+实验工具源码；构建产物、日志和视频仍不提交。脚本目前使用本机绝对路径，
+其他机器需调整脚本中的工作空间、ArduPilot 和 Python 环境路径。
+当前相机远裁剪仍为 12 m，高空画面的远处地面会显示为背景色；尚未修改此参数。
+
 ## 目录 / Contents
 
 - [飞行演示 / Flight demos](#demos)

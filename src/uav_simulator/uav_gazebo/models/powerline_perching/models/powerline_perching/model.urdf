@@ -1,0 +1,480 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="powerline_perching">
+  <material name="frame">
+    <color rgba=".12 .16 .20 1" />
+  </material>
+  <material name="panel">
+    <color rgba=".12 .48 .78 1" />
+  </material>
+  <material name="battery">
+    <color rgba=".18 .43 .28 1" />
+  </material>
+  <material name="rotor">
+    <color rgba=".07 .08 .10 1" />
+  </material>
+  <material name="saddle">
+    <color rgba=".92 .58 .12 1" />
+  </material>
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.006551366309 0.0007097890003 0.03183120028" rpy="0 0 0" />
+      <mass value="2.891" />
+      <inertia ixx="0.219188799889" ixy="-0.000406316596333" ixz="-0.0103420370668" iyy="0.140336191501" iyz="-0.00103571837703" izz="0.217747667632" />
+    </inertial>
+    <visual name="left_body_visual">
+      <origin xyz="0 0.22 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.48 0.09 0.075" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="left_body_collision">
+      <origin xyz="0 0.22 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.48 0.09 0.075" />
+      </geometry>
+    </collision>
+    <visual name="left_battery_visual">
+      <origin xyz="0 0.22 -0.0825" rpy="0 0 0" />
+      <geometry>
+        <box size="0.22 0.078 0.09" />
+      </geometry>
+      <material name="battery" />
+    </visual>
+    <collision name="left_battery_collision">
+      <origin xyz="0 0.22 -0.0825" rpy="0 0 0" />
+      <geometry>
+        <box size="0.22 0.078 0.09" />
+      </geometry>
+    </collision>
+    <visual name="left_flare_visual">
+      <origin xyz="0 0.095 0.1025" rpy="0.4993467217 0 0" />
+      <geometry>
+        <box size="0.4 0.008 0.3132491022" />
+      </geometry>
+      <material name="panel" />
+    </visual>
+    <collision name="left_flare_collision">
+      <origin xyz="0 0.095 0.1025" rpy="0.4993467217 0 0" />
+      <geometry>
+        <box size="0.4 0.008 0.3132491022" />
+      </geometry>
+    </collision>
+    <visual name="left_throat_visual">
+      <origin xyz="0 0.02 0.32" rpy="0 0 0" />
+      <geometry>
+        <box size="0.4 0.008 0.16" />
+      </geometry>
+      <material name="panel" />
+    </visual>
+    <collision name="left_throat_collision">
+      <origin xyz="0 0.02 0.32" rpy="0 0 0" />
+      <geometry>
+        <box size="0.4 0.008 0.16" />
+      </geometry>
+    </collision>
+    <visual name="left_front_arm_visual">
+      <origin xyz="0.26 0.295 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.055 0.23 0.035" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="left_front_arm_collision">
+      <origin xyz="0.26 0.295 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.055 0.23 0.035" />
+      </geometry>
+    </collision>
+    <visual name="left_front_motor_visual">
+      <origin xyz="0.26 0.37 0.045" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.045" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="left_front_motor_collision">
+      <origin xyz="0.26 0.37 0.045" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.045" />
+      </geometry>
+    </collision>
+    <visual name="left_rear_arm_visual">
+      <origin xyz="-0.26 0.295 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.055 0.23 0.035" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="left_rear_arm_collision">
+      <origin xyz="-0.26 0.295 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.055 0.23 0.035" />
+      </geometry>
+    </collision>
+    <visual name="left_rear_motor_visual">
+      <origin xyz="-0.26 0.37 0.045" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.045" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="left_rear_motor_collision">
+      <origin xyz="-0.26 0.37 0.045" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.045" />
+      </geometry>
+    </collision>
+    <visual name="left_skid_visual">
+      <origin xyz="0 0.22 -0.155" rpy="0 0 0" />
+      <geometry>
+        <box size="0.48 0.025 0.035" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="left_skid_collision">
+      <origin xyz="0 0.22 -0.155" rpy="0 0 0" />
+      <geometry>
+        <box size="0.48 0.025 0.035" />
+      </geometry>
+    </collision>
+    <visual name="left_front_mount_visual">
+      <origin xyz="0.18 0.178 -0.007" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.09 0.04" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="left_front_mount_collision">
+      <origin xyz="0.18 0.178 -0.007" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.09 0.04" />
+      </geometry>
+    </collision>
+    <visual name="left_rear_mount_visual">
+      <origin xyz="-0.18 0.178 -0.007" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.09 0.04" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="left_rear_mount_collision">
+      <origin xyz="-0.18 0.178 -0.007" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.09 0.04" />
+      </geometry>
+    </collision>
+    <visual name="right_body_visual">
+      <origin xyz="0 -0.22 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.48 0.09 0.075" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="right_body_collision">
+      <origin xyz="0 -0.22 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.48 0.09 0.075" />
+      </geometry>
+    </collision>
+    <visual name="right_battery_visual">
+      <origin xyz="0 -0.22 -0.0825" rpy="0 0 0" />
+      <geometry>
+        <box size="0.22 0.078 0.09" />
+      </geometry>
+      <material name="battery" />
+    </visual>
+    <collision name="right_battery_collision">
+      <origin xyz="0 -0.22 -0.0825" rpy="0 0 0" />
+      <geometry>
+        <box size="0.22 0.078 0.09" />
+      </geometry>
+    </collision>
+    <visual name="right_flare_visual">
+      <origin xyz="0 -0.095 0.1025" rpy="-0.4993467217 0 0" />
+      <geometry>
+        <box size="0.4 0.008 0.3132491022" />
+      </geometry>
+      <material name="panel" />
+    </visual>
+    <collision name="right_flare_collision">
+      <origin xyz="0 -0.095 0.1025" rpy="-0.4993467217 0 0" />
+      <geometry>
+        <box size="0.4 0.008 0.3132491022" />
+      </geometry>
+    </collision>
+    <visual name="right_throat_visual">
+      <origin xyz="0 -0.02 0.32" rpy="0 0 0" />
+      <geometry>
+        <box size="0.4 0.008 0.16" />
+      </geometry>
+      <material name="panel" />
+    </visual>
+    <collision name="right_throat_collision">
+      <origin xyz="0 -0.02 0.32" rpy="0 0 0" />
+      <geometry>
+        <box size="0.4 0.008 0.16" />
+      </geometry>
+    </collision>
+    <visual name="right_front_arm_visual">
+      <origin xyz="0.26 -0.295 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.055 0.23 0.035" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="right_front_arm_collision">
+      <origin xyz="0.26 -0.295 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.055 0.23 0.035" />
+      </geometry>
+    </collision>
+    <visual name="right_front_motor_visual">
+      <origin xyz="0.26 -0.37 0.045" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.045" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="right_front_motor_collision">
+      <origin xyz="0.26 -0.37 0.045" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.045" />
+      </geometry>
+    </collision>
+    <visual name="right_rear_arm_visual">
+      <origin xyz="-0.26 -0.295 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.055 0.23 0.035" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="right_rear_arm_collision">
+      <origin xyz="-0.26 -0.295 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.055 0.23 0.035" />
+      </geometry>
+    </collision>
+    <visual name="right_rear_motor_visual">
+      <origin xyz="-0.26 -0.37 0.045" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.045" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="right_rear_motor_collision">
+      <origin xyz="-0.26 -0.37 0.045" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.045" />
+      </geometry>
+    </collision>
+    <visual name="right_skid_visual">
+      <origin xyz="0 -0.22 -0.155" rpy="0 0 0" />
+      <geometry>
+        <box size="0.48 0.025 0.035" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="right_skid_collision">
+      <origin xyz="0 -0.22 -0.155" rpy="0 0 0" />
+      <geometry>
+        <box size="0.48 0.025 0.035" />
+      </geometry>
+    </collision>
+    <visual name="right_front_mount_visual">
+      <origin xyz="0.18 -0.178 -0.007" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.09 0.04" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="right_front_mount_collision">
+      <origin xyz="0.18 -0.178 -0.007" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.09 0.04" />
+      </geometry>
+    </collision>
+    <visual name="right_rear_mount_visual">
+      <origin xyz="-0.18 -0.178 -0.007" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.09 0.04" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="right_rear_mount_collision">
+      <origin xyz="-0.18 -0.178 -0.007" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.09 0.04" />
+      </geometry>
+    </collision>
+    <visual name="saddle_visual">
+      <origin xyz="0 0 0.41" rpy="0 0 0" />
+      <geometry>
+        <box size="0.42 0.056 0.02" />
+      </geometry>
+      <material name="saddle" />
+    </visual>
+    <collision name="saddle_collision">
+      <origin xyz="0 0 0.41" rpy="0 0 0" />
+      <geometry>
+        <box size="0.42 0.056 0.02" />
+      </geometry>
+    </collision>
+    <visual name="camera_mast_visual">
+      <origin xyz="0.18 0.08 0.505" rpy="0 0 0" />
+      <geometry>
+        <box size="0.025 0.025 0.19" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="camera_mast_collision">
+      <origin xyz="0.18 0.08 0.505" rpy="0 0 0" />
+      <geometry>
+        <box size="0.025 0.025 0.19" />
+      </geometry>
+    </collision>
+    <visual name="camera_mount_visual">
+      <origin xyz="0.18 0.044 0.423" rpy="0 0 0" />
+      <geometry>
+        <box size="0.025 0.1 0.012" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="camera_mount_collision">
+      <origin xyz="0.18 0.044 0.423" rpy="0 0 0" />
+      <geometry>
+        <box size="0.025 0.1 0.012" />
+      </geometry>
+    </collision>
+    <visual name="camera_boom_visual">
+      <origin xyz="0.25 0.04 0.61" rpy="0 0 0" />
+      <geometry>
+        <box size="0.18 0.1 0.018" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="camera_boom_collision">
+      <origin xyz="0.25 0.04 0.61" rpy="0 0 0" />
+      <geometry>
+        <box size="0.18 0.1 0.018" />
+      </geometry>
+    </collision>
+    <visual name="camera_body_visual">
+      <origin xyz="0.32 0 0.59" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.045 0.035" />
+      </geometry>
+      <material name="frame" />
+    </visual>
+    <collision name="camera_body_collision">
+      <origin xyz="0.32 0 0.59" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.045 0.035" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="rotor_0">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.018" />
+      <inertia ixx="8.88e-07" ixy="0" ixz="0" iyy="0.000126174" iyz="0" izz="0.000127014" />
+    </inertial>
+    <visual name="rotor_0_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.29 0.024 0.004" />
+      </geometry>
+      <material name="rotor" />
+    </visual>
+    <collision name="rotor_0_collision">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.29 0.024 0.004" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="rotor_0_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rotor_0" />
+    <origin xyz="0.26 -0.37 0.079" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+  <link name="rotor_1">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.018" />
+      <inertia ixx="8.88e-07" ixy="0" ixz="0" iyy="0.000126174" iyz="0" izz="0.000127014" />
+    </inertial>
+    <visual name="rotor_1_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.29 0.024 0.004" />
+      </geometry>
+      <material name="rotor" />
+    </visual>
+    <collision name="rotor_1_collision">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.29 0.024 0.004" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="rotor_1_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rotor_1" />
+    <origin xyz="-0.26 -0.37 0.079" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+  <link name="rotor_2">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.018" />
+      <inertia ixx="8.88e-07" ixy="0" ixz="0" iyy="0.000126174" iyz="0" izz="0.000127014" />
+    </inertial>
+    <visual name="rotor_2_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.29 0.024 0.004" />
+      </geometry>
+      <material name="rotor" />
+    </visual>
+    <collision name="rotor_2_collision">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.29 0.024 0.004" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="rotor_2_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rotor_2" />
+    <origin xyz="-0.26 0.37 0.079" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+  <link name="rotor_3">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.018" />
+      <inertia ixx="8.88e-07" ixy="0" ixz="0" iyy="0.000126174" iyz="0" izz="0.000127014" />
+    </inertial>
+    <visual name="rotor_3_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.29 0.024 0.004" />
+      </geometry>
+      <material name="rotor" />
+    </visual>
+    <collision name="rotor_3_collision">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.29 0.024 0.004" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="rotor_3_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rotor_3" />
+    <origin xyz="0.26 0.37 0.079" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+</robot>

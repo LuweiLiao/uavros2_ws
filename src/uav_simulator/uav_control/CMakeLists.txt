@@ -82,6 +82,7 @@ install(TARGETS
 
 install(DIRECTORY include/ DESTINATION include)
 install(DIRECTORY config launch DESTINATION share/${PROJECT_NAME})
+install(PROGRAMS scripts/powerline_perching_sim.py DESTINATION lib/${PROJECT_NAME})
 
 ament_export_include_directories(include)
 ament_export_dependencies(Eigen3)

@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.20)
+project(perching_native_pip LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Quick Qml)
+find_package(gz-sim8 REQUIRED COMPONENTS gui)
+find_package(gz-gui8 REQUIRED)
+find_package(gz-rendering8 REQUIRED)
+find_package(gz-common5 REQUIRED COMPONENTS av)
+find_package(gz-transport13 REQUIRED)
+find_package(gz-plugin2 REQUIRED COMPONENTS register)
+add_library(VideoRecorder SHARED VideoRecorder.cc VideoRecorder.hh PerchingVideoResources.qrc)
+target_link_libraries(VideoRecorder PRIVATE Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml
+  gz-sim8::gz-sim8-gui gz-gui8::gz-gui8 gz-rendering8::gz-rendering8
+  gz-common5::gz-common5-av gz-transport13::gz-transport13 gz-plugin2::register)
+add_library(perching_video_helper SHARED native_video_helper.cpp)
+target_link_libraries(perching_video_helper PRIVATE Qt5::Core Qt5::Gui gz-gui8::gz-gui8 tinyxml2)
