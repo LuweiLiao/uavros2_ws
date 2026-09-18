@@ -1,10 +1,5 @@
 # UAVROS 2
 
-**部分模型现通过可选私有子模块提供。** Scorpio、tsd_model、
-usl_quadruped2、usl_quadruped2_bicopter、usl_quadruped3_bicopter 及其输电塔派生网格
-需要私有仓库权限；普通克隆和公共模型构建不需要该权限。
-详见 [私有模型使用说明](docs/private-models.md)。旧公开历史暂未清理。
-
 **保留 ROS 1 架构的无人机仿真工作区 · A ROS 2 UAV simulation workspace preserving the ROS 1 architecture**
 
 UAVROS 2 将原 `uavros_ws` 迁移到 ROS 2 Jazzy 与 Gazebo Harmonic，结合原 RotorS
@@ -64,6 +59,7 @@ configuration.** See the original model notes linked above.
 
 ## 目录 / Contents
 
+- [uni350 快速运行 / Run uni350](#uni350)
 - [飞行演示 / Flight demos](#demos)
 - [环境与范围 / Platform and scope](#platform)
 - [安装与编译 / Installation and build](#installation)
@@ -78,6 +74,110 @@ configuration.** See the original model notes linked above.
 - [验证与限制 / Validation and limitations](#validation)
 - [常见问题 / Troubleshooting](#troubleshooting)
 - [官方文档与来源 / References and provenance](#references)
+
+<a id="uni350"></a>
+## 以 uni350 为例运行 / Run uni350
+
+环境：Ubuntu 24.04、ROS 2 Jazzy、Gazebo Harmonic。先按下文的
+[安装与编译](#installation)完成依赖和工作空间构建。以下统一使用该章节的
+`.tmp/install/colcon` 安装目录；如果你使用默认 `install/` 构建，请将各终端的
+source 路径相应替换为 `~/Projects/uavros2_ws/install/setup.bash`，不要混用两套安装目录。
+
+uni350 已完成 **GUIDED 起飞到 3 m → LOITER 悬停 → LAND 降落并自动上锁**。
+模型保留原机体与旋翼，使用 RotorS 电机插件和 ArduPilot SITL。
+
+### 1. 准备 uni350 飞控参数
+
+使用已编译的 `~/Projects/ardupilot/build/sitl/bin/arducopter`。
+参数和说明已发布到 ArduPilot 仓库的 master：
+[uni350/mav.parm](https://github.com/LuweiLiao/ardupilot/blob/master/uni350/mav.parm)。
+已有仓库先更新远端信息，再取出该参数，无需切换当前工作分支：
+
+```bash
+cd ~/Projects/ardupilot
+git fetch origin master
+mkdir -p uni350
+# 本地已有此参数时保留，避免覆盖个人修改。
+if [ ! -f uni350/mav.parm ]; then
+  git show origin/master:uni350/mav.parm > uni350/mav.parm
+fi
+```
+
+本次飞行验收使用 `codex/powerline-vision-perching` 工作区的现有 SITL 二进制；
+master 上已发布参数，但尚未单独验收从 master 重编译的固件。
+固件版本、编译入口和完整记录见 [uni350 运行说明](docs/uni350-sitl.md)及
+[ArduPilot 准备章节](#ardupilot)；下方历史机型的固定固件版本不等同于 uni350 验收版本。
+
+### 2. 终端一：先启动 Gazebo
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source ~/Projects/uavros2_ws/.tmp/install/colcon/setup.bash
+export GZ_PARTITION=uni350_manual
+ros2 launch uav_gazebo spawn.launch world_name:=uni350 gui:=true paused:=false
+```
+
+等待 uni350 模型加载、仿真开始推进，再启动飞控。这个 launch 只启动 Gazebo。
+
+### 3. 终端二：启动 ArduPilot SITL
+
+每次新建运行目录，避免旧的 EEPROM 参数影响本轮仿真：
+
+```bash
+uni350_run_dir=$(mktemp -d "$HOME/uni350-sitl-XXXXXX")
+cd "$uni350_run_dir"
+~/Projects/ardupilot/build/sitl/bin/arducopter \
+  --model Gazebo --speedup 1 \
+  --defaults "$HOME/Projects/ardupilot/Tools/autotest/default_params/copter.parm,$HOME/Projects/ardupilot/uni350/mav.parm" \
+  --sim-address=127.0.0.1 --sim-port-in 9003 --sim-port-out 9002 -I0
+```
+
+### 4. 终端三：连接飞控并起飞
+
+```bash
+source ~/venv-ardupilot/bin/activate
+mavproxy.py --master=tcp:127.0.0.1:5760
+```
+
+以下命令在 **MAVProxy 提示符**逐条输入。等待 GPS、EKF 就绪、预检通过后解锁：
+
+```text
+rc 1 1500
+rc 2 1500
+rc 3 1000
+rc 4 1500
+mode GUIDED
+arm throttle
+takeoff 3
+```
+
+观察飞机到达约 3 m 后，将油门置中并切换定点悬停：
+
+```text
+rc 3 1500
+mode LOITER
+```
+
+结束时输入下面命令，等待着地并出现 `Disarming motors`，再关闭 MAVProxy、SITL 和 Gazebo：
+
+```text
+mode LAND
+rc 3 1000
+```
+
+### 5. 可选：在 ROS 2 中查看 IMU
+
+另开终端，使用与 Gazebo 相同的分区：
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source ~/Projects/uavros2_ws/.tmp/install/colcon/setup.bash
+export GZ_PARTITION=uni350_manual
+ros2 run ros_gz_bridge parameter_bridge '/uni350/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'
+```
+
+在另一个已加载 ROS 2 环境的终端执行 `ros2 topic echo /uni350/imu --once` 查看数据。
+本机已验证该话题和两次完整起降；上述 MAVProxy 操作是对应的手动流程，未另做独立飞行验收。
 
 <a id="demos"></a>
 ## 飞行演示 / Flight demos
