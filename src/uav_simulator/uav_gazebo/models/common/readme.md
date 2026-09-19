@@ -1,1 +1,0 @@
-# this models is for tsduav_quad
