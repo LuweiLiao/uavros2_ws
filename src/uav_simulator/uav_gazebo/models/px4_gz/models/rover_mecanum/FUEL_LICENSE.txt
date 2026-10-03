@@ -1,0 +1,6 @@
+Mecanum wheel meshes (left/right)
+Author: OpenRobotics
+Source: https://fuel.gazebosim.org/1.0/OpenRobotics/models/Mecanum%20lift/5
+License: Creative Commons Zero v1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Meshes unmodified. SDF references localized.

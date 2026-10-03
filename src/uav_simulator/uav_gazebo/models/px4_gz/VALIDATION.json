@@ -1,0 +1,197 @@
+{
+  "date": "2026-10-02",
+  "gazebo": "8.9.0",
+  "platform": "Ubuntu 22.04 / WSL, ROS 2 Humble tools",
+  "default_renderer": "WSL D3D12 (NVIDIA GeForce RTX 3060 Laptop GPU)",
+  "software_renderer_env": {
+    "LIBGL_ALWAYS_SOFTWARE": "1",
+    "GALLIUM_DRIVER": "llvmpipe"
+  },
+  "test": "gz sim -s -r --headless-rendering --iterations 100",
+  "sdf_validation": "25/25 passed",
+  "flight_validation": "not performed; no PX4 SITL binary",
+  "models": [
+    {
+      "model": "x500",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "x500_depth",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "rc_cessna",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "standard_vtol",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "x500_vision",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "px4vision",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "advanced_plane",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "r1_rover",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "x500_mono_cam",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "lawnmower",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "x500_lidar_2d",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "x500_mono_cam_down",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "x500_lidar_down",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "x500_lidar_front",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "quadtailsitter",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "x500_gimbal",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "tiltrotor",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "x500_flow",
+      "sdf_valid": true,
+      "default_render_pass": false,
+      "default_exit_code": -11,
+      "software_render_pass": true
+    },
+    {
+      "model": "rover_differential",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "rover_ackermann",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "rover_mecanum",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "uuv_bluerov2_heavy",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "atmos",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "atmos_dual",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    },
+    {
+      "model": "omnicopter",
+      "sdf_valid": true,
+      "default_render_pass": true,
+      "default_exit_code": 0,
+      "software_render_pass": null
+    }
+  ],
+  "build_validation": {
+    "plugins": "CMake and colcon passed (8 systems)",
+    "resources": "CMake install passed",
+    "full_workspace_colcon": "Not completed: original workspace dependency packages not built in this environment"
+  },
+  "launcher_tests": "3 tests passed, including executing a fake PX4 process for all 25 configurations",
+  "ros_launch_validation": "Humble: 25 model choices parsed; installed X500 launch ran 10 seconds and exited cleanly after SIGINT"
+}

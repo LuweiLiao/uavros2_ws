@@ -1,0 +1,6 @@
+Model: kth_freeflyer
+Author: proque
+Source: https://fuel.gazebosim.org/1.0/proque/models/kth_freeflyer/1
+License: Creative Commons Attribution 4.0 International
+http://creativecommons.org/licenses/by/4.0/
+Local modifications: resource URIs and Harmonic plugin library names only.

@@ -1,0 +1,12 @@
+{
+  "sources": {
+    "px4": "23bd42a5bff02ce0d358877f852e04db879d59ec",
+    "optical_flow": "a4d4cfde0c023be6b1ff8c8e796862413bc99272",
+    "klt_feature_tracker": "a2733b54f17b571dd958be498b57479a4104d8cd"
+  },
+  "adaptations": [
+    "Standalone Harmonic CMake/ament wrapper and environment hook",
+    "Removed PX4-only git-submodule helper/dependencies from optical_flow/CMakeLists.txt; dependencies are vendored",
+    "COLCON_IGNORE prevents nested third-party ROS packages from being discovered"
+  ]
+}
