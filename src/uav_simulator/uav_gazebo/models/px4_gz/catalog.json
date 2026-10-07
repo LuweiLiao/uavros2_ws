@@ -1,0 +1,227 @@
+[
+  {
+    "model": "x500",
+    "airframe_id": 4001,
+    "airframe_file": "4001_gz_x500",
+    "world": "px4_x500",
+    "world_file": "generated_worlds/x500.sdf",
+    "instance": "x500_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "x500_depth",
+    "airframe_id": 4002,
+    "airframe_file": "4002_gz_x500_depth",
+    "world": "px4_x500_depth",
+    "world_file": "generated_worlds/x500_depth.sdf",
+    "instance": "x500_depth_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "rc_cessna",
+    "airframe_id": 4003,
+    "airframe_file": "4003_gz_rc_cessna",
+    "world": "px4_rc_cessna",
+    "world_file": "generated_worlds/rc_cessna.sdf",
+    "instance": "rc_cessna_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "standard_vtol",
+    "airframe_id": 4004,
+    "airframe_file": "4004_gz_standard_vtol",
+    "world": "px4_standard_vtol",
+    "world_file": "generated_worlds/standard_vtol.sdf",
+    "instance": "standard_vtol_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "x500_vision",
+    "airframe_id": 4005,
+    "airframe_file": "4005_gz_x500_vision",
+    "world": "px4_x500_vision",
+    "world_file": "generated_worlds/x500_vision.sdf",
+    "instance": "x500_vision_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "px4vision",
+    "airframe_id": 4006,
+    "airframe_file": "4006_gz_px4vision",
+    "world": "px4_px4vision",
+    "world_file": "generated_worlds/px4vision.sdf",
+    "instance": "px4vision_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "advanced_plane",
+    "airframe_id": 4008,
+    "airframe_file": "4008_gz_advanced_plane",
+    "world": "px4_advanced_plane",
+    "world_file": "generated_worlds/advanced_plane.sdf",
+    "instance": "advanced_plane_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "r1_rover",
+    "airframe_id": 4009,
+    "airframe_file": "4009_gz_r1_rover",
+    "world": "px4_r1_rover",
+    "world_file": "generated_worlds/r1_rover.sdf",
+    "instance": "r1_rover_0",
+    "upstream_world": "rover"
+  },
+  {
+    "model": "x500_mono_cam",
+    "airframe_id": 4010,
+    "airframe_file": "4010_gz_x500_mono_cam",
+    "world": "px4_x500_mono_cam",
+    "world_file": "generated_worlds/x500_mono_cam.sdf",
+    "instance": "x500_mono_cam_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "lawnmower",
+    "airframe_id": 4011,
+    "airframe_file": "4011_gz_lawnmower",
+    "world": "px4_lawnmower",
+    "world_file": "generated_worlds/lawnmower.sdf",
+    "instance": "lawnmower_0",
+    "upstream_world": "lawn"
+  },
+  {
+    "model": "x500_lidar_2d",
+    "airframe_id": 4013,
+    "airframe_file": "4013_gz_x500_lidar_2d",
+    "world": "px4_x500_lidar_2d",
+    "world_file": "generated_worlds/x500_lidar_2d.sdf",
+    "instance": "x500_lidar_2d_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "x500_mono_cam_down",
+    "airframe_id": 4014,
+    "airframe_file": "4014_gz_x500_mono_cam_down",
+    "world": "px4_x500_mono_cam_down",
+    "world_file": "generated_worlds/x500_mono_cam_down.sdf",
+    "instance": "x500_mono_cam_down_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "x500_lidar_down",
+    "airframe_id": 4016,
+    "airframe_file": "4016_gz_x500_lidar_down",
+    "world": "px4_x500_lidar_down",
+    "world_file": "generated_worlds/x500_lidar_down.sdf",
+    "instance": "x500_lidar_down_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "x500_lidar_front",
+    "airframe_id": 4017,
+    "airframe_file": "4017_gz_x500_lidar_front",
+    "world": "px4_x500_lidar_front",
+    "world_file": "generated_worlds/x500_lidar_front.sdf",
+    "instance": "x500_lidar_front_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "quadtailsitter",
+    "airframe_id": 4018,
+    "airframe_file": "4018_gz_quadtailsitter",
+    "world": "px4_quadtailsitter",
+    "world_file": "generated_worlds/quadtailsitter.sdf",
+    "instance": "quadtailsitter_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "x500_gimbal",
+    "airframe_id": 4019,
+    "airframe_file": "4019_gz_x500_gimbal",
+    "world": "px4_x500_gimbal",
+    "world_file": "generated_worlds/x500_gimbal.sdf",
+    "instance": "x500_gimbal_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "tiltrotor",
+    "airframe_id": 4020,
+    "airframe_file": "4020_gz_tiltrotor",
+    "world": "px4_tiltrotor",
+    "world_file": "generated_worlds/tiltrotor.sdf",
+    "instance": "tiltrotor_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "x500_flow",
+    "airframe_id": 4021,
+    "airframe_file": "4021_gz_x500_flow",
+    "world": "px4_x500_flow",
+    "world_file": "generated_worlds/x500_flow.sdf",
+    "instance": "x500_flow_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "rover_differential",
+    "airframe_id": 50000,
+    "airframe_file": "50000_gz_rover_differential",
+    "world": "px4_rover_differential",
+    "world_file": "generated_worlds/rover_differential.sdf",
+    "instance": "rover_differential_0",
+    "upstream_world": "rover"
+  },
+  {
+    "model": "rover_ackermann",
+    "airframe_id": 51000,
+    "airframe_file": "51000_gz_rover_ackermann",
+    "world": "px4_rover_ackermann",
+    "world_file": "generated_worlds/rover_ackermann.sdf",
+    "instance": "rover_ackermann_0",
+    "upstream_world": "rover"
+  },
+  {
+    "model": "rover_mecanum",
+    "airframe_id": 52000,
+    "airframe_file": "52000_gz_rover_mecanum",
+    "world": "px4_rover_mecanum",
+    "world_file": "generated_worlds/rover_mecanum.sdf",
+    "instance": "rover_mecanum_0",
+    "upstream_world": "rover"
+  },
+  {
+    "model": "uuv_bluerov2_heavy",
+    "airframe_id": 60002,
+    "airframe_file": "60002_gz_uuv_bluerov2_heavy",
+    "world": "px4_uuv_bluerov2_heavy",
+    "world_file": "generated_worlds/uuv_bluerov2_heavy.sdf",
+    "instance": "uuv_bluerov2_heavy_0",
+    "upstream_world": "underwater"
+  },
+  {
+    "model": "atmos",
+    "airframe_id": 70000,
+    "airframe_file": "70000_gz_atmos",
+    "world": "px4_atmos",
+    "world_file": "generated_worlds/atmos.sdf",
+    "instance": "atmos_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "atmos_dual",
+    "airframe_id": 70001,
+    "airframe_file": "70001_gz_atmos_dual",
+    "world": "px4_atmos_dual",
+    "world_file": "generated_worlds/atmos_dual.sdf",
+    "instance": "atmos_dual_0",
+    "upstream_world": "default"
+  },
+  {
+    "model": "omnicopter",
+    "airframe_id": 8011,
+    "airframe_file": "8011_gz_omnicopter",
+    "world": "px4_omnicopter",
+    "world_file": "generated_worlds/omnicopter.sdf",
+    "instance": "omnicopter_0",
+    "upstream_world": "default"
+  }
+]

@@ -1,0 +1,6 @@
+Model: atmos
+Author: proque
+Source: https://fuel.gazebosim.org/1.0/proque/models/atmos/1
+License: Creative Commons Attribution 4.0 International
+http://creativecommons.org/licenses/by/4.0/
+Local modifications: resource URIs and Harmonic plugin library names only.

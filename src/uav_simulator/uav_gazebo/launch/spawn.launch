@@ -31,11 +31,13 @@
 
     <arg name="powerline_perching" default="$(find-pkg-share uav_gazebo)/models/powerline_perching/models" />
 
+    <arg name="px4_x500" default="$(find-pkg-share uav_gazebo)/models/px4_x500/models" />
+
     <arg name="scorpio" default="$(find-pkg-share uav_gazebo)/models/Scorpio/models" />
 
     <!-- Gazebo Sim uses GZ_SIM_RESOURCE_PATH; the original model groups and
          their order are retained verbatim under the new variable name. -->
-    <set_env name="GZ_SIM_RESOURCE_PATH" value="$(var tsduav):$(var equipment):$(var usl):$(var common):$(var uni350):$(var quadcopter):$(var ck):$(var other):$(var follow_uav):$(var scorpio):$(var powerline_perching):$(find-pkg-share uav_gazebo)/models/ground/models" />
+    <set_env name="GZ_SIM_RESOURCE_PATH" value="$(var tsduav):$(var equipment):$(var usl):$(var common):$(var uni350):$(var quadcopter):$(var ck):$(var other):$(var follow_uav):$(var scorpio):$(var powerline_perching):$(var px4_x500):$(find-pkg-share uav_gazebo)/models/ground/models" />
     <set_env name="GZ_SIM_SYSTEM_PLUGIN_PATH" value="$(find-pkg-prefix rotors_gazebo_plugins)/lib:$(find-pkg-prefix uav_gazebo_plugin)/lib" />
     
 

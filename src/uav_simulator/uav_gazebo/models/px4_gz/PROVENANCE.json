@@ -1,0 +1,66 @@
+{
+  "px4_revision": "23bd42a5bff02ce0d358877f852e04db879d59ec",
+  "models_revision": "bb0b9cf974acf4f1bcb5f5fcf80b88841562dea9",
+  "models_url": "https://github.com/PX4/PX4-gazebo-models",
+  "fuel": [
+    {
+      "owner": "proque",
+      "name": "atmos",
+      "version": 1,
+      "url": "https://fuel.gazebosim.org/1.0/proque/models/atmos/1",
+      "license": "Creative Commons Attribution 4.0 International",
+      "license_url": "http://creativecommons.org/licenses/by/4.0/",
+      "archive_sha256": "ea565de05d516fbf1921ac0ac92bf476dfb25b5db6f932e390c6c2d38af88fd5"
+    },
+    {
+      "owner": "proque",
+      "name": "atmos_dual",
+      "version": 1,
+      "url": "https://fuel.gazebosim.org/1.0/proque/models/atmos_dual/1",
+      "license": "Creative Commons Attribution 4.0 International",
+      "license_url": "http://creativecommons.org/licenses/by/4.0/",
+      "archive_sha256": "4696d49834cffe169ae371c3117f86fd6a59bd84fa623a5186800c4a1a89bbc8"
+    },
+    {
+      "owner": "proque",
+      "name": "kth_freeflyer",
+      "version": 1,
+      "url": "https://fuel.gazebosim.org/1.0/proque/models/kth_freeflyer/1",
+      "license": "Creative Commons Attribution 4.0 International",
+      "license_url": "http://creativecommons.org/licenses/by/4.0/",
+      "archive_sha256": "b67e00c47849682ba38f84250fd693f60e22fb55686b71af6aa8945ab47febc1"
+    },
+    {
+      "owner": "OpenRobotics",
+      "name": "Mecanum lift",
+      "version": 5,
+      "license": "Creative Commons Zero v1.0 Universal",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "url": "https://fuel.gazebosim.org/1.0/OpenRobotics/models/Mecanum%20lift/5",
+      "files": {
+        "mecanum_wheel_left.STL": "d7dca9423f8aedcf5abb47719902c7dc9567b35e80d9ffc8a1d7bd3b291dd3bd",
+        "mecanum_wheel_right.STL": "e72c8900c97374263bdc2e2cf3514ae93030748a2f5492edb1194dbd561c1222"
+      }
+    }
+  ],
+  "adapted_models": [
+    "models/atmos_dual/model.sdf",
+    "models/kth_freeflyer/model.sdf",
+    "models/lawnmower/model.sdf",
+    "models/omnicopter/model.sdf",
+    "models/omniquad_base/model.sdf",
+    "models/optical_flow/model.sdf",
+    "models/rover_differential/model.sdf",
+    "models/rover_mecanum/model.sdf",
+    "models/spacecraft_2d/model.sdf",
+    "models/x500_base/model.sdf",
+    "models/x500_depth/model.sdf",
+    "models/x500_flow/model.sdf",
+    "models/x500_lidar_2d/model.sdf",
+    "models/x500_lidar_down/model.sdf",
+    "models/x500_lidar_front/model.sdf",
+    "models/x500_mono_cam/model.sdf",
+    "models/x500_mono_cam_down/model.sdf",
+    "models/x500_vision/model.sdf"
+  ]
+}

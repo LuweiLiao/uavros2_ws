@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- PX4 uses Gazebo's native systems; no RotorS/ArduPilot plugins needed. -->
+    <arg name="gui" default="true" />
+    <arg name="paused" default="false" />
+    <set_env name="GZ_SIM_RESOURCE_PATH" value="$(find-pkg-share uav_gazebo)/models/px4_x500/models:$(env GZ_SIM_RESOURCE_PATH '')" />
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" if="$(var paused)">
+        <arg name="gz_args" value="-v4 -s $(find-pkg-share uav_gazebo)/worlds/px4_x500.world" />
+    </include>
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" unless="$(var paused)">
+        <arg name="gz_args" value="-v4 -s -r $(find-pkg-share uav_gazebo)/worlds/px4_x500.world" />
+    </include>
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py" if="$(var gui)">
+        <arg name="gz_args" value="-v4 -g" />
+    </include>
+</launch>

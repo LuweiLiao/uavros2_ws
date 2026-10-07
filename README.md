@@ -57,8 +57,17 @@ configuration.** See the original model notes linked above.
 其他机器需调整脚本中的工作空间、ArduPilot 和 Python 环境路径。
 当前相机远裁剪仍为 12 m，高空画面的远处地面会显示为背景色；尚未修改此参数。
 
+新增 [PX4 Gazebo Sim / Harmonic 全机型](src/uav_simulator/uav_gazebo/models/px4_gz/README.md)：
+覆盖固定 PX4 版本全部 **25 个 SITL 机型配置**，包含多旋翼、固定翼、VTOL、
+地面车、水下机器人及 ATMOS，并带入共享模型、传感器、插件和离线启动场景。
+统一入口：`ros2 launch uav_gazebo px4_sitl.launch.py model:=standard_vtol`。
+25 个机型均通过 SDF 校验；本机 16 个通过默认渲染加载，另外 9 个通过显式软件渲染对照。
+**尚未进行 PX4 SITL 闭环飞行/驾驶验收**，构建方法与逐机型结果见上方说明。
+此前的 [X500 轻量入口](src/uav_simulator/uav_gazebo/models/px4_x500/README.md)继续保留。
+
 ## 目录 / Contents
 
+- [PX4 全部 Harmonic 机型 / PX4 Harmonic vehicles](src/uav_simulator/uav_gazebo/models/px4_gz/README.md)
 - [uni350 快速运行 / Run uni350](#uni350)
 - [飞行演示 / Flight demos](#demos)
 - [环境与范围 / Platform and scope](#platform)
